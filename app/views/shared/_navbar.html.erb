@@ -1,0 +1,71 @@
+<div class="bg-white shadow-md">
+  <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+    <%= link_to "#", class: "flex items-center" do %>
+      <%= image_tag "https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/logo.png", class: "h-8" %>
+    <% end %>
+
+    <button class="lg:hidden text-gray-800 focus:outline-none" id="navbarToggle" aria-label="Toggle navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+
+    <div class="hidden lg:flex space-x-4">
+      <ul class="flex space-x-4">
+        <% if user_signed_in? %>
+          <li>
+            <%= link_to "Home", "#", class: "text-gray-800 hover:text-blue-500" %>
+          </li>
+          <li>
+            <%= link_to "Messages", "#", class: "text-gray-800 hover:text-blue-500" %>
+          </li>
+          <li class="relative">
+            <button class="flex items-center space-x-2 text-gray-800 hover:text-blue-500">
+              <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", class: "w-8 h-8 rounded-full", alt: "User avatar" %>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"></path>
+              </svg>
+            </button>
+            <div class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-10 hidden group-hover:block">
+              <%= link_to "Action", "#", class: "block px-4 py-2 text-gray-800 hover:bg-gray-200" %>
+              <%= link_to "Another action", "#", class: "block px-4 py-2 text-gray-800 hover:bg-gray-200" %>
+              <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "block px-4 py-2 text-gray-800 hover:bg-gray-200" %>
+            </div>
+          </li>
+        <% else %>
+          <li>
+            <%= link_to "Login", new_user_session_path, class: "text-gray-800 hover:text-blue-500" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Menu (Hidden by default) -->
+<div id="mobileMenu" class="lg:hidden bg-white shadow-md absolute inset-0 flex flex-col items-center justify-center space-y-4 p-6 hidden">
+  <ul class="space-y-4">
+    <% if user_signed_in? %>
+      <li>
+        <%= link_to "Home", "#", class: "text-gray-800 hover:text-blue-500" %>
+      </li>
+      <li>
+        <%= link_to "Messages", "#", class: "text-gray-800 hover:text-blue-500" %>
+      </li>
+      <li>
+        <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-gray-800 hover:text-blue-500" %>
+      </li>
+    <% else %>
+      <li>
+        <%= link_to "Login", new_user_session_path, class: "text-gray-800 hover:text-blue-500" %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<script>
+  document.getElementById('navbarToggle').addEventListener('click', function () {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('hidden');
+  });
+</script>

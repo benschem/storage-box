@@ -67,6 +67,9 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
+  # Set the default host for URLs generated in mailers in production (e.g., for password reset or account confirmation emails)
+  config.action_mailer.default_url_options = { host: "your-production-domain.com", protocol: "https" }
+
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
