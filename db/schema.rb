@@ -26,6 +26,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_08_062331) do
   create_table "boxes_tags", id: false, force: :cascade do |t|
     t.bigint "box_id", null: false
     t.bigint "tag_id", null: false
+    t.index ["box_id", "tag_id"], name: "index_boxes_tags_on_box_id_and_tag_id", unique: true
+    t.index ["tag_id", "box_id"], name: "index_boxes_tags_on_tag_id_and_box_id", unique: true
   end
 
   create_table "households", force: :cascade do |t|
