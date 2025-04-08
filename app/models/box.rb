@@ -1,6 +1,7 @@
 class Box < ApplicationRecord
   belongs_to :room
   has_many :items
+  has_and_belongs_to_many :tags
 
   before_validation :set_number, on: :create
 
