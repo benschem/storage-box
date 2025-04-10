@@ -3,12 +3,14 @@ Rails.application.routes.draw do
   devise_for :users
 
   # Application routes
-  resources :households, only: [:show, :create, :update, :destroy] do
+  resources :households, only: [:index, :show, :create, :update, :destroy] do
     resources :rooms, only: [:index, :show, :create, :update, :destroy], shallow: true do
       resources :boxes, only: [:index, :show, :create, :update, :destroy], shallow: true do
         resources :items, only: [:index, :show, :create, :update, :destroy], shallow: true
       end
     end
+    resources :boxes, only: [:index]
+    resources :items, only: [:index]
   end
 
   resources :tags, only: [:create, :update, :destroy]
@@ -18,5 +20,5 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Defines the root path route ("/")
-  root "pages#home"
+  root "households#index"
 end

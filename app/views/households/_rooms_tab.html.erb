@@ -1,0 +1,7 @@
+<% if rooms %>
+  <ul>
+    <% rooms.each do |room| %>
+      <li><%= room.name.capitalize %></li>
+    <% end %>
+  </ul>
+<% end %>

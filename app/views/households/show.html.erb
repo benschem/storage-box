@@ -1,16 +1,4 @@
-<h1><%= @household.address %></h1>
+<%= render "shared/tabs", current_tab: params[:tab] || "rooms_tab", household: @household %>
 
-<h2>Rooms</h2>
 
-<% @household.rooms.each do |room| %>
-  <h3><%= room.name %></h3>
-  <h4>Boxes</h4>
-  <% room.boxes.each do |box| %>
-    <h5><%= box.number %></h5>
-    <ul>
-      <% box.items.each do |item| %>
-        <li><%= item.name %></li>
-      <% end %>
-    </ul>
-  <% end %>
-<% end %>
+<%= render "/items/show", items: @household.items %>

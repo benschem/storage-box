@@ -1,0 +1,61 @@
+<%= render "shared/tabs", current_tab: params[:tab] || "boxes_tab", household: @household %>
+
+<div class="p-4">
+  <table class="table-auto w-full">
+    <thead class="sr-only">
+      <tr class="border-b-1 border-slate-200">
+        <td scope="col">Box</td>
+        <td scope="col">Items</td>
+        <td scope="col">Tags</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% unless @boxes.blank? %>
+        <% @boxes.each do |box| %>
+          <tr class="even:bg-slate-100">
+            <td class="w-full px-2 py-6">
+              <div class="inline-flex justify-center items-center">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 me-2">
+                  <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/>
+                  <path d="M12 22V12"/>
+                  <polyline points="3.29 7 12 12 20.71 7"/>
+                  <path d="m7.5 4.27 9 5.15"/>
+                </svg>
+                #<%= box.padded_number(current_user) %>
+              </div>
+            </td>
+
+            <td class="px-2 py-6">
+              <% box.tags&.each do |tag| %>
+                <div class="p-1 px-2 bg-slate-200 rounded-xl inline-flex justify-center items-center">
+                  <%= tag.name %>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-x-icon lucide-circle-x">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="m15 9-6 6"/>
+                    <path d="m9 9 6 6"/>
+                  </svg>
+                </div>
+              <% end %>
+            </td>
+
+            <td class="px-2 py-6">
+              <div class="p-1 px-2 bg-slate-200 rounded-xl inline-flex justify-center items-center">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 me-2">"
+                  <path d="M15.536 11.293a1 1 0 0 0 0 1.414l2.376 2.377a1 1 0 0 0 1.414 0l2.377-2.377a1 1 0 0 0 0-1.414l-2.377-2.377a1 1 0 0 0-1.414 0z"/>
+                  <path d="M2.297 11.293a1 1 0 0 0 0 1.414l2.377 2.377a1 1 0 0 0 1.414 0l2.377-2.377a1 1 0 0 0 0-1.414L6.088 8.916a1 1 0 0 0-1.414 0z"/>
+                  <path d="M8.916 17.912a1 1 0 0 0 0 1.415l2.377 2.376a1 1 0 0 0 1.414 0l2.377-2.376a1 1 0 0 0 0-1.415l-2.377-2.376a1 1 0 0 0-1.414 0z"/>
+                  <path d="M8.916 4.674a1 1 0 0 0 0 1.414l2.377 2.376a1 1 0 0 0 1.414 0l2.377-2.376a1 1 0 0 0 0-1.414l-2.377-2.377a1 1 0 0 0-1.414 0z"/>
+                </svg>
+                <%= box.items.count %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr>
+          <td class="px-2 py-6">You haven't added a box yet!</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
