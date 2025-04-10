@@ -1,24 +1,19 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a Ruby on Rails 7.1 application using Vite as the asset pipeline and Tailwind CSS v4 for styling.
 
-Things you may want to cover:
+For the setup I followed the guidelines in this article [https://medium.com/@yatishmehta/ruby-on-rails-8-vite-and-tailwind-v4-1ad62c4f6943]
 
-* Ruby version
+_Prerequisites:_
 
-* System dependencies
+- Ruby
+- Node.js
+- Yarn
+- PostgreSQL
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+_After cloning the repo:_
+`bundle install`
+`yarn install`
+`bin/rails db:setup`
+`bin/rails server` in one tab
+`bin/vite dev` in another tab
