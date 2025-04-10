@@ -37,11 +37,26 @@ puts "Room created: #{room.name}"
   puts "Room created: #{room.name}"
 end
 
+puts "Creating Tags..."
+10.times do
+  tag = Tag.create(household: household, name: Faker::Hobby.activity.downcase)
+  puts "Tag created: #{tag.name}"
+end
+
 puts "Creating Boxes..."
 15.times do
   box = Box.create(room: household.rooms.sample)
+  (0..4).to_a.sample.times do
+    random_tag = Tag.where(household: household).sample
+    unless box.tags.include?(random_tag)
+      box.tags << random_tag
+      puts "Tag added: #{random_tag.name}"
+    end
+  end
   puts "Box created: #{box.number}"
 end
+
+
 
 puts "Creating Items..."
 100.times do
