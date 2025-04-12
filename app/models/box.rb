@@ -8,6 +8,15 @@ class Box < ApplicationRecord
   validates :number, presence: true, numericality: { only_integer: true }
   validate :unique_number_within_household
 
+  def padded_number(household)
+    total_boxes = Box.joins(room: :household)
+                     .where(rooms: { household_id: room.household.id })
+                     .count
+
+    padding_length = total_boxes.to_s.length
+    number.to_s.rjust(padding_length, '0')
+  end
+
   private
 
   def set_number

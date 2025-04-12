@@ -61,8 +61,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_08_062331) do
 
   create_table "tags", force: :cascade do |t|
     t.string "name"
+    t.bigint "household_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["household_id"], name: "index_tags_on_household_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -81,4 +83,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_08_062331) do
   add_foreign_key "boxes", "rooms"
   add_foreign_key "items", "boxes"
   add_foreign_key "rooms", "households"
+  add_foreign_key "tags", "households"
 end
