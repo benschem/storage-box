@@ -1,0 +1,5 @@
+<% klasses ||= nil %>
+
+<td class="px-2 py-6 <%= klasses if klasses.present? %>">
+  <%= yield if block_given? %>
+</td>

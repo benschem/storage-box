@@ -1,0 +1,9 @@
+<thead class="sr-only">
+  <% if column_headings.present? %>
+    <tr class="border-b-1 border-slate-200">
+      <% column_headings.each do |column_heading| %>
+        <td scope="col"><% column_heading %></td>
+      <% end %>
+    </tr>
+  <% end %>
+</thead>

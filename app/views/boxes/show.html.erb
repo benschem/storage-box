@@ -1,0 +1,54 @@
+<%= render "shared/table" do %>
+  <%= render "shared/table/head", column_headings: %w(Box Tags Room) %>
+  <%= render "shared/table/body" do %>
+    <% unless @box.blank? %>
+      <%= render "shared/table/row", klasses: "bg-violet-200 dark:bg-violet-700 border-b-1 border-violet-600 dark:border-violet-100" do %>
+        <%= render "shared/table/cell" do %>
+          <div class="flex gap-2">
+            <%= render "shared/icons/box" %>
+            <%= "##{@box.padded_number(current_user)}" %>
+          </div>
+        <% end %>
+        <%= render "shared/table/cell_flex" do %>
+          <% @box.tags&.each do |tag| %>
+            <%= render "shared/tag", tag: tag %>
+          <% end %>
+        <% end %>
+        <%= render "shared/table/cell" do %>
+          <%= link_to household_room_path(current_household, @box.room) do %>
+            <%= render "shared/badge", icon: "room" do %>
+              <%= @box.room.name %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <%= render "shared/table/row" do %>
+        <%= render "shared/table/cell", text: "This box doesn't exist!" %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= render "shared/table", klasses: "max-w-md mx-auto border-x-1 border-b-1 border-slate-200 dark:border-slate-700" do %>
+  <%= render "shared/table/head", column_headings: %w(Name Box Room) %>
+  <%= render "shared/table/body" do %>
+    <% unless @box&.items.blank? %>
+      <% @box.items.each do |item| %>
+        <%= render "shared/table/row" do %>
+          <%= render "shared/table/cell_full_w" do %>
+            <%= link_to household_item_path(current_household, item) do %>
+              <%= item.name %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <%= render "shared/table/row" do %>
+        <%= render "shared/table/cell" do %>
+          You haven't added any items yet!
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

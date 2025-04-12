@@ -1,0 +1,4 @@
+<%= link_to households_path, class: "block max-w-max p-4 text-slate-900 font-bold dark:text-slate-100 hover:text-violet-500 hover:dark:text-violet-300 hover:cursor-pointer" do %>
+  <%#= render "shared/icons/house", klasses: "w-6 h-6 stroke-slate-900 group-hover:stroke-violet-500 dark:stroke-slate-100 group-hover:dark:stroke-violet-300" %>
+  <%= current_household&.address %>
+<% end %>

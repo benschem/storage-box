@@ -1,33 +1,20 @@
-<div class="bg-violet-400 dark:bg-violet-800 shadow-sm dark:shadow-slate-700 py-4 px-6 flex justify-between gap-2 flex-wrap hover:cursor-pointer">
+<div class="bg-violet-400 dark:bg-violet-800 shadow-sm dark:shadow-slate-700 py-4 px-6 flex justify-between">
 
-    <div class="inline-flex justify-center content-center gap-2 group">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-slate-800 dark:text-slate-200 hover:text-slate-700 dark:group-hover:text-slate-400">
-        <path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/>
-        <path d="m7 16.5-4.74-2.85"/>
-        <path d="m7 16.5 5-3"/>
-        <path d="M7 16.5v5.17"/>
-        <path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z"/>
-        <path d="m17 16.5-5-3"/><path d="m17 16.5 4.74-2.85"/>
-        <path d="M17 16.5v5.17"/>
-        <path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z"/>
-        <path d="M12 8 7.26 5.15"/>
-        <path d="m12 8 4.74-2.85"/>
-        <path d="M12 13.5V8"/>
-      </svg>
-      <%= link_to "StorageBox", root_path, class: "mt-1 text-md font-medium text-slate-800 dark:text-slate-200 hover:text-slate-700 dark:group-hover:text-slate-400" %>
-    </div>
+  <%= link_to root_path, class: "group inline-flex content-center gap-2 text-md font-medium text-slate-800 dark:text-slate-50 hover:text-slate-700 dark:hover:text-slate-400" do %>
+    <%= render "shared/icons/logo", klasses: "dark:stroke-slate-50 dark:group-hover:stroke-slate-400" %>
+    StorageBox
+  <% end %>
 
-    <div class="inline-flex justify-center content-center gap-2 group">
-      <% if user_signed_in? %>
-        <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-md font-medium text-slate-800 dark:text-slate-400 hover:text-slate-700 dark:group-hover:text-slate-400" %>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-slate-800 dark:text-slate-200 hover:text-slate-700 dark:group-hover:text-slate-400">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-          <polyline points="16 17 21 12 16 7"/>
-          <line x1="21" x2="9" y1="12" y2="12"/>
-        </svg>
-      <% else %>
-        <%= link_to "Login", new_user_session_path, class: "text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-slate-700 dark:group-hover:text-slate-400" %>
-      <% end %>
-    </div>
+  <% if user_signed_in? %>
+    <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "group inline-flex content-center gap-2 text-md font-medium text-slate-800 dark:text-slate-50 hover:text-slate-700 dark:hover:text-slate-400" do %>
+      Log out
+      <%= render "shared/icons/log_out", klasses: "dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+    <% end %>
+  <% else %>
+    <%= link_to "Login", new_user_session_path, class: "group inline-flex content-center gap-2 text-sm font-medium text-slate-800 dark:text-slate-50 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
+      Log in
+      <%= render "shared/icons/log_in", klasses: "dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+    <% end %>
+  <% end %>
 
 </div>

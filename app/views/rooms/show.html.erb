@@ -1,0 +1,58 @@
+<%= render "shared/table" do %>
+  <%= render "shared/table/head", column_headings: %w(Room Boxes Items) %>
+  <%= render "shared/table/body" do %>
+    <% unless @room.blank? %>
+      <%= render "shared/table/row", klasses: "bg-violet-200 dark:bg-violet-700 border-b-1 border-violet-600 dark:border-violet-100" do %>
+        <%= render "shared/table/cell_full_w" do %>
+          <%= @room.name.capitalize %>
+        <% end %>
+        <%= render "shared/table/cell" do %>
+          <%= render "shared/badge", icon: "box" do %>
+            <%= @room.boxes.count %>
+          <% end %>
+        <% end %>
+        <%= render "shared/table/cell" do %>
+          <%= render "shared/badge", icon: "item" do %>
+            <%= @room.items.count %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <%= render "shared/table/row" do %>
+        <%= render "shared/table/cell" do %>
+          This room doesn't exist!
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= render "shared/table", klasses: "max-w-md mx-auto border-x-1 border-b-1 border-slate-200 dark:border-slate-700" do %>
+  <%= render "shared/table/head", column_headings: %w(Name Box) %>
+  <%= render "shared/table/body" do %>
+    <% unless @room&.items.blank? %>
+      <% @room.items.each do |item| %>
+        <%= render "shared/table/row" do %>
+          <%= render "shared/table/cell" do %>
+            <%= link_to household_item_path(@room.household, item) do %>
+              <%= item.name %>
+            <% end %>
+          <% end %>
+          <%= render "shared/table/cell" do %>
+            <%= link_to household_box_path(@room.household, item.box) do %>
+              <%= render "shared/badge", icon: "box" do %>
+                <%= "##{item.box.padded_number(@room.household)}" %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <%= render "shared/table/row" do %>
+        <%= render "shared/table/cell" do %>
+          You haven't added any items yet!
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

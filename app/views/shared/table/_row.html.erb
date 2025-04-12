@@ -1,0 +1,5 @@
+<% klasses ||= nil %>
+
+<tr class="even:bg-slate-100 dark:even:bg-slate-800 text-slate-950 dark:text-slate-50 <%= klasses if klasses.present? %>">
+  <%= yield if block_given? %>
+</tr>

@@ -1,0 +1,15 @@
+<% if room.blank? %>
+  <div>
+    This room doesn't exist!
+  </div>
+<% else %>
+  <div>
+    <%= room.name.capitalize %>
+    <%= render "shared/badge", icon: "box" do %>
+      <%= room.boxes.count %>
+    <% end %>
+    <%= render "shared/badge", icon: "item" do %>
+      <%= room.items.count %>
+    <% end %>
+  </div>
+<% end %>
