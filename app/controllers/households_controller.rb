@@ -1,13 +1,12 @@
 class HouseholdsController < ApplicationController
   before_action :set_household, only: %i[ show update destroy ]
+  before_action :set_current_household, only: %i[ show index ]
 
   def show
   end
 
   def index
     @households = current_user.households
-    @household = @households.first
-    params[:tab] = "households"
   end
 
   def create
