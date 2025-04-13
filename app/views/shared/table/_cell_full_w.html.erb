@@ -1,7 +1,0 @@
-<% text ||= nil %>
-<% klasses ||= nil %>
-
-<td class="px-2 py-6 w-full <%= klasses if klasses.present? %>">
-  <%= yield if block_given? %>
-  <%= text if text.present? %>
-</td>

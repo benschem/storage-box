@@ -1,0 +1,21 @@
+<% if household.blank? %>
+  <div>
+    This household doesn't exist!
+  </div>
+<% else %>
+  <div>
+    <%= household.address %>
+
+    <%= render "shared/badge", icon: "room" do %>
+      <%= household.rooms.count %>
+    <% end %>
+
+    <%= render "shared/badge", icon: "box" do %>
+      #<%= household.boxes.count %>
+    <% end %>
+
+    <%= render "shared/badge", icon: "items" do %>
+      <%= household.items.count %>
+    <% end %>
+  </div>
+<% end %>

@@ -1,43 +1,9 @@
-<%= render "shared/table" do %>
-  <%= render "shared/table/head", column_headings: %w(Households Boxes Items) %>
-  <%= render "shared/table/body" do %>
-    <% unless @households.blank? %>
-      <% @households.each do |household| %>
-        <%= render "shared/table/row", klasses: "#{household == current_household ? 'bg-violet-200 even:bg-violet-200 dark:bg-violet-700 dark:even:bg-violet-700 border-b-1 even:border-t-1 border-violet-600 dark:border-violet-100' : ''}" do %>
-          <%= render "shared/table/cell_full_w" do %>
-            <%= link_to "#{households_path}?household_id=#{household.id}" do %>
-              <%= household.address %>
-            <% end %>
-          <% end %>
-          <%= render "shared/table/cell" do %>
-            <%= link_to household_rooms_path(household) do %>
-              <%= render "shared/badge", icon: "room" do %>
-                <%= household.rooms.count %>
-              <% end %>
-            <% end %>
-          <% end %>
-          <%= render "shared/table/cell" do %>
-            <%= link_to household_boxes_path(household) do %>
-              <%= render "shared/badge", icon: "box" do %>
-                <%= household.boxes.count %>
-              <% end %>
-            <% end %>
-          <% end %>
-          <%= render "shared/table/cell" do %>
-            <%= link_to household_items_path(household) do %>
-              <%= render "shared/badge", icon: "item" do %>
-                <%= household.items.count %>
-              <% end %>
-            <% end %>
-          <% end %>
-        <% end %>
-      <% end %>
-    <% else %>
-      <%= render "shared/table/row" do %>
-        <%= render "shared/table/cell" do %>
-          You haven't joined a household yet!
-        <% end %>
-      <% end %>
+<ul>
+  <% unless @households.blank? %>
+    <% @households.each do |household| %>
+      <li><%= render household %></li>
     <% end %>
+  <% else %>
+    <li>You haven't added any households yet!</li>
   <% end %>
-<% end %>
+</ul>

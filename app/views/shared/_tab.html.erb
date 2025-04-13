@@ -1,5 +1,5 @@
 <% if (tab[:key] == params[:tab]) || (tab[:key]) == controller_name %>
-  <li class="flex items-center justify-center mt-2 border-l-1 border-r-1 border-t-1 border-violet-600 dark:border-violet-400 bg-violet-200 dark:bg-violet-700 rounded-t-xl text-violet-600 dark:text-violet-100">
+  <li class="flex items-center justify-center mt-2 border-1 border-violet-600 dark:border-violet-400 bg-violet-200 dark:bg-violet-700 rounded-xl text-violet-600 dark:text-violet-100 transition ease-linear duration-150">
     <%= link_to "#{tab[:link]}?tab=#{tab[:key]}", class: "min-height-min inline-flex items-center justify-center px-6 py-2 rounded-t-lg" do %>
       <% if tab[:icon].present? %>
         <%= render "shared/icons/#{tab[:icon]}", klasses: "w-6 h-6 me-2 stroke-violet-600 dark:stroke-violet-50" %>
@@ -10,7 +10,7 @@
     <% end %>
   </li>
 <% else %>
-  <li class="group flex items-center justify-center mt-2 border-l-1 border-r-1 border-t-1 border-violet-200 dark:border-violet-800 bg-violet-50 dark:bg-violet-900 hover:bg-violet-100 dark:hover:bg-violet-800 rounded-t-xl">
+  <li class="group flex items-center justify-center mt-2 border-1 border-violet-200 dark:border-violet-800 bg-violet-50 dark:bg-violet-900 hover:bg-violet-100 dark:hover:bg-violet-800 rounded-xl transition ease-linear duration-150">
       <%= link_to "#{tab[:link]}?tab=#{tab[:key]}", class: "min-height-min inline-flex items-center justify-center px-6 py-2 rounded-t-lg" do %>
         <%= render "shared/icons/#{tab[:icon]}", klasses: "w-6 h-6 me-2 stroke-slate-400 group-hover:stroke-dark-600 dark:stroke-slate-400 group-hover:dark:stroke-slate-300" %>
         <span class="text-md font-medium text-center text-slate-500 dark:text-slate-400 group-hover:text-slate-600 group-hover:dark:text-slate-300">

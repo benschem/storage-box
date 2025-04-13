@@ -1,36 +1,9 @@
-<%= render "shared/table" do %>
-  <%= render "shared/table/head", column_headings: %w(Name Box Room) %>
-  <%= render "shared/table/body" do %>
-    <% unless @items.blank? %>
-      <% @items.each do |item| %>
-        <%= render "shared/table/row" do %>
-          <%= render "shared/table/cell" do %>
-            <%= link_to household_item_path(current_household, item) do %>
-              <%= item.name %>
-            <% end %>
-          <% end %>
-          <%= render "shared/table/cell" do %>
-            <%= link_to household_room_path(current_household, item.box.room) do %>
-              <%= render "shared/badge", icon: "room" do %>
-                <%= item.box.room.name.capitalize %>
-              <% end %>
-            <% end %>
-          <% end %>
-          <%= render "shared/table/cell" do %>
-            <%= link_to household_box_path(item.box.room.household, item.box) do %>
-              <%= render "shared/badge", icon: "box" do %>
-                <%= "##{item.box.padded_number(@household)}" %>
-              <% end %>
-            <% end %>
-          <% end %>
-        <% end %>
-      <% end %>
-    <% else %>
-      <%= render "shared/table/row" do %>
-        <%= render "shared/table/cell" do %>
-          You haven't added any items yet!
-        <% end %>
-      <% end %>
+<ul class="flex flex-col gap-4 p-2">
+  <% unless @items.blank? %>
+    <% @items.each do |item| %>
+      <li><%= render item %></li>
     <% end %>
+  <% else %>
+    <li>You haven't added any items yet!</li>
   <% end %>
-<% end %>
+</ul>

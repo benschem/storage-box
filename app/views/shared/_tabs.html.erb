@@ -1,6 +1,6 @@
 <% tabs ||= [
   {
-    text: "",
+    text: "Households",
     icon: "house",
     active: true,
     link: households_path,
@@ -22,14 +22,14 @@
   },
   {
     text: "Items",
-    icon: "item",
+    icon: "items",
     active: false,
     link: household_items_path(current_household),
     key: "items"
   }
 ] %>
 
-<ul class="px-2 border-b border-violet-600 dark:border-violet-200 flex overflow-x-scroll">
+<ul class="px-2 flex flex-wrap justify-center content-center gap-2 mb-6">
   <% if tabs.present? %>
     <% tabs.each do |tab| %>
       <%= render "shared/tab", tab: tab %>

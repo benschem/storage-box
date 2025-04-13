@@ -17,7 +17,7 @@
           <% end %>
           <%= render "shared/table/cell" do %>
             <%= link_to household_box_path(current_household, box) do %>
-              <%= render "shared/badge", icon: "item" do %>
+              <%= render "shared/badge", icon: "items" do %>
                 <%= box.items.count %>
               <% end %>
             <% end %>
