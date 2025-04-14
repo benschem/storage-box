@@ -1,8 +1,8 @@
 class RoomsController < ApplicationController
-  before_action :set_current_household, only: %i[ index show ]
+  before_action :set_current_house, only: %i[ index show ]
 
   def index
-    @rooms = current_household.rooms
+    @rooms = current_house.rooms
 
     # if turbo_frame_request? && params[:tab]
     #   render partial: "#{params[:tab]}_tab", locals: { room: @room }

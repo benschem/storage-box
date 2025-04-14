@@ -1,5 +1,5 @@
 class TagsController < ApplicationController
-  before_action :set_current_household, only: %i[show destroy]
+  before_action :set_current_house, only: %i[show destroy]
   before_action :set_tag, only: %i[show destroy]
 
   def show
@@ -8,12 +8,12 @@ class TagsController < ApplicationController
 
   def destroy
     @tag.destroy
-    redirect_to household_boxes_url(current_household), notice: 'Tag was successfully deleted.'
+    redirect_to house_boxes_url(current_house), notice: 'Tag was successfully deleted.'
   end
 
   private
 
   def set_tag
-    @tag = Tag.find_by(household: current_household, id: params[:id])
+    @tag = Tag.find_by(house: current_house, id: params[:id])
   end
 end

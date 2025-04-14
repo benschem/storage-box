@@ -1,21 +1,21 @@
-<% if household.blank? %>
+<% if house.blank? %>
   <div>
-    This household doesn't exist!
+    This house doesn't exist!
   </div>
 <% else %>
   <div>
-    <%= household.address %>
+    <%= house.address %>
 
     <%= render "shared/badge", icon: "room" do %>
-      <%= household.rooms.count %>
+      <%= house.rooms.count %>
     <% end %>
 
     <%= render "shared/badge", icon: "box" do %>
-      #<%= household.boxes.count %>
+      #<%= house.boxes.count %>
     <% end %>
 
     <%= render "shared/badge", icon: "items" do %>
-      <%= household.items.count %>
+      <%= house.items.count %>
     <% end %>
   </div>
 <% end %>
