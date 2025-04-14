@@ -4,7 +4,7 @@ BUGS:
 
 WISHLIST:
 
-- slugs based on name for urls for household and rooms
+- slugs based on name for urls for house and rooms
 
 IDEAS:
 

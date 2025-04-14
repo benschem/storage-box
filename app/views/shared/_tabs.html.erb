@@ -1,0 +1,38 @@
+<% tabs ||= [
+  {
+    text: "Houses",
+    icon: "house",
+    active: true,
+    link: houses_path,
+    key: "houses"
+  },
+  {
+    text: "Rooms",
+    icon: "room",
+    active: false,
+    link: rooms_path,
+    key: "rooms"
+  },
+  {
+    text: "Boxes",
+    icon: "box",
+    active: false,
+    link: boxes_path,
+    key: "boxes"
+  },
+  {
+    text: "Items",
+    icon: "items",
+    active: false,
+    link: items_path,
+    key: "items"
+  }
+] %>
+
+<ul class="px-2 flex flex-wrap justify-center content-center gap-2 mb-6">
+  <% if tabs.present? %>
+    <% tabs.each do |tab| %>
+      <%= render "shared/tab", tab: tab %>
+    <% end %>
+  <% end %>
+</ul>
