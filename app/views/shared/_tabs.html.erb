@@ -1,30 +1,30 @@
 <% tabs ||= [
   {
-    text: "Households",
+    text: "Houses",
     icon: "house",
     active: true,
-    link: households_path,
-    key: "households"
+    link: houses_path,
+    key: "houses"
   },
   {
     text: "Rooms",
     icon: "room",
     active: false,
-    link: household_rooms_path(current_household),
+    link: house_rooms_path(current_house),
     key: "rooms"
   },
   {
     text: "Boxes",
     icon: "box",
     active: false,
-    link: household_boxes_path(current_household),
+    link: house_boxes_path(current_house),
     key: "boxes"
   },
   {
     text: "Items",
     icon: "items",
     active: false,
-    link: household_items_path(current_household),
+    link: house_items_path(current_house),
     key: "items"
   }
 ] %>

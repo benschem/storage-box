@@ -5,21 +5,21 @@
       <% @items.each do |item| %>
         <%= render "shared/table/row" do %>
           <%= render "shared/table/cell" do %>
-            <%= link_to household_item_path(current_household, item) do %>
+            <%= link_to house_item_path(current_house, item) do %>
               <%= item.name %>
             <% end %>
           <% end %>
           <%= render "shared/table/cell" do %>
-            <%= link_to household_room_path(current_household, item.box.room) do %>
+            <%= link_to house_room_path(current_house, item.box.room) do %>
               <%= render "shared/badge", icon: "room" do %>
                 <%= item.box.room.name.capitalize %>
               <% end %>
             <% end %>
           <% end %>
           <%= render "shared/table/cell" do %>
-            <%= link_to household_box_path(item.box.room.household, item.box) do %>
+            <%= link_to house_box_path(item.box.room.house, item.box) do %>
               <%= render "shared/badge", icon: "box" do %>
-                <%= "##{item.box.padded_number(@household)}" %>
+                <%= "##{item.box.padded_number(@house)}" %>
               <% end %>
             <% end %>
           <% end %>

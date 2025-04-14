@@ -1,9 +1,0 @@
-<ul>
-  <% unless @households.blank? %>
-    <% @households.each do |household| %>
-      <li><%= render household %></li>
-    <% end %>
-  <% else %>
-    <li>You haven't added any households yet!</li>
-  <% end %>
-</ul>
