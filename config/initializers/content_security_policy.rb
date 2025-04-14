@@ -8,6 +8,9 @@ Rails.application.configure do
   config.content_security_policy do |policy|
     policy.default_src :self, :https
 
+    # Allow Vite's WebSocket connection in development for hot module reloading (HMR)
+    policy.connect_src :self, :https, "ws://localhost:3036" if Rails.env.development?
+
     # Allow fonts from self and https
     policy.font_src    :self, :https, :data
 
