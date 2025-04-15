@@ -1,8 +1,7 @@
 class BoxesController < ApplicationController
-  before_action :set_box, only: %i[ update destroy ]
+  before_action :set_box, only: %i[ show update destroy ]
 
-  def index
-    @boxes = current_user.boxes
+  def show
   end
 
   def create

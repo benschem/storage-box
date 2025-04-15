@@ -1,0 +1,64 @@
+
+<div class="p-4">
+  <%= link_to "← Back to items", items_path, class: "text-slate-950 dark:text-slate-50" %>
+</div>
+
+<% if @item.blank? %>
+  <div class="m-2 bg-slate-50 dark:bg-slate-900 p-4 rounded-xl shadow-md dark:shadow-md/90">
+    This item doesn't exist!
+  </div>
+<% else %>
+  <div class="relative mx-2 flex flex-col gap-4 content-center bg-slate-50 dark:bg-slate-900 p-4 md:p-8 rounded-xl shadow-md dark:shadow-md/90">
+    <div class="absolute top-2 right-2 md:top-4 md:right-4 flex gap-2 justify-end text-sm">
+      <%= link_to edit_item_path(@item), class: "inline-flex flex-wrap gap-2 content-center justify-center py-1 px-3 bg-violet-300 rounded-lg text-slate-950 stroke-slate-950 shadow-md dark:shadow-md/90" do %>
+        <%= render "shared/icons/pencil", klasses: "w-5 h-5" %>
+        Edit
+      <% end %>
+      <%= link_to item_path(@item), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "inline-flex flex-wrap gap-2 content-center justify-center py-1 px-3 bg-red-300 rounded-lg text-slate-950 stroke-slate-950 shadow-md dark:shadow-md/90" do %>
+        <%= render "shared/icons/trash", klasses: "w-5 h-5" %>
+        Delete
+      <% end %>
+    </div>
+
+    <img src="https://loremflickr.com/500/500/<%= @item.name.gsub(" ", "-") %>" alt="Picture of <%= @item.name %>" width="500" height="500" class="block self-center rounded-xl">
+    <%# if @post.image.attached? %>
+        <%#= image_tag @post.image.variant(resize_to_limit: [500, 500]), alt: "Picture of #{item.name}", class: "rounded-xl max-w-24" %>
+    <%# end %>
+
+    <div class="flex flex-col gap-2">
+      <h3 class="font-semibold text-2xl col-span-2 text-slate-900 dark:text-slate-100">
+        <%= @item.name.capitalize %>
+      </h3>
+
+      <div class="text-lg flex gap-4 text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
+        <div class="flex gap-2 content-center flex-wrap">
+          <%= render "shared/icons/box" %>
+          Box #<%= @item.box.padded_number %>
+        </div>
+        <div class="flex gap-2 content-center flex-wrap">
+          <%= render "shared/icons/room" %>
+          <%= @item.box.room.name.capitalize %>
+        </div>
+      </div>
+
+      <div class="flex gap-2 content-center flex-wrap text-lg text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
+        <%= render "shared/icons/house" %>
+        <%= @item.box.room.house.address %>
+      </div>
+
+      <% if @item.description %>
+        <p class="mb-4 text-slate-950 dark:text-slate-50">
+          <%= @item.description %>
+        </p>
+      <% end %>
+    </div>
+
+    <% if @item.tags.present? %>
+      <div class="flex flex-wrap gap-2">
+        <% @item.tags.each do |tag|  %>
+          <%= render "shared/tag", tag: tag %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

@@ -2,8 +2,8 @@
 
 one:
   name: MyString
-  household: one
+  house: one
 
 two:
   name: MyString
-  household: two
+  house: two

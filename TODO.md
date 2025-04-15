@@ -1,10 +1,13 @@
 TODO:
+[ ]
 
 BUGS:
+[ ]
 
 WISHLIST:
 
-- slugs based on name for urls for house and rooms
+- Slugs based on name for urls for house and rooms
+-
 
 IDEAS:
 
