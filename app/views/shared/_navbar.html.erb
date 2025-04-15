@@ -1,71 +1,68 @@
-<div class="bg-white shadow-md">
-  <div class="container mx-auto px-4 py-2 flex justify-between items-center">
-    <%= link_to "#", class: "flex items-center" do %>
-      <%= image_tag "https://raw.githubusercontent.com/lewagon/fullstack-images/master/uikit/logo.png", class: "h-8" %>
-    <% end %>
+<div class="relative text-xl bg-violet-400 dark:bg-violet-800 py-4 px-6 flex justify-between transition ease-linear duration-150">
 
-    <button class="lg:hidden text-gray-800 focus:outline-none" id="navbarToggle" aria-label="Toggle navigation">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
-      </svg>
-    </button>
+  <%= link_to root_path, class: "group inline-flex content-center gap-2 text-md font-medium text-slate-800 dark:text-slate-50 hover:text-teal-700 dark:hover:text-teal-400" do %>
+    <%= render "shared/icons/logo", klasses: "dark:stroke-slate-50 dark:group-hover:stroke-teal-400" %>
+    StorageBox
+  <% end %>
 
-    <div class="hidden lg:flex space-x-4">
-      <ul class="flex space-x-4">
-        <% if user_signed_in? %>
-          <li>
-            <%= link_to "Home", "#", class: "text-gray-800 hover:text-blue-500" %>
-          </li>
-          <li>
-            <%= link_to "Messages", "#", class: "text-gray-800 hover:text-blue-500" %>
-          </li>
-          <li class="relative">
-            <button class="flex items-center space-x-2 text-gray-800 hover:text-blue-500">
-              <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", class: "w-8 h-8 rounded-full", alt: "User avatar" %>
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"></path>
-              </svg>
-            </button>
-            <div class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-10 hidden group-hover:block">
-              <%= link_to "Action", "#", class: "block px-4 py-2 text-gray-800 hover:bg-gray-200" %>
-              <%= link_to "Another action", "#", class: "block px-4 py-2 text-gray-800 hover:bg-gray-200" %>
-              <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "block px-4 py-2 text-gray-800 hover:bg-gray-200" %>
-            </div>
-          </li>
-        <% else %>
-          <li>
-            <%= link_to "Login", new_user_session_path, class: "text-gray-800 hover:text-blue-500" %>
-          </li>
-        <% end %>
+  <%= render "shared/icons/hamburger", klasses: "hover:cursor-pointer w-8 h-8 stroke-slate-800 dark:stroke-slate-50 hover:stroke-teal-700 dark:hover:stroke-teal-400" %>
+
+  <div class="z-10 absolute right-0 top-0 h-svh p-4 w-1/2 bg-violet-400 dark:bg-violet-800 text-slate-950 dark:text-slate-50">
+    <div class="flex justify-end px-2">
+      <%= render "shared/icons/close", klasses: "hover:cursor-pointer w-8 h-8 stroke-slate-800 dark:stroke-slate-50 hover:stroke-teal-700 dark:hover:stroke-teal-400" %>
+    </div>
+    <div class="p-2 flex flex-col justify-center h-full">
+      <ul class="flex flex-col gap-4">
+        <li class="mb-8">
+          <%= link_to items_path, class: "group flex content-center gap-4 text-slate-800 dark:text-slate-50 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
+            <%= render "shared/icons/items", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+            Items
+          <% end %>
+        </li>
+        <li>
+          <%= link_to houses_path, class: "group flex content-center gap-4 text-slate-800 dark:text-slate-50 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
+            <%= render "shared/icons/house", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+            Houses
+          <% end %>
+        </li>
+        <li>
+          <%= link_to rooms_path, class: "group flex content-center gap-4 text-slate-800 dark:text-slate-50 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
+            <%= render "shared/icons/room", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+            Rooms
+          <% end %>
+        </li>
+        <li>
+          <%= link_to boxes_path, class: "group flex content-center gap-4 text-slate-800 dark:text-slate-50 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
+            <%= render "shared/icons/box", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+            Boxes
+          <% end %>
+        </li>
+        <li>
+          <%= link_to tags_path, class: "group flex content-center gap-4 text-slate-800 dark:text-slate-50 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
+            <%= render "shared/icons/tag", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+            Tags
+          <% end %>
+        </li>
+        <li  class="mt-8">
+          <%= link_to houses_path, class: "group flex content-center gap-4 text-slate-800 dark:text-slate-50 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
+            <%= render "shared/icons/gear", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+            Settings
+          <% end %>
+        </li>
+        <li>
+          <% if user_signed_in? %>
+            <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "group flex content-center gap-4 text-slate-800 dark:text-slate-50 hover:text-slate-700 dark:hover:text-slate-400" do %>
+              <%= render "shared/icons/log_out", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+              Log out
+            <% end %>
+          <% else %>
+            <%= link_to "Login", new_user_session_path, class: "group flex content-center gap-4 text-slate-800 dark:text-slate-50 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
+              <%= render "shared/icons/log_in", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+              Log in
+            <% end %>
+          <% end %>
+        </li>
       </ul>
     </div>
   </div>
 </div>
-
-<!-- Mobile Menu (Hidden by default) -->
-<div id="mobileMenu" class="lg:hidden bg-white shadow-md absolute inset-0 flex flex-col items-center justify-center space-y-4 p-6 hidden">
-  <ul class="space-y-4">
-    <% if user_signed_in? %>
-      <li>
-        <%= link_to "Home", "#", class: "text-gray-800 hover:text-blue-500" %>
-      </li>
-      <li>
-        <%= link_to "Messages", "#", class: "text-gray-800 hover:text-blue-500" %>
-      </li>
-      <li>
-        <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-gray-800 hover:text-blue-500" %>
-      </li>
-    <% else %>
-      <li>
-        <%= link_to "Login", new_user_session_path, class: "text-gray-800 hover:text-blue-500" %>
-      </li>
-    <% end %>
-  </ul>
-</div>
-
-<script>
-  document.getElementById('navbarToggle').addEventListener('click', function () {
-    const menu = document.getElementById('mobileMenu');
-    menu.classList.toggle('hidden');
-  });
-</script>
