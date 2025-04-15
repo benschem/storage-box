@@ -4,15 +4,13 @@ Rails.application.routes.draw do
 
   # Application routes
   resources :households, only: [:index, :show, :create, :update, :destroy] do
-    resources :rooms, only: [:index, :show, :create] do
-      resources :boxes, only: [:index, :show, :create] do
-        resources :tags, only: [:index, :create]
-        resources :items, only: [:index, :show, :create]
+    resources :rooms, only: [:index, :show, :create, :update, :destroy], shallow: true do
+      resources :boxes, only: [:index, :show, :create, :update, :destroy], shallow: true do
+        resources :items, only: [:index, :show, :create, :update, :destroy], shallow: true
       end
     end
-    resources :boxes, only: [:index, :show]
-    resources :tags, only: [:index, :show, :create]
-    resources :items, only: [:index, :show]
+    resources :boxes, only: [:index]
+    resources :items, only: [:index]
   end
   resources :rooms, only: [:update, :destroy]
   resources :boxes, only: [:update, :destroy]

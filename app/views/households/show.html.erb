@@ -1,0 +1,4 @@
+<%= render "shared/tabs", current_tab: params[:tab] || "rooms_tab", household: @household %>
+
+
+<%= render "/items/show", items: @household.items %>
