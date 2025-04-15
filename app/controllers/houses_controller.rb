@@ -1,9 +1,5 @@
 class HousesController < ApplicationController
-  before_action :set_house, only: %i[ show update destroy ]
-  before_action :set_current_house, only: %i[ show index ]
-
-  def show
-  end
+  before_action :set_house, only: %i[ update destroy ]
 
   def index
     @houses = current_user.houses
