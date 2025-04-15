@@ -6,7 +6,7 @@
         <%= tag&.name %>
       <%# end %>
       <%= link_to tag_path(tag), data: { turbo_method: :delete } do %>
-        <%= render "shared/icons/close" %>
+        <%= render "shared/icons/close_circle" %>
       <% end %>
     </div>
 <% else %>
@@ -15,7 +15,7 @@
         <%= tag&.name %>
       <%# end %>
       <%= link_to tag_path(tag), data: { turbo_method: :delete } do %>
-        <%= render "shared/icons/close" %>
+        <%= render "shared/icons/close_circle" %>
       <% end %>
     </div>
 <% end %>
