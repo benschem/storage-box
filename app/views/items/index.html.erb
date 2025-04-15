@@ -1,13 +1,3 @@
 <%= render "search" %>
-<%#= render "shared/tabs" %>
 
-
-<ul class="flex flex-col gap-4 p-2">
-  <% unless @items.blank? %>
-    <% @items.each do |item| %>
-      <li><%= render item %></li>
-    <% end %>
-  <% else %>
-    <li>You haven't added any items yet!</li>
-  <% end %>
-</ul>
+<%= render "list", items: @items %>

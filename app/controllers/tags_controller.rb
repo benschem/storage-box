@@ -1,4 +1,4 @@
-class TagesController < ApplicationController
+class TagsController < ApplicationController
   before_action :set_tag, only: %i[ update destroy ]
 
   def index
@@ -25,7 +25,7 @@ class TagesController < ApplicationController
 
   def destroy
     @tag.destroy!
-    redirect_to tages_url, notice: "Tag was successfully destroyed.", status: :see_other
+    redirect_to items_url, notice: "Tag was successfully destroyed.", status: :see_other
   end
 
   private

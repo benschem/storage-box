@@ -171,6 +171,9 @@ GEM
       racc (~> 1.4)
     orm_adapter (0.5.0)
     pg (1.5.9)
+    pg_search (2.3.7)
+      activerecord (>= 6.1)
+      activesupport (>= 6.1)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -295,6 +298,7 @@ DEPENDENCIES
   dotenv-rails (~> 3.1)
   faker (~> 3.5)
   pg (~> 1.5)
+  pg_search (~> 2.3)
   puma (>= 5.0)
   rails (~> 7.1.5, >= 7.1.5.1)
   selenium-webdriver

@@ -3,13 +3,11 @@ Rails.application.routes.draw do
   devise_for :users
 
   # Application routes
-  resources :households, only: [:create, :update, :destroy]
-  resources :rooms, only: [:create, :update, :destroy]
-  resources :boxes, only: [:create, :update, :destroy]
-  resources :items, only: [:index, :show, :create, :edit, :update, :destroy] do
-    resources :tags, only: [:create, :destroy]
-  end
-  resources :tags, only: [:update]
+  resources :houses, only: [:index, :create, :update, :destroy]
+  resources :rooms, only: [:index, :create, :update, :destroy]
+  resources :boxes, only: [:index, :create, :update, :destroy]
+  resources :items, only: [:index, :show, :create, :edit, :update, :destroy]
+  resources :tags, only: [:index, :create, :update, :destroy]
 
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
