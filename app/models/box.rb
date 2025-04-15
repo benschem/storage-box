@@ -1,14 +1,13 @@
 class Box < ApplicationRecord
   belongs_to :room
   has_many :items
-  has_and_belongs_to_many :tags
 
   before_validation :set_number, on: :create
 
   validates :number, presence: true, numericality: { only_integer: true }
   validate :unique_number_within_house
 
-  def padded_number(house)
+  def padded_number
     total_boxes = Box.joins(room: :house)
                      .where(rooms: { house_id: room.house.id })
                      .count

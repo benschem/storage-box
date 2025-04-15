@@ -33,11 +33,11 @@
 
   </head>
 
-  <body class="bg-white dark:bg-slate-900">
+  <body class="bg-slate-200 dark:bg-slate-700">
     <%= render "shared/navbar" %>
-    <%= render "shared/search" %>
-    <%= render "shared/tabs" %>
-    <%= yield %>
+    <div class="mx-auto max-w-xl">
+      <%= yield %>
+    </div>
     <%= render "shared/flashes" %>
   </body>
 </html>

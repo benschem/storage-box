@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   has_and_belongs_to_many :houses, optional: true
   has_many :items, through: :houses
+  has_many :tags
 
   validates :name, presence: true
 end

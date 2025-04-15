@@ -1,6 +1,6 @@
 class Tag < ApplicationRecord
-  has_and_belongs_to_many :boxes
-  belongs_to :house
+  belongs_to :user
+  has_and_belongs_to_many :items
 
   validates :name, presence: true
 end

@@ -1,11 +1,11 @@
-<div class="text-xl bg-violet-400 dark:bg-violet-800 shadow-sm dark:shadow-sm/90 dark:shadow-slate-700 py-4 px-6 flex justify-between transition ease-linear duration-150">
+<div class="text-xl bg-violet-400 dark:bg-violet-800 py-4 px-6 flex justify-between transition ease-linear duration-150">
 
   <%= link_to root_path, class: "group inline-flex content-center gap-2 text-md font-medium text-slate-800 dark:text-slate-50 hover:text-teal-700 dark:hover:text-teal-400" do %>
     <%= render "shared/icons/logo", klasses: "dark:stroke-slate-50 dark:group-hover:stroke-teal-400" %>
     StorageBox
   <% end %>
 
-  <%= render "shared/icons/settings", klasses: "hover:cursor-pointer w-8 h-8 stroke-slate-800 dark:stroke-slate-50 hover:stroke-teal-700 dark:hover:stroke-teal-400" %>
+  <%= render "shared/icons/hamburger", klasses: "hover:cursor-pointer w-8 h-8 stroke-slate-800 dark:stroke-slate-50 hover:stroke-teal-700 dark:hover:stroke-teal-400" %>
 
 
   <%# if user_signed_in? %>
