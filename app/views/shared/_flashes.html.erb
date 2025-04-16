@@ -1,7 +1,7 @@
 <% if notice %>
-  <div data-controller="flash" class="bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded relative m-1" role="alert">
+  <div data-controller="flash" class="max-w-max flex fixed top-8 bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded m-1" role="alert">
     <span class="block sm:inline"><%= notice %></span>
-    <button type="button" data-action="flash#close" class="absolute top-0 bottom-0 right-0 px-4 py-3 text-blue-800 hover:cursor-pointer">
+    <button type="button" data-action="flash#close" class="px-4 py-3 text-blue-800 hover:cursor-pointer">
       <span class="sr-only">Dismiss</span>
       &times;
     </button>
@@ -9,9 +9,9 @@
 <% end %>
 
 <% if alert %>
-  <div data-controller="flash" class="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-3 rounded relative m-1" role="alert">
-    <span class="block sm:inline">Alert<%= alert %></span>
-    <button type="button" data-action="flash#close" class="absolute top-0 bottom-0 right-0 px-4 py-3 text-yellow-800 hover:cursor-pointer">
+  <div data-controller="flash" class="max-w-max flex fixed top-8 bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-3 rounded m-1" role="alert">
+    <span class="block sm:inline"><%= alert %></span>
+    <button type="button" data-action="flash#close" class="px-4 py-3 text-yellow-800 hover:cursor-pointer">
       <span class="sr-only">Dismiss</span>
       &times;
     </button>

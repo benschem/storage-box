@@ -1,0 +1,8 @@
+<% icon ||= nil %>
+
+<div class="max-w-fit p-1 px-2 bg-teal-200 dark:bg-teal-600 hover:bg-teal-300 hover:dark:bg-teal-500 rounded-xl inline-flex gap-2 items-center">
+  <% if icon.present? %>
+    <%= render "shared/icons/#{icon}", klasses: "w-5 h-5 min-w-5 min-h-5" %>
+  <% end %>
+  <%= yield if block_given? %>
+</div>

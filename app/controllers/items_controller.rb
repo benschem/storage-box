@@ -1,8 +1,22 @@
-class ItemesController < ApplicationController
-  before_action :set_item, only: %i[ update destroy ]
+class ItemsController < ApplicationController
+  before_action :set_item, only: %i[ show update destroy ]
 
   def index
-    @items = current_user.items
+    if params[:search].present?
+      @items = Item.search(params[:search])
+    else
+      @items = Item.all
+    end
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream do
+        render partial: "items/list", locals: { items: @items }
+      end
+    end
+  end
+
+  def show
   end
 
   def create
@@ -25,7 +39,7 @@ class ItemesController < ApplicationController
 
   def destroy
     @item.destroy!
-    redirect_to itemes_url, notice: "Item was successfully destroyed.", status: :see_other
+    redirect_to items_url, notice: "Item was successfully destroyed.", status: :see_other
   end
 
   private

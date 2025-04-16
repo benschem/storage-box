@@ -4,6 +4,12 @@ class HouseholdsController < ApplicationController
   def show
   end
 
+  def index
+    @households = current_user.households
+    @household = @households.first
+    params[:tab] = "households"
+  end
+
   def create
     @household = Household.new(household_params)
 

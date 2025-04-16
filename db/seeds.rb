@@ -10,56 +10,69 @@ puts "Destroying Boxes..."
 Box.destroy_all
 puts "Destroying Rooms..."
 Room.destroy_all
-puts "Destroying Households..."
-Household.destroy_all
+puts "Destroying Houses..."
+House.destroy_all
+puts "Destroying tags..."
+Tag.destroy_all
 puts "Destroying users..."
 User.destroy_all
 
 puts "Creating users..."
 user = User.create!(
   email: 'benschembri@gmail.com',
-  password: 'xfev-thyu-Ujmx-4Vop',
-  password_confirmation: 'xfev-thyu-Ujmx-4Vop',
+  password: 'password',
+  password_confirmation: 'password',
   name: 'Ben',
 )
 puts "User created: #{user.email}"
 
-puts "Creating a Household..."
-household = Household.create(address: "4/311 Dandenong Road Prahran")
-user.households << household
-puts "Household created: #{household.address}"
+puts "Creating a House..."
+house = House.create(address: "4/311 Dandenong Road Prahran")
+user.houses << house
+puts "House created: #{house.address}"
 
 puts "Creating Room..."
-room = Room.create(name: 'Garage', household: household)
+room = Room.create(name: 'Garage', house: house)
 puts "Room created: #{room.name}"
 5.times do
-  room = Room.create(name: Faker::House.room, household: household)
+  room = Room.create(name: Faker::House.room, house: house)
   puts "Room created: #{room.name}"
 end
 
 puts "Creating Tags..."
 10.times do
-  tag = Tag.create(household: household, name: Faker::Hobby.activity.downcase)
+  tag = Tag.create(user: user, name: Faker::Hobby.activity.downcase)
   puts "Tag created: #{tag.name}"
 end
 
 puts "Creating Boxes..."
 15.times do
-  box = Box.create(room: household.rooms.sample)
-  (0..4).to_a.sample.times do
-    random_tag = Tag.where(household: household).sample
-    unless box.tags.include?(random_tag)
-      box.tags << random_tag
-      puts "Tag added: #{random_tag.name}"
-    end
-  end
+  box = Box.create(room: house.rooms.sample)
   puts "Box created: #{box.number}"
 end
 
-
-
 puts "Creating Items..."
 100.times do
-  item = Item.create(name: Faker::Appliance.equipment, box: household.boxes.sample)
+  has_description = [true, true, false].sample
+  if has_description
+    item = Item.create(
+      name: Faker::Appliance.equipment,
+      description: Faker::TvShows::HowIMetYourMother.quote,
+      box: house.boxes.sample
+    )
+  else
+    item = Item.create(
+      name: Faker::Appliance.equipment,
+      box: house.boxes.sample
+    )
+  end
   puts "Item created: #{item.name}"
+
+  (0..4).to_a.sample.times do
+    random_tag = Tag.where(user: user).sample
+    unless item.tags.include?(random_tag)
+      item.tags << random_tag
+      puts "Tag added: #{random_tag.name}"
+    end
+  end
 end

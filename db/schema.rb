@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_08_062331) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_15_074709) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   create_table "boxes", force: :cascade do |t|
@@ -23,48 +24,49 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_08_062331) do
     t.index ["room_id"], name: "index_boxes_on_room_id"
   end
 
-  create_table "boxes_tags", id: false, force: :cascade do |t|
-    t.bigint "box_id", null: false
-    t.bigint "tag_id", null: false
-    t.index ["box_id", "tag_id"], name: "index_boxes_tags_on_box_id_and_tag_id", unique: true
-    t.index ["tag_id", "box_id"], name: "index_boxes_tags_on_tag_id_and_box_id", unique: true
-  end
-
-  create_table "households", force: :cascade do |t|
+  create_table "houses", force: :cascade do |t|
     t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "households_users", id: false, force: :cascade do |t|
+  create_table "houses_users", id: false, force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "household_id", null: false
-    t.index ["household_id", "user_id"], name: "index_households_users_on_household_id_and_user_id", unique: true
-    t.index ["user_id", "household_id"], name: "index_households_users_on_user_id_and_household_id", unique: true
+    t.bigint "house_id", null: false
+    t.index ["house_id", "user_id"], name: "index_houses_users_on_house_id_and_user_id", unique: true
+    t.index ["user_id", "house_id"], name: "index_houses_users_on_user_id_and_house_id", unique: true
   end
 
   create_table "items", force: :cascade do |t|
     t.string "name"
+    t.string "description"
     t.bigint "box_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_items_on_box_id"
   end
 
+  create_table "items_tags", id: false, force: :cascade do |t|
+    t.bigint "item_id", null: false
+    t.bigint "tag_id", null: false
+    t.index ["item_id", "tag_id"], name: "index_items_tags_on_item_id_and_tag_id", unique: true
+    t.index ["tag_id", "item_id"], name: "index_items_tags_on_tag_id_and_item_id", unique: true
+  end
+
   create_table "rooms", force: :cascade do |t|
     t.string "name"
-    t.bigint "household_id", null: false
+    t.bigint "house_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["household_id"], name: "index_rooms_on_household_id"
+    t.index ["house_id"], name: "index_rooms_on_house_id"
   end
 
   create_table "tags", force: :cascade do |t|
     t.string "name"
-    t.bigint "household_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["household_id"], name: "index_tags_on_household_id"
+    t.index ["user_id"], name: "index_tags_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -82,6 +84,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_08_062331) do
 
   add_foreign_key "boxes", "rooms"
   add_foreign_key "items", "boxes"
-  add_foreign_key "rooms", "households"
-  add_foreign_key "tags", "households"
+  add_foreign_key "rooms", "houses"
+  add_foreign_key "tags", "users"
 end
