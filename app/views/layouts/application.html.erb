@@ -33,11 +33,12 @@
 
   </head>
 
-  <body class="bg-slate-200 dark:bg-slate-700">
+  <body data-controller="sidebar" class="relative bg-slate-200 dark:bg-slate-700 overscroll-none">
     <%= render "shared/navbar" %>
-    <div class="mx-auto max-w-xl">
+    <div data-sidebar-target="content" class="max-w-xl">
       <%= yield %>
     </div>
+    <%= render "shared/sidebar", klasses: "hidden fixed absolute right-0 top-0 h-svh max-w-max" %>
     <%= render "shared/flashes" %>
   </body>
 </html>
