@@ -3,15 +3,28 @@ class RoomsController < ApplicationController
 
   def index
     @rooms = current_user.rooms
+
+    render partial: "rooms/list", locals: { rooms: @rooms }
+  end
+
+  def new
+    @room = Room.new
+
+    render partial: "rooms/form", locals: { room: @room }
   end
 
   def create
     @room = Room.new(room_params)
 
     if @room.save
-      redirect_to @room, notice: "Room was successfully created."
+      respond_to do |format|
+        format.html { redirect_to @room, notice: "Room was successfully created." }
+        format.turbo_stream do
+          render partial: "rooms/room", locals: { room: @room }
+        end
+      end
     else
-      render :new, status: :unprocessable_entity
+      render partial: "rooms/form", status: :unprocessable_entity
     end
   end
 

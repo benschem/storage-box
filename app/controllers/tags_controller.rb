@@ -1,5 +1,6 @@
 class TagsController < ApplicationController
   before_action :set_tag, only: %i[ update destroy ]
+  before_action :set_tag, only: %i[ destroy ]
 
   def index
     @tags = current_user.tags
@@ -24,11 +25,24 @@ class TagsController < ApplicationController
   end
 
   def destroy
+    @item = @tag.item
     @tag.destroy!
-    redirect_to items_url, notice: "Tag was successfully destroyed.", status: :see_other
+
+    respond_to do |format|
+      format.html do
+        redirect_to items_url, notice: "Tag successfully removed from #{@item.name}.", status: :see_other
+      end
+      format.turbo_stream do
+        render "/items/_list", locals: { item: @item }
+      end
+    end
   end
 
   private
+
+  def set_item
+    @item = Item.find(params[:item_id])
+  end
 
   def set_tag
     @tag = Tag.find(params[:id])
