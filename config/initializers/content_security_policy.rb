@@ -6,6 +6,7 @@
 
 Rails.application.configure do
   config.content_security_policy do |policy|
+
     policy.default_src :self, :https
 
     # Allow Vite's WebSocket connection in development for hot module reloading (HMR)
@@ -23,7 +24,12 @@ Rails.application.configure do
     # Allow scripts from self and https
     policy.script_src  :self, :https
     # Allow @vite/client to hot reload javascript changes in development
-    policy.script_src *policy.script_src, :unsafe_eval, "http://#{ ViteRuby.config.host_with_port }" if Rails.env.development?
+    policy.script_src *policy.script_src, :unsafe_eval, :unsafe_inline, "ws://#{ ViteRuby.config.host_with_port }/vite-dev/" if Rails.env.development?
+
+    # Allow connections from self and https
+    policy.connect_src  :self, :https
+    # Allow @vite/client to hot reload javascript changes in development
+    policy.connect_src *policy.default_src, "ws://#{ ViteRuby.config.host_with_port }/vite-dev/" if Rails.env.development?
 
     # Allow inline styles and scripts for testing (not production)
     policy.script_src *policy.script_src, :blob if Rails.env.test?

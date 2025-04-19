@@ -78,3 +78,4 @@ gem "image_processing", "~> 1.14"
 # Silence warning: ostruct.rb was loaded from the standard library, but will no longer be part of the default gems starting from Ruby 3.5.0.
 # This app never uses an open struct anyway, at least not in my code. I just want to get rid of that warning.
 gem "ostruct", "~> 0.6.1"
+gem "pg_search", "~> 2.3"

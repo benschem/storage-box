@@ -1,21 +1,11 @@
 class Box < ApplicationRecord
   belongs_to :room
   has_many :items
-  has_and_belongs_to_many :tags
 
   before_validation :set_number, on: :create
 
   validates :number, presence: true, numericality: { only_integer: true }
   validate :unique_number_within_house
-
-  def padded_number(house)
-    total_boxes = Box.joins(room: :house)
-                     .where(rooms: { house_id: room.house.id })
-                     .count
-
-    padding_length = total_boxes.to_s.length
-    number.to_s.rjust(padding_length, '0')
-  end
 
   private
 
