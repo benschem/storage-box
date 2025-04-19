@@ -1,5 +1,6 @@
 class ItemsController < ApplicationController
-  before_action :set_item, only: %i[ show update destroy ]
+  include ActionView::RecordIdentifier  # Needed to use dom_id
+  before_action :set_item, only: %i[show edit update destroy]
 
   def index
     if params[:search].present?
@@ -7,39 +8,89 @@ class ItemsController < ApplicationController
     else
       @items = Item.all
     end
+  end
 
+  def show
     respond_to do |format|
       format.html
       format.turbo_stream do
-        render partial: "items/list", locals: { items: @items }
+        partial = params[:closed] == "true" ? "items/item" : "items/item_open"
+        render turbo_stream: turbo_stream.replace(
+          dom_id(@item),
+          partial: partial,
+          locals: { item: @item }
+        )
       end
     end
   end
 
-  def show
+  def new
+    @item = Item.new
+  end
+
+  def edit
+    respond_to do |format|
+      format.html
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          dom_id(@item),
+          partial: "items/form",
+          locals: { item: @item }
+        )
+      end
+    end
   end
 
   def create
     @item = Item.new(item_params)
 
     if @item.save
-      redirect_to @item, notice: "Item was successfully created."
+      respond_to do |format|
+        format.html { redirect_to @item, notice: "Item was successfully created." }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.append(
+            "items_list",
+            partial: "items/item",
+            locals: { item: @item }
+          )
+        end
+      end
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def update
-    if @item.update(item_params)
-      redirect_to @item, notice: "Item was successfully updated.", status: :see_other
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if @item.update(item_params)
+        format.html { redirect_to @item, notice: "Item was successfully updated.", status: :see_other }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            dom_id(@item),
+            partial: "items/item",
+            locals: { item: @item }
+          )
+        end
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            dom_id(@item),
+            partial: "items/form",
+            locals: { item: @item }
+          )
+        end
+      end
     end
   end
 
   def destroy
     @item.destroy!
-    redirect_to items_url, notice: "Item was successfully destroyed.", status: :see_other
+
+    respond_to do |format|
+      format.html { redirect_to items_url, notice: "Item was successfully destroyed.", status: :see_other }
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(dom_id(@item)) }
+    end
   end
 
   private
@@ -49,6 +100,6 @@ class ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:name)
+    params.require(:item).permit(:name, :description, :box_id)
   end
 end
