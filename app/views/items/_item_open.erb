@@ -9,17 +9,19 @@
         <div class="text-lg flex gap-4 text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
           <div class="flex gap-2 content-center flex-wrap">
             <%= render "shared/icons/room" %>
-            <%= @item.box.room.name.capitalize %>
+            <%= @item.box&.room&.name&.capitalize || @item&.room&.name&.capitalize %>
           </div>
-          <div class="flex gap-2 content-center flex-wrap">
-            <%= render "shared/icons/box" %>
-            Box <%= @item.box.number %>
-          </div>
+          <% if @item.box.present? %>
+            <div class="flex gap-2 content-center flex-wrap">
+              <%= render "shared/icons/box" %>
+              Box <%= @item.box.number %>
+            </div>
+          <% end %>
         </div>
 
         <div class="flex gap-2 content-center flex-wrap text-lg text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
           <%= render "shared/icons/house" %>
-          <%= @item.box.room.house.name %>
+          <%= @item.box&.room&.house&.name || @item&.room&.house&.name %>
         </div>
 
         <% if @item.notes %>

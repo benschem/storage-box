@@ -61,6 +61,14 @@ class ItemsController < ApplicationController
   end
 
   def update
+    if params[:room_id] && (@item.room == nil)
+      params.delete(:box_id)
+    end
+
+    if params[:box_id] && (@item.box == nil)
+      params.delete(:room_id)
+    end
+
     respond_to do |format|
       if @item.update(item_params)
         format.html { redirect_to @item, notice: "Item was successfully updated.", status: :see_other }
@@ -100,6 +108,6 @@ class ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:name, :notes, :box_id)
+    params.require(:item).permit(:name, :notes, :box_id, :room_id)
   end
 end

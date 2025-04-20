@@ -47,9 +47,9 @@ class Item < ApplicationRecord
   private
 
   def box_or_room_present
-    if box.blank? && room.blank?
+    if box_id.blank? && room_id.blank?
       errors.add(:base, "Item must be in either a box or a room")
-    elsif box.present? && room.present?
+    elsif box_id.present? && room_id.present?
       errors.add(:base, "Item can be in a box only or a room only, not both")
     end
   end

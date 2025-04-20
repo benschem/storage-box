@@ -68,10 +68,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_15_074709) do
   create_table "items", force: :cascade do |t|
     t.string "name"
     t.string "notes"
-    t.bigint "box_id", null: false
+    t.bigint "box_id"
+    t.bigint "room_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_items_on_box_id"
+    t.index ["room_id"], name: "index_items_on_room_id"
   end
 
   create_table "items_tags", id: false, force: :cascade do |t|
@@ -114,6 +116,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_15_074709) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "boxes", "rooms"
   add_foreign_key "items", "boxes"
+  add_foreign_key "items", "rooms"
   add_foreign_key "rooms", "houses"
   add_foreign_key "tags", "users"
 end
