@@ -53,7 +53,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_15_074709) do
   end
 
   create_table "houses", force: :cascade do |t|
-    t.string "address"
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -67,7 +67,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_15_074709) do
 
   create_table "items", force: :cascade do |t|
     t.string "name"
-    t.string "description"
+    t.string "notes"
     t.bigint "box_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

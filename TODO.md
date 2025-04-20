@@ -1,5 +1,6 @@
 TODO:
-[ ]
+[ ] Uncomment user password validation
+[ ] Check if user passwords are pwned https://github.com/michaelbanfield/devise-pwned_password both on signup and login
 
 BUGS:
 [ ]

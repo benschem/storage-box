@@ -4,5 +4,5 @@ class House < ApplicationRecord
   has_many :boxes, through: :rooms, dependent: :destroy
   has_many :items, through: :boxes, dependent: :destroy
 
-  validates :address, presence: true
+  validates :name, presence: true
 end

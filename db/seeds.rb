@@ -27,9 +27,14 @@ user = User.create!(
 puts "User created: #{user.email}"
 
 puts "Creating a House..."
-house = House.create(address: "4/311 Dandenong Road Prahran")
+house = House.create(name: "Home")
 user.houses << house
-puts "House created: #{house.address}"
+puts "House created: #{house.name}"
+
+puts "Creating a second House..."
+house2 = House.create(name: "Mum and dad's place")
+user.houses << house2
+puts "House created: #{house2.name}"
 
 puts "Creating Room..."
 room = Room.create(name: 'Garage', house: house)
@@ -53,11 +58,11 @@ end
 
 puts "Creating Items..."
 100.times do
-  has_description = [true, true, false].sample
-  if has_description
+  has_notes = [true, true, false].sample
+  if has_notes
     item = Item.create(
       name: Faker::Appliance.equipment,
-      description: Faker::TvShows::HowIMetYourMother.quote,
+      notes: Faker::TvShows::HowIMetYourMother.quote,
       box: house.boxes.sample
     )
   else
