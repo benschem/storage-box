@@ -27,7 +27,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.2"
 
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
@@ -72,10 +72,9 @@ group :test do
   gem "selenium-webdriver"
 end
 
-# Resize images before saving
-gem "image_processing", "~> 1.14"
-
 # Silence warning: ostruct.rb was loaded from the standard library, but will no longer be part of the default gems starting from Ruby 3.5.0.
 # This app never uses an open struct anyway, at least not in my code. I just want to get rid of that warning.
 gem "ostruct", "~> 0.6.1"
+
+# Easy Postgresql full text search with ActiveRecord [https://github.com/Casecommons/pg_search]
 gem "pg_search", "~> 2.3"
