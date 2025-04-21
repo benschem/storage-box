@@ -78,3 +78,6 @@ gem "ostruct", "~> 0.6.1"
 
 # Easy Postgresql full text search with ActiveRecord [https://github.com/Casecommons/pg_search]
 gem "pg_search", "~> 2.3"
+
+# Solid Queue is a DB-based queuing backend for Active Job [https://github.com/rails/solid_queue]
+gem "solid_queue", "~> 1.1"
