@@ -7,18 +7,43 @@ export default class extends Controller {
     const noBoxSelected = event.target.value == "";
 
     if (noBoxSelected) {
-      this.roomSelectWrapperTarget.classList.remove("hidden");
-      this.boxSelectWrapperTarget.classList.add("hidden");
+      this.boxSelectTarget.disabled = true;
+      this.boxSelectTarget.classList.remove("bg-slate-200", "dark:bg-slate-800");
+      this.boxSelectTarget.classList.add("bg-slate-50", "dark:bg-slate-900");
+      this.boxSelectWrapperTarget.classList.remove("text-slate-950", "dark:text-slate-100");
+      this.boxSelectWrapperTarget.classList.add("text-slate-200", "dark:text-slate-800");
+
+      this.roomSelectTarget.disabled = false;
       this.roomSelectTarget.selectedIndex = 0;
+      this.roomSelectTarget.classList.remove("bg-slate-50", "dark:bg-slate-900");
+      this.roomSelectTarget.classList.add("bg-slate-200", "dark:bg-slate-800");
+      this.roomSelectWrapperTarget.classList.remove("text-slate-200", "dark:text-slate-800");
+      this.roomSelectWrapperTarget.classList.add("text-slate-950", "dark:text-slate-100");
     }
   }
+
   toggleRoom(event) {
     const noRoomSelected = event.target.value == "";
 
     if (noRoomSelected) {
-      this.roomSelectWrapperTarget.classList.add("hidden");
-      this.boxSelectWrapperTarget.classList.remove("hidden");
+      this.roomSelectTarget.disabled = true;
+      this.roomSelectTarget.classList.remove("bg-slate-200", "dark:bg-slate-800");
+      this.roomSelectTarget.classList.add("bg-slate-50", "dark:bg-slate-900");
+      this.roomSelectWrapperTarget.classList.remove("text-slate-950", "dark:text-slate-100");
+      this.roomSelectWrapperTarget.classList.add("text-slate-200", "dark:text-slate-800");
+
+      this.boxSelectTarget.disabled = false;
       this.boxSelectTarget.selectedIndex = 0;
+      this.boxSelectTarget.classList.remove("bg-slate-50", "dark:bg-slate-900");
+      this.boxSelectTarget.classList.add("bg-slate-200", "dark:bg-slate-800");
+      this.boxSelectWrapperTarget.classList.remove("text-slate-200", "dark:text-slate-800");
+      this.boxSelectWrapperTarget.classList.add("text-slate-950", "dark:text-slate-100");
     }
+  }
+
+  changeRoomToBoxRoom() {
+    // const room = this.boxSelectTarget.value; // Box.find(this.boxSelectTarget.value) would need fetch
+    // console.log(`Room: ${room}`);
+    // this.roomSelectTarget.value = room
   }
 }
