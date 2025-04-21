@@ -2,7 +2,7 @@
 
 <%= turbo_frame_tag :items do %>
   <% if @items.present? %>
-    <p class="pl-6 text-md md:text-lg text-slate-950 dark:text-slate-50">
+    <p class="pl-6 text-md md:text-lg text-slate-950 dark:text-slate-200">
       <%= @items.count %> items:
     </p>
 
@@ -12,7 +12,7 @@
       <% end %>
     </ul>
   <% else %>
-    <p class="pl-6 text-md md:text-lg text-slate-950 dark:text-slate-50"">
+    <p class="pl-6 text-md md:text-lg text-slate-950 dark:text-slate-200"">
       No items found.
     </p>
   <% end %>

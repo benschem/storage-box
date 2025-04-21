@@ -1,12 +1,11 @@
 class ItemsController < ApplicationController
-  include ActionView::RecordIdentifier  # Needed to use dom_id
   before_action :set_item, only: %i[show edit update destroy]
 
   def index
     if params[:search].present?
       @items = Item.search(params[:search])
     else
-      @items = Item.all
+      @items = Item.all.order(:name)
     end
   end
 
@@ -108,6 +107,6 @@ class ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:name, :notes, :box_id, :room_id)
+    params.require(:item).permit(:name, :notes, :box_id, :room_id, :image)
   end
 end

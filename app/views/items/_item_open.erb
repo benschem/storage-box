@@ -1,31 +1,32 @@
 <%= turbo_frame_tag dom_id(item) do %>
   <%= link_to item_path(item, closed: true, format: :turbo_stream), data: { turbo_frame: dom_id(item), turbo_prefetch: false } do%>
-    <div class="relative flex flex-col gap-4 content-center bg-slate-50 dark:bg-slate-900 p-4 rounded-xl shadow-md dark:shadow-md/90">
+    <div class="relative flex flex-col gap-4 bg-slate-50 dark:bg-slate-900 p-4 rounded-xl shadow-md dark:shadow-md/90">
       <div class="flex flex-col gap-2">
-        <h3 class="mb-2 font-semibold text-xl md:text-2xl col-span-2 text-slate-900 dark:text-slate-100">
+        <h3 class="font-semibold text-lg col-span-2 text-slate-900 dark:text-slate-200">
           <%= @item.name.capitalize %>
         </h3>
 
-        <div class="text-lg flex gap-4 text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
-          <div class="flex gap-2 content-center flex-wrap">
-            <%= render "shared/icons/room" %>
+        <div class="text-md flex gap-4 text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
+          <div class="flex gap-1 items-center flex-wrap">
+            <%= render "shared/icons/house", klasses: "w-4 h-4" %>
+            <%= @item.box&.room&.house&.name || @item&.room&.house&.name %>
+          </div>
+
+          <div class="flex gap-1 items-center flex-wrap">
+            <%= render "shared/icons/room", klasses: "w-4 h-4" %>
             <%= @item.box&.room&.name&.capitalize || @item&.room&.name&.capitalize %>
           </div>
+
           <% if @item.box.present? %>
-            <div class="flex gap-2 content-center flex-wrap">
-              <%= render "shared/icons/box" %>
+            <div class="flex gap-1 items-center flex-wrap">
+              <%= render "shared/icons/box", klasses: "w-4 h-4" %>
               Box <%= @item.box.number %>
             </div>
           <% end %>
         </div>
 
-        <div class="flex gap-2 content-center flex-wrap text-lg text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
-          <%= render "shared/icons/house" %>
-          <%= @item.box&.room&.house&.name || @item&.room&.house&.name %>
-        </div>
-
         <% if @item.notes %>
-          <p class=" text-slate-950 dark:text-slate-50">
+          <p class=" text-slate-950 dark:text-slate-200">
             <%= @item.notes %>
           </p>
         <% end %>
@@ -39,14 +40,13 @@
         </div>
       <% end %>
 
-      <img src="https://loremflickr.com/500/500/<%= @item.name.gsub(" ", "-") %>" alt="Picture of <%= @item.name %>" width="500" height="500" class="mt-2 block self-center rounded-xl">
-      <%# if @post.image.attached? %>
-          <%#= image_tag @post.image.variant(resize_to_limit: [500, 500]), alt: "Picture of #{item.name}", class: "rounded-xl max-w-24" %>
-      <%# end %>
+      <% if @item.image.attached? %>
+          <%= image_tag @item.image, alt: "Picture of #{item.name}", class: "max-w-[100%] max-h-[300px] object-contain rounded-xl mt-2 text-slate-400 dark:text-slate-400" %>
+      <% end %>
 
-      <div class="flex justify-between text-sm">
-        <%= link_to "Delete", item_path(@item), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded" %>
-        <%= link_to "Edit", edit_item_path(@item, format: :turbo_stream), data: { turbo_frame: dom_id(item), turbo_prefetch: false }, class: "bg-slate-300 hover:bg-slate-400 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 py-2 px-4 rounded" %>
+      <div class="flex justify-end text-sm">
+        <%= link_to "Delete", item_path(@item), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "block py-2 px-4 text-white rounded bg-red-300 hover:bg-red-400" %>
+        <%= link_to "Edit", edit_item_path(@item, format: :turbo_stream), data: { turbo_frame: dom_id(item), turbo_prefetch: false }, class: "block py-2 px-4 bg-slate-300 hover:bg-slate-400 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 rounded" %>
       </div>
     </div>
   <% end %>
