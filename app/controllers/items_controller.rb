@@ -5,7 +5,7 @@ class ItemsController < ApplicationController
     if params[:search].present?
       @items = Item.search(params[:search])
     else
-      @items = Item.all.order(:name)
+      @items = Item.all.order(created_at: :desc)
     end
   end
 
@@ -33,7 +33,7 @@ class ItemsController < ApplicationController
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(
           dom_id(@item),
-          partial: "items/form",
+          partial: "items/edit",
           locals: { item: @item }
         )
       end
@@ -42,17 +42,18 @@ class ItemsController < ApplicationController
 
   def create
     @item = Item.new(item_params)
+    @item.user = current_user
 
     if @item.save
       respond_to do |format|
-        format.html { redirect_to @item, notice: "Item was successfully created." }
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.append(
-            "items_list",
-            partial: "items/item",
-            locals: { item: @item }
-          )
-        end
+        format.html { redirect_to items_path, notice: "Item was successfully created." }
+        # format.turbo_stream do
+        #   render turbo_stream: turbo_stream.append(
+        #     "items_list",
+        #     partial: "items/item",
+        #     locals: { item: @item }
+        #   )
+        # end
       end
     else
       render :new, status: :unprocessable_entity
@@ -83,7 +84,7 @@ class ItemsController < ApplicationController
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(
             dom_id(@item),
-            partial: "items/form",
+            partial: "items/edit",
             locals: { item: @item }
           )
         end
@@ -107,6 +108,6 @@ class ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:name, :notes, :box_id, :room_id, :image)
+    params.require(:item).permit(:name, :notes, :house_id, :box_id, :room_id, :image)
   end
 end

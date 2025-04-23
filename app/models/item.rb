@@ -1,9 +1,11 @@
 class Item < ApplicationRecord
   include PgSearch::Model
 
-  belongs_to :box, optional: true
+  belongs_to :user
+  belongs_to :house
   belongs_to :room, optional: true
-  has_and_belongs_to_many :tags
+  belongs_to :box, optional: true
+  has_and_belongs_to_many :tags, optional: true
 
   has_one_attached :image
 

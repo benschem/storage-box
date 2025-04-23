@@ -1,8 +1,14 @@
+<div class="flex justify-between content-center pt-8 px-6 pb-4">
+  <h1 class="text-4xl font-bold">Items</h1>
+  <%= link_to "Add item", new_item_path, class: "block py-2 px-6 bg-teal-500 hover:bg-teal-600 text-slate-100 rounded shadow-md" %>
+</div>
+
+
 <%= render "search" %>
 
 <%= turbo_frame_tag :items do %>
   <% if @items.present? %>
-    <p class="pl-6 text-md md:text-lg text-slate-950 dark:text-slate-200">
+    <p class="px-6 text-md md:text-lg text-slate-950 dark:text-slate-200">
       <%= @items.count %> items:
     </p>
 

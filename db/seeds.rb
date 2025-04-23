@@ -63,12 +63,16 @@ puts "Creating Items..."
     item = Item.create(
       name: Faker::Appliance.equipment,
       notes: Faker::TvShows::HowIMetYourMother.quote,
-      box: house.boxes.sample
+      box: house.boxes.sample,
+      house: house,
+      user: user
     )
   else
     item = Item.create(
       name: Faker::Appliance.equipment,
-      box: house.boxes.sample
+      box: house.boxes.sample,
+      house: house,
+      user: user
     )
   end
   puts "Item created: #{item.name}"

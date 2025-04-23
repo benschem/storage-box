@@ -5,9 +5,9 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_and_belongs_to_many :houses, optional: true
+  has_many :items
   has_many :rooms, through: :houses
   has_many :boxes, through: :rooms
-  has_many :items, through: :houses
   has_many :tags
 
   validates :name, presence: true

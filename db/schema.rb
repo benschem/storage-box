@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_21_131640) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_21_151009) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -70,10 +70,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_21_131640) do
     t.string "notes"
     t.bigint "box_id"
     t.bigint "room_id"
+    t.bigint "house_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["box_id"], name: "index_items_on_box_id"
+    t.index ["house_id"], name: "index_items_on_house_id"
     t.index ["room_id"], name: "index_items_on_room_id"
+    t.index ["user_id"], name: "index_items_on_user_id"
   end
 
   create_table "items_tags", id: false, force: :cascade do |t|
@@ -81,6 +85,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_21_131640) do
     t.bigint "tag_id", null: false
     t.index ["item_id", "tag_id"], name: "index_items_tags_on_item_id_and_tag_id", unique: true
     t.index ["tag_id", "item_id"], name: "index_items_tags_on_tag_id_and_item_id", unique: true
+  end
+
+  create_table "items_users", id: false, force: :cascade do |t|
+    t.bigint "item_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["item_id", "user_id"], name: "index_items_users_on_item_id_and_user_id", unique: true
+    t.index ["user_id", "item_id"], name: "index_items_users_on_user_id_and_item_id", unique: true
   end
 
   create_table "rooms", force: :cascade do |t|
@@ -237,7 +248,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_21_131640) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "boxes", "rooms"
   add_foreign_key "items", "boxes"
+  add_foreign_key "items", "houses"
   add_foreign_key "items", "rooms"
+  add_foreign_key "items", "users"
   add_foreign_key "rooms", "houses"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

@@ -44,9 +44,9 @@
           <%= image_tag @item.image, alt: "Picture of #{item.name}", class: "max-w-[100%] max-h-[300px] object-contain rounded-xl mt-2 text-slate-400 dark:text-slate-400" %>
       <% end %>
 
-      <div class="flex justify-end text-sm">
-        <%= link_to "Delete", item_path(@item), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "block py-2 px-4 text-white rounded bg-red-300 hover:bg-red-400" %>
-        <%= link_to "Edit", edit_item_path(@item, format: :turbo_stream), data: { turbo_frame: dom_id(item), turbo_prefetch: false }, class: "block py-2 px-4 bg-slate-300 hover:bg-slate-400 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 rounded" %>
+      <div class="flex justify-end text-sm gap-2 pt-4">
+        <%= link_to "Delete", item_path(@item), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "block py-2 px-4 text-slate-50 rounded bg-red-400 hover:bg-red-300" %>
+        <%= link_to "Edit", edit_item_path(@item, format: :turbo_stream), data: { turbo_frame: dom_id(item), turbo_prefetch: false }, class: "block py-2 px-4 bg-slate-300 hover:bg-slate-400 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-950 dark:text-slate-100 rounded" %>
       </div>
     </div>
   <% end %>

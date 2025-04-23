@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resources :houses, only: [:index, :create, :update, :destroy]
   resources :rooms, only: [:index, :create, :update, :destroy]
   resources :boxes, only: [:index, :create, :update, :destroy]
-  resources :items, only: [:index, :show, :create, :edit, :update, :destroy] do
+  resources :items do
     resources :tags, only: [:destroy]
   end
   resources :tags, only: [:index, :create, :update]
