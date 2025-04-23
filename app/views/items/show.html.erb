@@ -1,28 +1,30 @@
-<div class="m-2 relative flex flex-col gap-4 content-center bg-slate-50 dark:bg-slate-900 p-4 shadow-md dark:shadow-md/90">
+<div class="m-2 relative flex flex-col gap-4 items-centerr bg-slate-50 dark:bg-slate-900 p-4 shadow-md dark:shadow-md/90">
   <div class="flex flex-col gap-2">
     <h3 class="mb-2 font-semibold text-xl md:text-2xl col-span-2 text-slate-900 dark:text-slate-100">
       <%= @item.name.capitalize %>
     </h3>
 
-    <div class="text-lg flex gap-4 text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
-      <div class="flex gap-2 content-center flex-wrap">
+    <div class="text-lg flex gap-4 text-slate-200 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
+      <div class="flex gap-2 items-centerr flex-wrap">
         <%= render "shared/icons/room" %>
-        <%= @item.box.room.name.capitalize %>
+        <%= @item.box&.room&.name&.capitalize || @item.room.name.capitalize %>
       </div>
-      <div class="flex gap-2 content-center flex-wrap">
-        <%= render "shared/icons/box" %>
-        Box <%= @item.box.number %>
-      </div>
+      <% if @item.box.present? %>
+        <div class="flex gap-2 items-centerr flex-wrap">
+          <%= render "shared/icons/box" %>
+          Box <%= @item.box.number %>
+        </div>
+      <% end %>
     </div>
 
-    <div class="flex gap-2 content-center flex-wrap text-lg text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
+    <div class="flex gap-2 items-centerr flex-wrap text-lg text-slate-200 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
       <%= render "shared/icons/house" %>
-      <%= @item.box.room.house.address %>
+      <%= @item.box&.room&.house&.name || @item.room.house.name %>
     </div>
 
-    <% if @item.description %>
-      <p class=" text-slate-950 dark:text-slate-50">
-        <%= @item.description %>
+    <% if @item.notes %>
+      <p class=" text-slate-950 dark:text-slate-200">
+        <%= @item.notes %>
       </p>
     <% end %>
   </div>
@@ -41,11 +43,11 @@
   <%# end %>
 
   <div class="flex justify-between text-sm">
-    <%= link_to item_path(@item), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "inline-flex gap-2 content-center justify-center text-slate-950 dark:text-slate-50 stroke-slate-950 dark:stroke-slate-950" do %>
+    <%= link_to item_path(@item), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, class: "inline-flex gap-2 items-centerr justify-center text-slate-950 dark:text-slate-200 stroke-slate-950 dark:stroke-slate-950" do %>
       <%= render "shared/icons/trash", klasses: "w-5 h-5" %>
       Delete
     <% end %>
-    <%= link_to edit_item_path(@item), class: "inline-flex gap-2 content-center justify-center text-slate-950 dark:text-slate-50 stroke-slate-950 dark:stroke-slate-50" do %>
+    <%= link_to edit_item_path(@item), class: "inline-flex gap-2 items-centerr justify-center text-slate-950 dark:text-slate-200 stroke-slate-950 dark:stroke-slate-50" do %>
       <%= render "shared/icons/pencil", klasses: "w-5 h-5" %>
       Edit
     <% end %>

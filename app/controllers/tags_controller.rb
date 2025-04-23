@@ -1,6 +1,6 @@
 class TagsController < ApplicationController
   before_action :set_tag, only: %i[ update destroy ]
-  before_action :set_tag, only: %i[ destroy ]
+  before_action :set_item, only: %i[ destroy ]
 
   def index
     @tags = current_user.tags
@@ -25,15 +25,19 @@ class TagsController < ApplicationController
   end
 
   def destroy
-    @item = @tag.item
-    @tag.destroy!
+    @item.tags.delete(@tag)
 
     respond_to do |format|
       format.html do
         redirect_to items_url, notice: "Tag successfully removed from #{@item.name}.", status: :see_other
       end
       format.turbo_stream do
-        render "/items/_list", locals: { item: @item }
+        partial = params[:closed] == "true" ? "items/item" : "items/item_open"
+        render turbo_stream: turbo_stream.replace(
+          dom_id(@item),
+          partial: partial,
+          locals: { item: @item }
+        )
       end
     end
   end

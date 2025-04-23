@@ -1,0 +1,28 @@
+<%= form_with url: items_path,
+    method: :get,
+    data: {
+      turbo_frame: 'items',
+      controller: "sort",
+      sort_target: "form",
+      action: "input->sort#submit"
+    },
+    role: "sort",
+    class: "py-6 px-2 flex flex-grow gap-2 w-full",
+    local: true do %>
+
+  <label for="sort" class="sr-only">Sort items</label>
+
+  <div class="text-slate-950 dark:text-slate-100 w-full">
+    <%= select_tag :sort,
+      options_for_select([
+        ["Date created", "created_at"],
+        ["Name", "name"],
+        ["Date modified", "updated_at"]
+      ], params[:sort]),
+      data: { sort_target: "select" },
+      class: "w-full rounded-md p-2 bg-slate-200 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-400"
+    %>
+  </div>
+
+  <button type="submit" class="sr-only" aria-label="Sort">Sort</button>
+<% end %>

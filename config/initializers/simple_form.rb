@@ -173,4 +173,10 @@ SimpleForm.setup do |config|
   # Defines validation classes to the input_field. By default it's nil.
   # config.input_field_valid_class = 'is-valid'
   # config.input_field_error_class = 'is-invalid'
+
+  config.wrappers :inline_label, tag: 'div', class: 'flex items-center gap-4', error_class: 'has-error' do |b|
+    b.use :label, class: ''
+    b.use :input, class: 'flex-1'
+    b.use :error, wrap_with: { tag: 'div', class: 'text-red-500 text-sm ml-2' }
+  end
 end

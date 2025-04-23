@@ -1,12 +1,11 @@
 class ItemsController < ApplicationController
-  include ActionView::RecordIdentifier  # Needed to use dom_id
   before_action :set_item, only: %i[show edit update destroy]
 
   def index
     if params[:search].present?
       @items = Item.search(params[:search])
     else
-      @items = Item.all
+      @items = Item.all.order(created_at: :desc)
     end
   end
 
@@ -34,7 +33,7 @@ class ItemsController < ApplicationController
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(
           dom_id(@item),
-          partial: "items/form",
+          partial: "items/edit",
           locals: { item: @item }
         )
       end
@@ -43,17 +42,18 @@ class ItemsController < ApplicationController
 
   def create
     @item = Item.new(item_params)
+    @item.user = current_user
 
     if @item.save
       respond_to do |format|
-        format.html { redirect_to @item, notice: "Item was successfully created." }
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.append(
-            "items_list",
-            partial: "items/item",
-            locals: { item: @item }
-          )
-        end
+        format.html { redirect_to items_path, notice: "Item was successfully created." }
+        # format.turbo_stream do
+        #   render turbo_stream: turbo_stream.append(
+        #     "items_list",
+        #     partial: "items/item",
+        #     locals: { item: @item }
+        #   )
+        # end
       end
     else
       render :new, status: :unprocessable_entity
@@ -61,6 +61,14 @@ class ItemsController < ApplicationController
   end
 
   def update
+    if params[:room_id] && (@item.room == nil)
+      params.delete(:box_id)
+    end
+
+    if params[:box_id] && (@item.box == nil)
+      params.delete(:room_id)
+    end
+
     respond_to do |format|
       if @item.update(item_params)
         format.html { redirect_to @item, notice: "Item was successfully updated.", status: :see_other }
@@ -76,7 +84,7 @@ class ItemsController < ApplicationController
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(
             dom_id(@item),
-            partial: "items/form",
+            partial: "items/edit",
             locals: { item: @item }
           )
         end
@@ -100,6 +108,6 @@ class ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:name, :description, :box_id)
+    params.require(:item).permit(:name, :notes, :house_id, :box_id, :room_id, :image)
   end
 end

@@ -1,0 +1,104 @@
+<%= turbo_frame_tag dom_id(item) do %>
+  <div class="bg-slate-50 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90 p-4">
+    <%= simple_form_for(item, html: { class: "space-y-4" }) do |f| %>
+      <% if item.errors.any? %>
+        <div class="bg-red-600/90 text-slate-100 p-4 rounded-md">
+          <strong>Item not saved:</strong>
+          <ul class="mt-2 list-disc list-inside">
+            <% item.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= f.input :name,
+        label: "Item Name",
+        label_html: { class: "sr-only" },
+        placeholder: "Item name",
+        error_html: { class: "text-red-400 text-sm mt-1" },
+        input_html: {
+          class: "mt-2 w-full rounded-md bg-slate-200 dark:bg-slate-800 font-semibold text-lg dark:text-slate-100 p-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+        }
+      %>
+
+      <%= f.input :house_id, as: :select,
+        wrapper: :inline_label,
+        collection: current_user.houses.map { |b| [b.name, b.id] },
+        include_blank: "Select a house",
+        label: "House",
+        label_html: { class: "sr-only" },
+        error_html: { class: "text-red-400 text-sm mt-1" },
+        input_html: {
+          class: "w-full rounded-md p-2 text-slate-950 dark:text-slate-100 bg-slate-200 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-400"
+        }
+      %>
+
+      <div data-controller="item-location" class="flex gap-4">
+        <div data-item-location-target="boxSelectWrapper" class="<%= f.object.box_id.blank? ? 'text-slate-200 dark:text-slate-800' : 'text-slate-950 dark:text-slate-100' %> transition-all ease-in-out duration-300">
+          <%= f.input :box_id, as: :select,
+            wrapper: :inline_label,
+            collection: Box.all.map { |b| [b.number, b.id] },
+            include_blank: "No box",
+            label: "Box",
+            label_html: { class: "font-medium whitespace-nowrap max-h-min" },
+            error_html: { class: "text-red-400 text-sm mt-1" },
+            input_html: {
+              disabled: f.object.box_id.blank?,
+              data: { action: "change->item-location#toggleBox", item_location_target: "boxSelect" },
+              class: "w-full rounded-md p-2 #{f.object.box_id.blank? ? 'bg-slate-50 dark:bg-slate-900 border-1 border-slate-300 dark:border-slate-700' : 'bg-slate-200 dark:bg-slate-800' } focus:outline-none focus:ring-2 focus:ring-teal-400"
+            }
+          %>
+        </div>
+
+        <div data-item-location-target="roomSelectWrapper" class="<%= f.object.box_id.present? ? 'text-slate-300 dark:text-slate-700' : 'text-slate-950 dark:text-slate-100' %> transition-all ease-in-out duration-300">
+          <%= f.input :room_id, as: :select,
+            wrapper: :inline_label,
+            collection: Room.all.map { |r| [r.name.capitalize, r.id] },
+            include_blank: "In box",
+            label: "Room",
+            label_html: { class: "font-medium whitespace-nowrap max-h-min" },
+            error_html: { class: "text-red-400 text-sm mt-1" },
+            input_html: {
+              disabled: f.object.box_id.present?,
+              data: { action: "change->item-location#toggleRoom",item_location_target: "roomSelect" },
+              class: "w-full rounded-md p-2 #{f.object.box_id.present? ? 'bg-slate-50 dark:bg-slate-900 border-1 border-slate-300 dark:border-slate-700' : 'bg-slate-200 dark:bg-slate-800' } focus:outline-none focus:ring-2 focus:ring-teal-400"
+            }
+          %>
+        </div>
+      </div>
+
+      <%= f.input :notes,
+        as: :text,
+        label: "Notes",
+        label_html: { class: "sr-only" },
+        placeholder: "Notes",
+        error_html: { class: "text-red-400 text-sm mt-1" },
+        input_html: {
+          rows: 4,
+          class: "mt-2 w-full rounded-md bg-slate-200 dark:bg-slate-800 dark:text-slate-100 p-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+        }
+      %>
+
+      <%= f.input :image,
+        as: :file,
+        label: "Image",
+        label_html: { class: "sr-only" },
+        placeholder_html: { class: "ml-4" },
+        error_html: { class: "text-red-400 text-sm mt-1" },
+        input_html: {
+          direct_upload: true,
+          class: "border-0 w-full bg-slate-200 file:text-slate-100 file:bg-teal-500 hover:file:bg-teal-600 dark:file:bg-teal-600 file:px-4 file:py-2 file:rounded file:cursor-pointer hover:file:cursor-pointer hover:cursor-pointer dark:bg-slate-800 dark:text-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+        }
+      %>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <%= link_to "Cancel", item_path(item, closed: false, format: :turbo_stream),
+              data: { turbo_frame: dom_id(item), turbo_prefetch: false },
+              class: "bg-slate-600 hover:bg-slate-500 text-slate-100 px-4 py-2 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400" %>
+        <%= f.button :submit, "Save", class: "cursor-pointer bg-teal-500 hover:bg-teal-600 text-slate-100 px-4 py-2 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400" %>
+      </div>
+
+    <% end %>
+  </div>
+<% end %>

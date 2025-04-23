@@ -1,15 +1,22 @@
 class Item < ApplicationRecord
   include PgSearch::Model
 
-  belongs_to :box
-  has_and_belongs_to_many :tags
+  belongs_to :user
+  belongs_to :house
+  belongs_to :room, optional: true
+  belongs_to :box, optional: true
+  has_and_belongs_to_many :tags, optional: true
+
+  has_one_attached :image
 
   validates :name, presence: true
+  validates :notes, length: { maximum: 255 }, allow_blank: true
+  validate :box_or_room_present
 
   pg_search_scope :search_by_text,
   against: [
     [:name, 'A'],           # Highest weight
-    [:description, 'C']     # Lower weight
+    [:notes, 'C']     # Lower weight
   ],
   associated_against: {
     tags: [:name]           # Default weight is B for associated
@@ -31,11 +38,21 @@ class Item < ApplicationRecord
       joins("LEFT JOIN items_tags ON items.id = items_tags.item_id")
         .joins("LEFT JOIN tags ON tags.id = items_tags.tag_id")
         .where(
-          "items.name ILIKE :q OR items.description ILIKE :q OR tags.name ILIKE :q",
+          "items.name ILIKE :q OR items.notes ILIKE :q OR tags.name ILIKE :q",
           q: "%#{query}%"
         ).distinct
     else
       Item.includes(:tags).search_by_text(query)
+    end
+  end
+
+  private
+
+  def box_or_room_present
+    if box_id.blank? && room_id.blank?
+      errors.add(:base, "Item must be in either a box or a room")
+    elsif box_id.present? && room_id.present?
+      errors.add(:base, "Item can be in a box only or a room only, not both")
     end
   end
 end
