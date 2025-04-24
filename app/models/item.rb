@@ -34,7 +34,7 @@ class Item < ApplicationRecord
   ranked_by: ":tsearch + (0.5 * :trigram)"
 
   def self.search(query)
-    if query.length <= 1
+    if query.length <= 2
       joins("LEFT JOIN items_tags ON items.id = items_tags.item_id")
         .joins("LEFT JOIN tags ON tags.id = items_tags.tag_id")
         .where(

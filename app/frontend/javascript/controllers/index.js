@@ -13,6 +13,9 @@ application.register("flash", FlashController);
 import SearchController from "./search_controller";
 application.register("search", SearchController);
 
+import SortController from "./sort_controller";
+application.register("search", SortController);
+
 import SidebarController from "./sidebar_controller";
 application.register("sidebar", SidebarController);
 

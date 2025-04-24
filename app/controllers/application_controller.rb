@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include ActionView::RecordIdentifier  # Needed to use dom_id
+  include Pagy::Backend
 
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -10,23 +11,5 @@ class ApplicationController < ActionController::Base
 
     # For additional in app/views/devise/registrations/edit.html.erb
     devise_parameter_sanitizer.permit(:account_update, keys: [:name, :house_id])
-  end
-
-  helper_method :current_house
-
-  private
-
-  def current_house
-    @current_house ||= House.find_by(id: session[:current_house_id])
-  end
-
-  def set_current_house
-    if params[:house_id]
-      session[:current_house_id] = params[:house_id]
-    else
-      session[:current_house_id] ||= (
-        @house&.id || current_user.houses.first&.id
-      )
-    end
   end
 end

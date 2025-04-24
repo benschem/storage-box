@@ -3,9 +3,13 @@ class ItemsController < ApplicationController
 
   def index
     if params[:search].present?
-      @items = Item.search(params[:search])
+      items = Item.search(params[:search]).order(params[:sort])
+      @number_of_items = items.count
+      @pagy, @items = pagy(items)
     else
-      @items = Item.all.order(created_at: :desc)
+      items = Item.all.order(params[:sort])
+      @number_of_items = items.count
+      @pagy, @items = pagy(items)
     end
   end
 
