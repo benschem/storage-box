@@ -1,18 +1,19 @@
-<% if box.blank? %>
-  <div>
-    This box doesn't exist!
-  </div>
-<% else %>
+
   <%= link_to box_path(box), class: "border-1 border-slate-200 bg-slate-950 rounded-xl shadow-md dark:shadow-md/90 p-4 max-w-2xl flex gap-2 hover:shadow-lg dark:shadow-lg/90 hover:-translate-y-1 transition ease-linear duration-150 active:translate-0 active:shadow-sm dark:active:shadow-sm/90" do %>
     <div class="flex flex-col gap-4">
       <div class="flex items-center gap-2">
         <%= render "shared/icons/box", klasses: "mt-1 max-h-min dark:stroke-slate-50" %>
         <h3 class="text-2xl col-span-2 text-slate-900 dark:text-slate-100">
-          Box <%= box.number(current_house) %>
+          Box <%= box.number %>
         </h3>
       </div>
 
       <div class="text-lg flex flex-col gap-2 text-slate-700 stroke-slate-700 dark:text-slate-400 dark:stroke-slate-400">
+        <div class="flex gap-2 items-center flex-wrap">
+          <%= render "shared/icons/house" %>
+          <%= box.room.house.name.capitalize %>
+        </div>
+
         <div class="flex gap-2 items-center flex-wrap">
           <%= render "shared/icons/room" %>
           <%= box.room.name.capitalize %>
@@ -24,10 +25,5 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-wrap">
-      <%# box.tags.each do |tag| %>
-        <%= render "shared/tag", tag: box.tags.first %>
-      <%# end %>
-    </div>
-  <% end %>
+
 <% end %>

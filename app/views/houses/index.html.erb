@@ -1,4 +1,12 @@
-<ul>
+<div class="flex justify-between content-center pt-8 px-6 pb-4">
+  <h1 class="text-4xl font-bold">
+    Houses
+  </h1>
+
+  <%= link_to "Add house +", new_house_path, class: "block py-2 px-6 bg-teal-500 hover:bg-teal-600 text-slate-100 dark:text-slate-900 rounded shadow-sm dark:shadow-sm/90" %>
+</div>
+
+<ul class="flex flex-col gap-4 mx-2">
   <% unless @houses.blank? %>
     <% @houses.each do |house| %>
       <li><%= render house %></li>

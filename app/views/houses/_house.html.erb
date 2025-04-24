@@ -1,21 +1,38 @@
-<% if house.blank? %>
-  <div>
-    This house doesn't exist!
-  </div>
-<% else %>
-  <div>
-    <%= house.name %>
+<div class="p-4 bg-slate-100 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90"">
+  <div class="flex justify-between">
+    <h2 class="mb-4 text-xl text-slate-950 dark:text-slate-50">
+      <%= house.name %>
+    </h2>
 
+    <%= link_to edit_house_path(house) do %>
+      <%= render "shared/icons/pencil", klasses: "stroke-slate-900 dark:stroke-slate-100" %>
+    <% end %>
+  </div>
+
+  <div class="mb-2 flex flex-col gap-1">
     <%= render "shared/badge", icon: "room" do %>
-      <%= house.rooms.count %>
+      <%= house.rooms.count %> rooms
     <% end %>
 
     <%= render "shared/badge", icon: "box" do %>
-      #<%= house.boxes.count %>
+      <%= house.boxes.count %> boxes
     <% end %>
 
     <%= render "shared/badge", icon: "items" do %>
-      <%= house.items.count %>
+      <%= house.items.count %> items
     <% end %>
   </div>
-<% end %>
+
+  <p class="text-slate-950 dark:text-slate-50">
+    Users:
+  </p>
+  <ul class="ms-4 mb-4 flex flex-col gap-2">
+    <% house.users.each do |user| %>
+      <li class="text-slate-950 dark:text-slate-50">
+        <%= user.name %>
+      </li>
+    <% end %>
+  </ul>
+
+  <%= link_to "Invite user", "#", class: "justify-self-center max-w-max block py-2 px-6 bg-teal-500 hover:bg-teal-600 text-slate-100 dark:text-slate-900 rounded shadow-sm dark:shadow-sm/90" %>
+</div>

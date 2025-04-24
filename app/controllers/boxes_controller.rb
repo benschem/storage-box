@@ -1,6 +1,10 @@
 class BoxesController < ApplicationController
   before_action :set_box, only: %i[ show update destroy ]
 
+  def index
+    @boxes = policy_scope(Box)
+  end
+
   def show
   end
 

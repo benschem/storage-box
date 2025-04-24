@@ -3,8 +3,6 @@ class RoomsController < ApplicationController
 
   def index
     @rooms = current_user.rooms
-
-    render partial: "rooms/list", locals: { rooms: @rooms }
   end
 
   def new

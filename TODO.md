@@ -1,14 +1,20 @@
 TODO:
-[ ] Uncomment user password validation
-[ ] Check if user passwords are pwned [https://github.com/michaelbanfield/devise-pwned_password] both on signup and login
+[ ] invite User to House feature
+[ ] New House
+[ ] New Box
+[ ] New Room
+
+NICE TODO:
 [ ] Install libvips on server [https://stackoverflow.com/questions/70849182/could-not-open-library-vips-42-could-not-open-library-libvips-42-dylib]
-[X] Pagination
 [ ] Caching [https://chatgpt.com/c/6809ddd4-bac4-8004-8505-c876cfeb165d]
 [ ] Log user ids [https://chatgpt.com/c/6809ddd4-bac4-8004-8505-c876cfeb165d]
-[ ] Add new box when adding item
+[ ] Option to add new Box when adding Item
+[ ] Uncomment code in User model to enforce password strength
+[ ] Check if user passwords are pwned [https://github.com/michaelbanfield/devise-pwned_password] both on signup and login
 
 BUGS:
 [ ] Sort feature doesn't work
+[ ] Deleting item leaves space in index
 
 WISHLIST:
 

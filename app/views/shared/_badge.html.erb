@@ -1,6 +1,6 @@
 <% icon ||= nil %>
 
-<div class="max-w-fit p-1 px-2 bg-teal-200 dark:bg-teal-600 hover:bg-teal-300 hover:dark:bg-teal-500 rounded-xl inline-flex gap-2 items-center">
+<div class="max-w-fit p-1 px-2 inline-flex gap-2 items-center text-slate-600 dark:text-slate-400">
   <% if icon.present? %>
     <%= render "shared/icons/#{icon}", klasses: "w-5 h-5 min-w-5 min-h-5" %>
   <% end %>

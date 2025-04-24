@@ -21,3 +21,6 @@ application.register("sidebar", SidebarController);
 
 import ItemLocationController from "./item_location_controller";
 application.register("item-location", ItemLocationController);
+
+import TurboNavigatorController from "./turbo_navigator_controller";
+application.register("turbo-navigator", TurboNavigatorController);

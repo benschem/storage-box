@@ -2,7 +2,7 @@ class HousesController < ApplicationController
   before_action :set_house, only: %i[ update destroy ]
 
   def index
-    @houses = current_user.houses
+    @houses = policy_scope(House)
   end
 
   def create

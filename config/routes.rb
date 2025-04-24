@@ -3,9 +3,9 @@ Rails.application.routes.draw do
   devise_for :users
 
   # Application routes
-  resources :houses, only: [:index, :create, :update, :destroy]
-  resources :rooms, only: [:index, :create, :update, :destroy]
-  resources :boxes, only: [:index, :create, :update, :destroy]
+  resources :houses
+  resources :rooms
+  resources :boxes, only: [:index, :create, :destroy]
   resources :items do
     resources :tags, only: [:destroy]
   end
