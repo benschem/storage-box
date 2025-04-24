@@ -204,6 +204,8 @@ GEM
     public_suffix (6.0.1)
     puma (6.6.0)
       nio4r (~> 2.0)
+    pundit (2.5.0)
+      activesupport (>= 3.0.0)
     raabro (1.4.0)
     racc (1.8.1)
     rack (3.1.13)
@@ -335,6 +337,7 @@ DEPENDENCIES
   pg (~> 1.5)
   pg_search (~> 2.3)
   puma (>= 5.0)
+  pundit (~> 2.5)
   rails (~> 7.1.5, >= 7.1.5.1)
   selenium-webdriver
   simple_form (~> 5.3)

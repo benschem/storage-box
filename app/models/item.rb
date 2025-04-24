@@ -13,6 +13,23 @@ class Item < ApplicationRecord
   validates :notes, length: { maximum: 255 }, allow_blank: true
   validate :box_or_room_present
 
+  scope :search, ->(query) {
+    return none if query.blank?
+
+    query = query.strip[0..100]
+
+    if query.length <= 2
+      joins("LEFT JOIN items_tags ON items.id = items_tags.item_id")
+        .joins("LEFT JOIN tags ON tags.id = items_tags.tag_id")
+        .where(
+          "items.name ILIKE :q OR items.notes ILIKE :q OR tags.name ILIKE :q",
+          q: "%#{query}%"
+        ).distinct
+    else
+      includes(:tags).search_by_text(query)
+    end
+  }
+
   pg_search_scope :search_by_text,
   against: [
     [:name, 'A'],           # Highest weight
@@ -32,19 +49,6 @@ class Item < ApplicationRecord
     trigram: {}
   },
   ranked_by: ":tsearch + (0.5 * :trigram)"
-
-  def self.search(query)
-    if query.length <= 2
-      joins("LEFT JOIN items_tags ON items.id = items_tags.item_id")
-        .joins("LEFT JOIN tags ON tags.id = items_tags.tag_id")
-        .where(
-          "items.name ILIKE :q OR items.notes ILIKE :q OR tags.name ILIKE :q",
-          q: "%#{query}%"
-        ).distinct
-    else
-      Item.includes(:tags).search_by_text(query)
-    end
-  end
 
   private
 

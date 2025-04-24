@@ -2,15 +2,16 @@ class ItemsController < ApplicationController
   before_action :set_item, only: %i[show edit update destroy]
 
   def index
+    items = policy_scope(Item)
+
     if params[:search].present?
-      items = Item.search(params[:search]).order(params[:sort])
-      @number_of_items = items.count
-      @pagy, @items = pagy(items)
-    else
-      items = Item.all.order(params[:sort])
-      @number_of_items = items.count
-      @pagy, @items = pagy(items)
+      items = items.search(params[:search])
     end
+
+    items = items.order(safe_sort_param(params[:sort]) => :desc)
+
+    @number_of_items = items.count
+    @pagy, @items = pagy(items)
   end
 
   def show
@@ -29,6 +30,8 @@ class ItemsController < ApplicationController
 
   def new
     @item = Item.new
+    @item.user = current_user
+    authorize @item
   end
 
   def edit
@@ -47,6 +50,7 @@ class ItemsController < ApplicationController
   def create
     @item = Item.new(item_params)
     @item.user = current_user
+    authorize @item
 
     if @item.save
       respond_to do |format|
@@ -109,9 +113,15 @@ class ItemsController < ApplicationController
 
   def set_item
     @item = Item.find(params[:id])
+    authorize @item
   end
 
   def item_params
     params.require(:item).permit(:name, :notes, :house_id, :box_id, :room_id, :image)
+  end
+
+  def safe_sort_param(param)
+    allowed_sorts = %w[name created_at updated_at]
+    allowed_sorts.include?(param) ? param.to_sym : "created_at".to_sym
   end
 end

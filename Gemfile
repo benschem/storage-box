@@ -84,3 +84,6 @@ gem "solid_queue", "~> 1.1"
 
 # Pagination [https://github.com/ddnexus/pagy]
 gem "pagy", "~> 9.3"
+
+# Authorization [https://github.com/varvet/pundit]
+gem "pundit", "~> 2.5"
