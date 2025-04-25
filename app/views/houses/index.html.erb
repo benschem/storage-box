@@ -9,7 +9,7 @@
 <ul class="flex flex-col gap-4 mx-2">
   <% unless @houses.blank? %>
     <% @houses.each do |house| %>
-      <li><%= render house %></li>
+      <li><%= render house, new_room: Room.new %></li>
     <% end %>
   <% else %>
     <li>You haven't added any houses yet!</li>

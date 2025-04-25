@@ -1,8 +1,11 @@
 TODO:
 [ ] invite User to House feature
-[ ] New House
-[ ] New Box
-[ ] New Room
+[ ] Filter by house on item index
+[ ] Filter by box on item index
+[ ] Filter by room use on item index
+[ ] New House button inside House index
+[ ] House index shows house.rooms.each and has New Room form w input and submit btn
+[ ] New Box option in the New Item screen in the box dropdown
 
 NICE TODO:
 [ ] Install libvips on server [https://stackoverflow.com/questions/70849182/could-not-open-library-vips-42-could-not-open-library-libvips-42-dylib]

@@ -1,38 +1,89 @@
-<div class="p-4 bg-slate-100 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90"">
-  <div class="flex justify-between">
-    <h2 class="mb-4 text-xl text-slate-950 dark:text-slate-50">
-      <%= house.name %>
-    </h2>
+<%= turbo_frame_tag dom_id(house) do %>
+  <div class="p-4 bg-slate-100 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90">
+    <div class="flex justify-between">
+      <h2 class="mb-4 text-xl text-slate-950 dark:text-slate-50">
+        <%= house.name.capitalize %>
+      </h2>
+      <div class="flex gap-2">
+        <%= link_to edit_house_path(house) do %>
+          <%= render "shared/icons/pencil", klasses: "stroke-slate-900 dark:stroke-slate-100" %>
+        <% end %>
+        <%= link_to house_path(house), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
+          <%= render "shared/icons/trash", klasses: "stroke-slate-900 dark:stroke-slate-100" %>
+        <% end %>
+      </div>
+    </div>
 
-    <%= link_to edit_house_path(house) do %>
-      <%= render "shared/icons/pencil", klasses: "stroke-slate-900 dark:stroke-slate-100" %>
-    <% end %>
+    <div class="mb-2 flex flex-col gap-1">
+      <%= render "shared/badge", icon: "room" do %>
+        <%= house.rooms.count %> rooms:
+      <% end %>
+
+      <% house.rooms.each do |room| %>
+        <div class="flex justify-between even:bg-slate-200 even:dark:bg-slate-800">
+          <p><%= room.name.capitalize %></p>
+          <div class="flex gap-2">
+            <%= render "shared/badge", icon: "box" do %>
+              <%= room.boxes.count %> boxes
+            <% end %>
+            <%= render "shared/badge", icon: "items" do %>
+              <%= room.items.count %> items
+            <% end %>
+          </div>
+          <div class="flex gap-2">
+            <%= link_to edit_room_path(room) do %>
+              <%= render "shared/icons/pencil", klasses: "stroke-slate-900 dark:stroke-slate-100" %>
+            <% end %>
+            <%= link_to room_path(room), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
+              <%= render "shared/icons/trash", klasses: "stroke-slate-900 dark:stroke-slate-100" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <% form_room = new_room&.house_id == house.id ? new_room : Room.new(house: house) %>
+
+      <%= simple_form_for(form_room, url: rooms_path, html: { data: { turbo_frame: "house_#{house.id}" } }) do |f| %>
+        <%= f.hidden_field :house_id, value: house.id %>
+
+        <% if form_room.errors.any? %>
+          <div class="mx-2 bg-red-600/90 text-slate-100 p-4 rounded-md">
+            <strong>Room not saved:</strong>
+            <ul class="list-disc list-inside">
+              <% form_room.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="flex gap-2">
+          <%= f.input :name,
+            label: "Room name",
+            label_html: { class: "sr-only" },
+            placeholder: "Room name",
+            error_html: { class: "text-red-400 text-sm mt-1" },
+            input_html: {
+              class: "grow w-full rounded-md bg-slate-200 dark:bg-slate-800 text-lg text-slate-950 dark:text-slate-100 placeholder:text-slate-500 placeholder:dark:text-slate-500 p-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            }
+          %>
+
+          <%= f.button :submit, "Save", class: "cursor-pointer bg-teal-500 hover:bg-teal-600 text-slate-100 px-4 py-2 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400" %>
+        </div>
+      <% end %>
+    </div>
+
+    <p class="text-slate-950 dark:text-slate-50">
+      Users:
+    </p>
+    <ul class="ms-4 mb-4 flex flex-col gap-2">
+      <% house.users.each do |user| %>
+        <li class="text-slate-950 dark:text-slate-50">
+          <%= user.name %>
+        </li>
+      <% end %>
+    </ul>
+
+    <%= link_to "Invite user", "#", class: "justify-self-center max-w-max block py-2 px-6 bg-teal-500 hover:bg-teal-600 text-slate-100 dark:text-slate-900 rounded shadow-sm dark:shadow-sm/90" %>
   </div>
-
-  <div class="mb-2 flex flex-col gap-1">
-    <%= render "shared/badge", icon: "room" do %>
-      <%= house.rooms.count %> rooms
-    <% end %>
-
-    <%= render "shared/badge", icon: "box" do %>
-      <%= house.boxes.count %> boxes
-    <% end %>
-
-    <%= render "shared/badge", icon: "items" do %>
-      <%= house.items.count %> items
-    <% end %>
-  </div>
-
-  <p class="text-slate-950 dark:text-slate-50">
-    Users:
-  </p>
-  <ul class="ms-4 mb-4 flex flex-col gap-2">
-    <% house.users.each do |user| %>
-      <li class="text-slate-950 dark:text-slate-50">
-        <%= user.name %>
-      </li>
-    <% end %>
-  </ul>
-
-  <%= link_to "Invite user", "#", class: "justify-self-center max-w-max block py-2 px-6 bg-teal-500 hover:bg-teal-600 text-slate-100 dark:text-slate-900 rounded shadow-sm dark:shadow-sm/90" %>
-</div>
+<% end %>
