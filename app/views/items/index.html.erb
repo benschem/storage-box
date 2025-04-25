@@ -1,22 +1,20 @@
-<div class="flex justify-between content-center pt-8 px-6 pb-4">
+<div class="flex justify-between content-center pt-8 px-6">
   <h1 class="text-4xl font-bold">Items</h1>
 
   <%= link_to "Add item +", new_item_path, class: "block py-2 px-6 bg-teal-500 hover:bg-teal-600 text-slate-100 dark:text-slate-900 rounded shadow-sm dark:shadow-sm/90" %>
 </div>
 
+<div class="mt-4 py-6 mb-2">
+  <%= render "search" %>
+</div>
 
-<%= render "search" %>
-
+<hr class="h-px mx-6 bg-slate-500 border-0 ">
 
 <%= turbo_frame_tag :items do %>
   <% if @items.present? %>
-    <div class="mb-4 px-6 flex justify-between content-center">
-      <p class="py-2 max-h-min font-medium text-md md:text-lg text-slate-600 dark:text-slate-400">
-        <%= @number_of_items %> results
-      </p>
-
-      <%= render "sort" %>
-    </div>
+    <p class="text-center mt-4 mb-2 max-h-min font-medium text-md md:text-lg text-slate-600 dark:text-slate-400">
+      <%= @number_of_items %> results
+    </p>
 
     <ul class="mb-4 flex flex-col gap-4 p-2">
       <% @items.each do |item| %>
@@ -27,12 +25,9 @@
     <div class="mb-8 flex items-center justify-center">
       <%== pagy_nav(@pagy) %>
     </div>
-
   <% else %>
-
-      <p class="mb-8 pl-6 text-md md:text-lg text-slate-950 dark:text-slate-200"">
-        No items found.
-      </p>
-
+    <p class="mb-8 pl-6 text-md md:text-lg text-slate-950 dark:text-slate-200"">
+      No items found.
+    </p>
   <% end %>
 <% end %>

@@ -4,11 +4,23 @@ class ItemsController < ApplicationController
   def index
     items = policy_scope(Item)
 
+    if params[:filter_by_house].present?
+      items = items.where(house: params[:filter_by_house])
+    end
+    if params[:filter_by_room].present?
+      items = items.where(room: params[:filter_by_room])
+    end
+    if params[:filter_by_box].present?
+      items = items.where(box: params[:filter_by_box])
+    end
+
     if params[:search].present?
       items = items.search(params[:search])
     end
 
-    items = items.order(safe_sort_param(params[:sort]) => :desc)
+    order_by = safe_sort_param(params[:sort_by]) || :created_at
+    direction = safe_direction_param(params[:sort_direction]) || :desc
+    items = items.order(order_by => direction)
 
     @number_of_items = items.count
     @pagy, @items = pagy(items)
@@ -30,7 +42,6 @@ class ItemsController < ApplicationController
 
   def new
     @item = Item.new
-    @item.user = current_user
     authorize @item
   end
 
@@ -55,13 +66,13 @@ class ItemsController < ApplicationController
     if @item.save
       respond_to do |format|
         format.html { redirect_to items_path, notice: "Item was successfully created." }
-        # format.turbo_stream do
-        #   render turbo_stream: turbo_stream.append(
-        #     "items_list",
-        #     partial: "items/item",
-        #     locals: { item: @item }
-        #   )
-        # end
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.append(
+            "items_list",
+            partial: "items/item",
+            locals: { item: @item }
+          )
+        end
       end
     else
       render :new, status: :unprocessable_entity
@@ -122,6 +133,11 @@ class ItemsController < ApplicationController
 
   def safe_sort_param(param)
     allowed_sorts = %w[name created_at updated_at]
-    allowed_sorts.include?(param) ? param.to_sym : "created_at".to_sym
+    allowed_sorts.include?(param) ? param.to_sym : nil
+  end
+
+  def safe_direction_param(param)
+    allowed_directions = %w[asc desc]
+    allowed_directions.include?(param) ? param.to_sym : nil
   end
 end

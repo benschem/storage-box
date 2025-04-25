@@ -10,7 +10,7 @@ class Box < ApplicationRecord
   private
 
   def set_number
-    self.number ||= self.room.house.boxes.maximum(:number).to_i + 1
+    self.number ||= self.room&.house&.boxes.maximum(:number).to_i + 1
   end
 
   def unique_number_within_house

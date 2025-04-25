@@ -4,10 +4,11 @@
       turbo_frame: 'items',
       controller: "search",
       search_target: "form",
-      action: "input->search#submit"
+      search_all_rooms_value: current_user.rooms.to_json(only: [:id, :name, :house_id]),
+      search_all_boxes_value: current_user.boxes.to_json(only: [:id, :number, :house_id, :room_id])
     },
     role: "search",
-    class: "py-6 px-2 flex flex-grow gap-2 w-full" do %>
+    class: "px-2 flex flex-col gap-2 w-full text-slate-900 dark:text-slate-100 placeholder-slate-100 dark:placeholder-slate-100" do %>
 
   <label for="search" class="sr-only">Search for item</label>
 
@@ -20,7 +21,74 @@
         params[:search],
         id: "search",
         placeholder: "Search for item",
-        class: "w-full pl-12 pr-4 py-2 rounded-xl border border-0 bg-slate-50 dark:bg-slate-900 text-lg text-slate-950 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 shadow-md dark:shadow-md/90 focus:outline-none focus:ring-2 focus:ring-teal-500" %>
+        data: { action: "input->search#submit" },
+        class: "w-full pl-12 pr-4 py-2 rounded-xl border bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 text-lg focus:outline-none focus:ring-2 focus:ring-teal-500" %>
+  </div>
+
+  <label for="filter" class="mx-4 mt-2 font-medium whitespace-nowrap max-h-min">
+    Filter by:
+  </label>
+  <div class="mx-4 flex gap-2 items-center">
+    <%= select_tag :filter_by_house,
+      options_for_select(
+        current_user.houses.order(:name).map { |house| [house.name.capitalize, house.id] },
+        params[:filter_by_house]),
+      prompt: "All houses",
+      data: {
+        action: "change->search#updateRoomsAndBoxes change->search#submit",
+        search_target: "house"
+      },
+      class: "grow rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+    %>
+  </div>
+
+  <div class="mx-4 mt-2  flex gap-2 items-center">
+    <%= select_tag :filter_by_room,
+      options_for_select(
+        current_user.rooms.order(:name).map { |room| [room.name.capitalize, room.id] },
+        params[:filter_by_room]),
+      prompt: "All rooms",
+      data: {
+        action: "change->search#updateRoomsAndBoxes change->search#submit",
+        search_target: "room"
+      },
+      class: "flex-grow rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+    %>
+
+    <%= select_tag :filter_by_box,
+      options_for_select(
+        current_user.boxes.order(:number).map { |box| [box.number, box.id] },
+        params[:filter_by_box]),
+      prompt: "All boxes",
+      data: {
+        action: "change->search#updateRoomsAndBoxes change->search#submit",
+        search_target: "box"
+      },
+      class: "rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+    %>
+  </div>
+
+  <div class="mx-4 mt-2 flex gap-2 items-center">
+    <label for="sort" class="font-medium whitespace-nowrap max-h-min">
+      Sort by:
+    </label>
+    <%= select_tag :sort_by,
+      options_for_select([
+        ["Date created", "created_at"],
+        ["Name", "name"],
+        ["Date modified", "updated_at"]
+      ], params[:sort_by]),
+      data: { action: "change->search#submit" },
+      class: "grow rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+    %>
+    <%= select_tag :sort_direction,
+      options_for_select([
+        ["↓", "desc"],
+        ["↑", "asc"]
+      ], params[:sort_direction]),
+      data: { action: "change->search#submit" },
+      class: "rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+    %>
   </div>
 
   <button type="submit" class="sr-only" aria-label="Search"></button>

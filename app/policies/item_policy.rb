@@ -5,7 +5,7 @@ class ItemPolicy < ApplicationPolicy
   end
 
   def create?
-    @record.user == @user
+    @user.houses.include?(@record.house)
     # TODO: && @user.permissions.include?(:create) need to implement something
   end
 

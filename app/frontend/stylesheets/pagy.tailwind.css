@@ -1,22 +1,23 @@
 .pagy {
-  @apply flex space-x-1 font-semibold text-sm text-slate-500;
+  @apply flex space-x-1 font-semibold text-sm text-slate-600;
   a:not(.gap) {
-    @apply block rounded-lg shadow px-3 py-1 bg-slate-100;
+    @apply block rounded-lg shadow px-3 py-1 bg-slate-100 dark:bg-slate-900;
     &:hover {
       @apply bg-slate-300;
     }
     &:not([href]) {
       /* disabled links */
-      @apply text-slate-400 bg-slate-200 cursor-default;
+      @apply text-slate-400 bg-slate-200 dark:bg-slate-700 cursor-default;
     }
     &.current {
-      @apply text-slate-100 bg-slate-400;
+      @apply text-slate-600 dark:text-slate-100 bg-slate-300 dark:bg-slate-800;
     }
   }
   label {
-    @apply inline-block whitespace-nowrap bg-slate-100 rounded-lg px-3 py-0.5;
+    @apply inline-block whitespace-nowrap bg-slate-100 dark:bg-slate-900 rounded-lg px-3 py-0.5;
     input {
-      @apply bg-slate-100 border-none rounded-md;
+      @apply bg-slate-100 dark:bg-slate-900 border-none rounded-md;
     }
   }
 }
+bg-slate-300 dark:bg-slate-800
