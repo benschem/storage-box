@@ -1,0 +1,35 @@
+<%= turbo_frame_tag dom_id(room) do %>
+  <%= simple_form_for(room, html: { data: { turbo_frame: "room_#{room.id}" }, class: "p-2"  }) do |f| %>
+    <%= f.hidden_field :house_id, value: house.id %>
+
+    <% if room.errors.any? %>
+      <div class="mx-2 bg-red-600/90 text-slate-100 p-4 rounded-md">
+        <strong>Room not saved:</strong>
+        <ul class="list-disc list-inside">
+          <% room.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="flex gap-2">
+      <%= f.input :name,
+        label: "Room name",
+        label_html: { class: "sr-only" },
+        placeholder: "Room name",
+        wrapper_html: { class: "grow" },
+        error_html: { class: "text-red-400 text-sm mt-1" },
+        input_html: {
+          class: "grow w-full rounded-md border-1 border-slate-300 dark:border-slate-700  bg-slate-300 dark:bg-slate-800 text-lg text-slate-950 dark:text-slate-100 placeholder:text-slate-500 placeholder:dark:text-slate-500 p-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+        }
+      %>
+
+      <% if room.id == nil %>
+        <%= f.button :submit, "Add room", class: "cursor-pointer bg-teal-500 hover:bg-teal-600 text-slate-100 px-4 py-2 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400" %>
+      <% else %>
+        <%= f.button :submit, "Save", class: "cursor-pointer bg-teal-500 hover:bg-teal-600 text-slate-100 px-4 py-2 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400" %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

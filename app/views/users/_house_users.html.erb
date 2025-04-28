@@ -1,0 +1,28 @@
+<details class="py-2 group">
+  <summary class="cursor-pointer flex justify-between items-center text-xl text-slate-600 dark:text-slate-400">
+    <div class="flex gap-2 items-center">
+      <%= render "shared/icons/users", klasses: "ml-2 w-6 h-6"  %>
+      <%= house.users.count %> user<%= 's' if house.users.count != 1 %>
+    </div>
+    <%= render "shared/icons/chevron_left", klasses: "group-open:-rotate-90 transition-all ease-linear duration-150"  %>
+  </summary>
+
+  <div class="mt-2 flex flex-col gap-2 mb-6 p-2 bg-slate-300 dark:bg-slate-700 rounded-xl">
+    <% house.users.each do |user| %>
+      <div class="flex gap-4 items-center p-2 px-3 shadow-sm dark:shadow-sm/70 border-1 border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 rounded-xl">
+          <div class="rounded-full bg-slate-400 dark:bg-slate-800 p-4"></div>
+          <div>
+            <p class="text-lg text-slate-900 dark:text-slate-100">
+              <%= user.name.capitalize %>
+            </p>
+            <p class="text-slate-600 dark:text-slate-400 text-sm"">
+              <%= user.email %>
+            </p>
+          </div>
+      </div>
+    <% end %>
+
+    <% form_invite = new_invite&.house_id == house.id ? new_invite : Invite.new(house: house) %>
+    <%= render "invites/form", house: house, invite: form_invite %>
+  </div>
+</details>

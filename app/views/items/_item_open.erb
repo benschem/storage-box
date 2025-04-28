@@ -1,6 +1,6 @@
 <%= turbo_frame_tag dom_id(item) do %>
   <div
-    class="relative flex flex-col gap-4 bg-slate-300 dark:bg-slate-800 p-4 rounded-xl shadow-md dark:shadow-md/90 cursor-pointer hover:shadow-lg dark:hover:shadow-lg/90 hover:-translate-y-1 transition ease-linear duration-150 active:translate-0 active:shadow-sm dark:active:shadow-sm/90"
+    class="relative flex flex-col gap-4 bg-slate-50 dark:bg-slate-900 border-1 border-teal-500 p-4 rounded-xl shadow-md dark:shadow-md/90 cursor-pointer hover:shadow-lg dark:hover:shadow-lg/90 hover:-translate-y-1 transition ease-linear duration-150 active:translate-0 active:shadow-sm dark:active:shadow-sm/90 focus:outline-none focus:ring-2 focus:ring-teal-400"
     data-controller="turbo-navigator"
     data-turbo-navigator-url-value="<%= item_path(item, closed: true, format: :turbo_stream) %>"
     data-turbo-navigator-frame-value="<%= dom_id(item) %>"
@@ -14,7 +14,7 @@
         </h3>
 
         <%= link_to edit_item_path(@item, format: :turbo_stream), data: { turbo_frame: dom_id(item), turbo_prefetch: false } do %>
-          <%= render "shared/icons/pencil", klasses: "stroke-slate-900 dark:stroke-slate-100 hover:stroke-teal-500" %>
+          <%= render "shared/icons/pencil", klasses: "stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
         <% end %>
 
       </div>

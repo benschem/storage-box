@@ -11,23 +11,24 @@
 <hr class="h-px mx-6 bg-slate-500 border-0 ">
 
 <%= turbo_frame_tag :items do %>
-  <% if @items.present? %>
-    <p class="text-center mt-4 mb-2 max-h-min font-medium text-md md:text-lg text-slate-600 dark:text-slate-400">
-      <%= @number_of_items %> results
-    </p>
+  <p class="text-center mt-4 mb-2 max-h-min font-medium text-md md:text-lg text-slate-600 dark:text-slate-400">
+    <%= @number_of_items %> results
+  </p>
 
-    <ul class="mb-4 flex flex-col gap-4 p-2">
+  <ul class="mb-4 p-2">
+    <%= turbo_frame_tag :items_list, class: "flex flex-col gap-4" do %>
       <% @items.each do |item| %>
         <li><%= render partial: "item", locals: { item: item } %></li>
       <% end %>
-    </ul>
+    <% end %>
+    <% if @items.blank? %>
+      <li class="mb-8 pl-6 text-md md:text-lg text-slate-950 dark:text-slate-200">
+          No items found.
+      </li>
+    <% end %>
+  </ul>
 
-    <div class="mb-8 flex items-center justify-center">
-      <%== pagy_nav(@pagy) %>
-    </div>
-  <% else %>
-    <p class="mb-8 pl-6 text-md md:text-lg text-slate-950 dark:text-slate-200"">
-      No items found.
-    </p>
-  <% end %>
+  <div class="mb-8 flex items-center justify-center">
+    <%== pagy_nav(@pagy) %>
+  </div>
 <% end %>

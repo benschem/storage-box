@@ -1,5 +1,5 @@
 class HousesController < ApplicationController
-  before_action :set_house, only: %i[ update destroy ]
+  before_action :set_house, only: %i[ edit update destroy ]
 
   def index
     @houses = policy_scope(House)
@@ -7,25 +7,57 @@ class HousesController < ApplicationController
 
   def create
     @house = House.new(house_params)
+    authorize @house
 
     if @house.save
-      redirect_to @house, notice: "House was successfully created."
+      @house.users << current_user
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.prepend(
+            "houses_list",
+            partial: "houses/house",
+            locals: { house: @house, new_room: Room.new, new_invite: Invite.new }
+          )
+        end
+      end
     else
-      render :new, status: :unprocessable_entity
+      render :index, status: :unprocessable_entity
+    end
+  end
+
+  def edit
+    authorize @house
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          "title_#{dom_id(@house)}",
+          partial: "houses/form",
+          locals: { house: @house }
+        )
+      end
     end
   end
 
   def update
+    authorize @house
     if @house.update(house_params)
-      redirect_to @house, notice: "House was successfully updated.", status: :see_other
+      redirect_to houses_path, notice: "House was successfully updated.", status: :see_other
     else
-      render :edit, status: :unprocessable_entity
+      render :index, status: :unprocessable_entity
     end
   end
 
   def destroy
+    authorize @house
+    frame_id = dom_id(@house)
     @house.destroy!
-    redirect_to housees_url, notice: "House was successfully destroyed.", status: :see_other
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.remove(
+          frame_id,
+        )
+      end
+    end
   end
 
   private

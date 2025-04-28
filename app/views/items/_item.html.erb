@@ -1,5 +1,5 @@
 <%= turbo_frame_tag dom_id(item) do %>
-  <%= link_to item_path(item, format: :turbo_stream), data: { turbo_frame: dom_id(item), turbo_prefetch: false }, class: "bg-slate-50 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90 p-4 flex gap-2 items-center justify-between hover:shadow-lg dark:hover:shadow-lg/90 hover:-translate-y-1 transition ease-linear duration-150 active:translate-0 active:shadow-sm dark:active:shadow-sm/90" do %>
+  <%= link_to item_path(item, format: :turbo_stream), data: { turbo_frame: dom_id(item), turbo_prefetch: false }, class: "bg-slate-50 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90 p-4 flex gap-2 items-center justify-between hover:shadow-lg dark:hover:shadow-lg/90 hover:-translate-y-1 transition ease-linear duration-150 active:translate-0 active:shadow-sm dark:active:shadow-sm/90 focus:outline-none focus:ring-2 focus:ring-teal-400" do %>
     <div class="flex flex-col gap-2 ">
       <h3 class="text-md lg:text-xl font-semibold col-span-2 text-slate-900 dark:text-slate-100">
         <%= item.name.capitalize %>

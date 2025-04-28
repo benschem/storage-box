@@ -94,7 +94,7 @@
 
       <div class="flex justify-between gap-2 pt-4">
         <%= link_to item_path(@item), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
-          <%= render "shared/icons/trash", klasses: "stroke-slate-900 dark:stroke-slate-100 hover:stroke-teal-500" %>
+          <%= render "shared/icons/trash", klasses: "stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
         <% end %>
 
         <div class="flex gap-2">

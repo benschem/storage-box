@@ -112,11 +112,12 @@ class ItemsController < ApplicationController
   end
 
   def destroy
+    authorize @item
+    frame_id = dom_id(@item)
     @item.destroy!
 
     respond_to do |format|
-      format.html { redirect_to items_url, notice: "Item was successfully destroyed.", status: :see_other }
-      format.turbo_stream { render turbo_stream: turbo_stream.remove(dom_id(@item)) }
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(frame_id) }
     end
   end
 

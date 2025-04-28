@@ -1,15 +1,27 @@
-<% if room.blank? %>
-  <div>
-    This room doesn't exist!
-  </div>
-<% else %>
-  <div>
-    <%= room.name.capitalize %>
-    <%= render "shared/badge", icon: "box" do %>
-      <%= room.boxes.count %>
-    <% end %>
-    <%= render "shared/badge", icon: "items" do %>
-      <%= room.items.count %>
-    <% end %>
+<%= turbo_frame_tag dom_id(room) do %>
+  <div class="shadow-sm dark:shadow-sm/70 p-2 flex justify-between items-center border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 rounded-xl">
+    <div>
+      <p class="ml-2 text-slate-900 dark:text-slate-100">
+        <%= room.name.capitalize %>
+      </p>
+      <div class="flex gap-2">
+        <%= render "shared/badge", icon: "box" do %>
+          <%= room.boxes.count %> box<%= 'es' if room.boxes.count != 1 %>
+        <% end %>
+        <%= render "shared/badge", icon: "items" do %>
+          <%= room.items.count + room.direct_items.count %> item<%= 's' if room.items.count != 1 %>
+        <% end %>
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <%= link_to edit_room_path(room, turbo_prefetch: false, format: :turbo_stream) do %>
+        <%= render "shared/icons/pencil", klasses: "stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
+      <% end %>
+      <% if room.items.count == 0 && room.direct_items.count == 0 %>
+        <%= link_to room_path(room), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
+          <%= render "shared/icons/trash", klasses: "stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
+        <% end %>
+      <% end %>
+    </div>
   </div>
 <% end %>

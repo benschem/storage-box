@@ -1,0 +1,27 @@
+<%= simple_form_for(invite, url: house_invites_path(house), html: { data: { turbo_frame: "house_#{house.id}" }, class: "p-2  rounded-xl" }) do |f| %>
+  <% if invite.errors.any? %>
+    <div class="mx-2 bg-red-600/90 text-slate-100 p-4 rounded-md">
+      <strong>Failed to invite user:</strong>
+      <ul class="list-disc list-inside">
+        <% invite.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="flex gap-2">
+    <%= f.input :invitee_email,
+      label: "Add user to house by email",
+      label_html: { class: "sr-only" },
+      wrapper_html: { class: "grow" },
+      placeholder: "User email",
+      error_html: { class: "text-red-400 text-sm mt-1" },
+      input_html: {
+        class: "grow w-full rounded-md bg-slate-300 dark:bg-slate-800 text-lg text-slate-950 dark:text-slate-100 placeholder:text-slate-500 placeholder:dark:text-slate-500 p-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+      }
+    %>
+
+    <%= f.button :submit, "Invite user", class: "cursor-pointer bg-teal-500 hover:bg-teal-600 text-slate-100 px-4 py-2 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400" %>
+  </div>
+<% end %>

@@ -1,0 +1,17 @@
+<details class="py-2 group">
+  <summary class="cursor-pointer flex justify-between items-center text-xl text-slate-600 dark:text-slate-400">
+    <div class="flex gap-2 items-center">
+      <%= render "shared/icons/room", klasses: "ml-2 w-6 h-6"  %>
+      <%= house.rooms.count %> room<%= 's' if house.rooms.count != 1 %>
+    </div>
+    <%= render "shared/icons/chevron_left", klasses: "group-open:-rotate-90 transition-all ease-linear duration-150"  %>
+  </summary>
+  <div class="mt-2 flex flex-col gap-2 mb-6 p-2 bg-slate-300 dark:bg-slate-700 rounded-xl">
+    <% house.rooms.each do |room| %>
+      <%= render "rooms/room", room: room %>
+    <% end %>
+
+    <% form_room = new_room&.house_id == house.id ? new_room : Room.new(house: house) %>
+    <%= render "rooms/form", house: house, room: form_room %>
+  </div>
+</details>

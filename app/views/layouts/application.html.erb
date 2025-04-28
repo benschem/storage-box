@@ -9,37 +9,14 @@
     <%= vite_client_tag %>
     <%= vite_javascript_tag 'application' %>
     <%= vite_stylesheet_tag "application.css" %>
-    <!--
-      If using a TypeScript entrypoint file:
-        vite_typescript_tag 'application'
-
-      If using a .jsx or .tsx entrypoint, add the extension:
-        vite_javascript_tag 'application.jsx'
-
-      Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
-    -->
-
-    <%= vite_client_tag %>
-    <%= vite_javascript_tag 'application' %>
-    <!--
-      If using a TypeScript entrypoint file:
-        vite_typescript_tag 'application'
-
-      If using a .jsx or .tsx entrypoint, add the extension:
-        vite_javascript_tag 'application.jsx'
-
-      Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
-    -->
-
   </head>
 
   <body data-controller="sidebar" class="relative bg-slate-200 dark:bg-slate-700 overscroll-none">
     <%= render "shared/navbar" %>
-    <%#= render "shared/sort" %>
     <div data-sidebar-target="content" class="max-w-xl">
       <%= yield %>
     </div>
-    <%= render "shared/sidebar", klasses: "hidden fixed absolute right-0 top-0 h-svh max-w-max" %>
+    <%= render "shared/sidebar", klasses: "hidden fixed right-0 top-0 h-svh max-w-max" %>
     <%= render "shared/flashes" %>
   </body>
 </html>

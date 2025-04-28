@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_21_151009) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_25_054019) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -63,6 +63,22 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_21_151009) do
     t.bigint "house_id", null: false
     t.index ["house_id", "user_id"], name: "index_houses_users_on_house_id_and_user_id", unique: true
     t.index ["user_id", "house_id"], name: "index_houses_users_on_user_id_and_house_id", unique: true
+  end
+
+  create_table "invites", force: :cascade do |t|
+    t.bigint "house_id", null: false
+    t.bigint "inviter_id", null: false
+    t.bigint "invitee_id"
+    t.string "invitee_email"
+    t.datetime "expires_on"
+    t.string "status", default: "pending"
+    t.string "token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["house_id"], name: "index_invites_on_house_id"
+    t.index ["invitee_id"], name: "index_invites_on_invitee_id"
+    t.index ["inviter_id"], name: "index_invites_on_inviter_id"
+    t.index ["token"], name: "index_invites_on_token", unique: true
   end
 
   create_table "items", force: :cascade do |t|
@@ -247,6 +263,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_21_151009) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "boxes", "rooms"
+  add_foreign_key "invites", "houses"
+  add_foreign_key "invites", "users", column: "invitee_id"
+  add_foreign_key "invites", "users", column: "inviter_id"
   add_foreign_key "items", "boxes"
   add_foreign_key "items", "houses"
   add_foreign_key "items", "rooms"
