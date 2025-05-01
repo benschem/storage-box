@@ -66,13 +66,13 @@ class ItemsController < ApplicationController
     if @item.save
       respond_to do |format|
         format.html { redirect_to items_path, notice: "Item was successfully created." }
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.append(
-            "items_list",
-            partial: "items/item",
-            locals: { item: @item }
-          )
-        end
+        # format.turbo_stream do
+        #   render turbo_stream: turbo_stream.append(
+        #     "items_list",
+        #     partial: "items/item",
+        #     locals: { item: @item }
+        #   )
+        # end
       end
     else
       render :new, status: :unprocessable_entity
@@ -129,7 +129,7 @@ class ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:name, :notes, :house_id, :box_id, :room_id, :image)
+    params.require(:item).permit(:name, :notes, :house_id, :box_id, :room_id, :image, tag_ids: [])
   end
 
   def safe_sort_param(param)

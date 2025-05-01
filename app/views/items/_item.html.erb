@@ -5,21 +5,21 @@
         <%= item.name.capitalize %>
       </h3>
 
-      <div class="flex items-center flex-wrap gap-1 text-sm lg:text-lg text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
+      <div class="flex items-center flex-wrap gap-2 text-sm lg:text-lg text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
         <div class="flex gap-1 items-center flex-wrap">
-          <%= render "shared/icons/house", klasses: "w-4 h-3" %>
-            <%= item.box&.room&.house&.name || item&.room&.house&.name %>
+          <%= render "shared/icons/house", klasses: "w-4 h-4" %>
+          <%= item.box&.room&.house&.name || item&.room&.house&.name %>
         </div>
 
         <div class="flex gap-1 items-center flex-wrap">
-          <%= render "shared/icons/room", klasses: "w-4 h-3" %>
-            <%= item.box&.room&.name&.capitalize || @item&.room&.name&.capitalize %>
+          <%= render "shared/icons/room", klasses: "w-4 h-4" %>
+          <%= item.box&.room&.name&.capitalize || @item&.room&.name&.capitalize %>
         </div>
 
         <% if item.box.present? %>
           <div class="flex gap-1 items-center flex-wrap">
-            <%= render "shared/icons/box", klasses: "w-4 h-3" %>
-              Box <%= item.box.number %>
+            <%= render "shared/icons/box", klasses: "w-4 h-4" %>
+            Box <%= item.box.number %>
           </div>
         <% end %>
       </div>
