@@ -3,7 +3,7 @@
 
     <% if house.errors.any? %>
       <div class="mx-2 bg-red-600/90 text-slate-100 p-4 rounded-md">
-        <strong>Room not saved:</strong>
+        <strong>House not saved:</strong>
         <ul class="list-disc list-inside">
           <% house.errors.full_messages.each do |msg| %>
             <li><%= msg %></li>

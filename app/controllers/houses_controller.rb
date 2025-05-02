@@ -3,6 +3,7 @@ class HousesController < ApplicationController
 
   def index
     @houses = policy_scope(House)
+    @house = House.new
   end
 
   def create
