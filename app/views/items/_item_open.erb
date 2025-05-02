@@ -48,7 +48,7 @@
     <% if @item.tags.present? %>
       <div class="flex flex-wrap gap-2">
         <% @item.tags.each do |tag|  %>
-          <%= render "shared/tag", tag: tag, item: @item %>
+          <%= render "tags/tag", tag: tag, item: @item %>
         <% end %>
       </div>
     <% end %>

@@ -9,9 +9,11 @@ Rails.application.routes.draw do
   resources :rooms, only: [:create, :edit, :update, :destroy]
   resources :boxes, only: [:show, :create, :destroy]
   resources :items do
-    resources :tags, only: [:destroy]
+    resources :tags, only: [] do
+      delete :remove, on: :member
+    end
   end
-  resources :tags, only: [:index, :edit, :create, :update]
+  resources :tags, only: [:index, :edit, :create, :update, :destroy]
   resources :invites, only: [:update]
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

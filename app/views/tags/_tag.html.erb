@@ -1,0 +1,15 @@
+<% item ||= nil %>
+<% tag ||= nil %>
+
+<div class="p-1 px-2 bg-slate-200 dark:bg-slate-400 rounded-xl inline-flex gap-1 justify-center items-center">
+  <%= tag&.name %>
+  <% if item.present? %>
+    <%= link_to remove_item_tag_path(item, tag), data: { turbo_method: :delete } do %>
+      <%= render "shared/icons/close_circle" %>
+    <% end %>
+  <% else %>
+    <%= link_to tag_path(tag), data: { turbo_method: :delete } do %>
+      <%= render "shared/icons/close_circle" %>
+    <% end %>
+  <% end %>
+</div>
