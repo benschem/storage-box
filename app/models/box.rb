@@ -7,10 +7,14 @@ class Box < ApplicationRecord
   validates :number, presence: true, numericality: { only_integer: true }
   validate :unique_number_within_house
 
+  def house
+    self.room.house
+  end
+
   private
 
   def set_number
-    self.number ||= self.room&.house&.boxes.maximum(:number).to_i + 1
+    self.number ||= self&.house&.boxes.maximum(:number).to_i + 1
   end
 
   def unique_number_within_house
