@@ -1,4 +1,7 @@
 class ApplicationJob < ActiveJob::Base
+  # Watches your queries for when you should add eager loading (N+1 queries) [https://github.com/flyerhzm/bullet]
+  include Bullet::ActiveJob if Rails.env.development?
+
   # Automatically retry jobs that encountered a deadlock
   retry_on ActiveRecord::Deadlocked, wait: 5.seconds, attempts: 5
 
