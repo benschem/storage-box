@@ -136,9 +136,12 @@
         }
       %>
     <% end %>
-    <div class="mt-2 flex justify-between">
-      <%= link_to item_path(@item), data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete #{@item.name}?" } do %>
-        <%= render "shared/icons/trash", klasses: "stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
+    <div class="mt-6 flex <%= @item.id.present? ? "justify-between" : "justify-end" %>">
+      <% if @item.id.present? %>
+        <%= link_to item_path(@item), data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete #{@item.name}?" }, class: "text-teal-500 group hover:text-teal-400 flex gap-1 items-center focus:outline-none focus:ring-2 focus:ring-teal-400" do %>
+          <%= render "shared/icons/trash", klasses: "stroke-teal-500 dark:stroke-teal-500 group-hover:stroke-teal-400" %>
+          Delete item
+        <% end %>
       <% end %>
 
       <div class="flex gap-2">
