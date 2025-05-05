@@ -1,5 +1,5 @@
 <%= turbo_frame_tag dom_id(room) do %>
-  <%= simple_form_for(room, html: { data: { turbo_frame: "room_#{room.id}" }, class: "p-2"  }) do |f| %>
+  <%= simple_form_for(room, html: { data: { turbo_frame: "room_#{room.id}" }, class: "p-2 rounded-xl bg-slate-100 dark:bg-slate-900 shadow-sm dark:shadow-sm/70 border-1 border-slate-200 dark:border-slate-800"  }) do |f| %>
     <%= f.hidden_field :house_id, value: house.id %>
 
     <% if room.errors.any? %>

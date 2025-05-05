@@ -1,4 +1,4 @@
-<%= simple_form_for(invite, url: house_invites_path(house), html: { data: { turbo_frame: "house_#{house.id}" }, class: "p-2  rounded-xl" }) do |f| %>
+<%= simple_form_for(invite, url: house_invites_path(house), html: { data: { turbo_frame: "house_#{house.id}" }, class: "p-2 rounded-xl bg-slate-100 dark:bg-slate-900 shadow-sm dark:shadow-sm/70 border-1 border-slate-200 dark:border-slate-800" }) do |f| %>
   <% if invite.errors.any? %>
     <%= render "shared/form_errors", resource: invite %>
   <% end %>
