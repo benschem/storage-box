@@ -16,7 +16,6 @@ class HousePolicy < ApplicationPolicy
       scope
         .joins(:users)
         .where(users: { id: user.id })
-        .includes(:rooms, :users)
         .distinct
     end
   end

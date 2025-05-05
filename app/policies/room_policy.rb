@@ -22,7 +22,7 @@ class RoomPolicy < ApplicationPolicy
 
   class Scope < ApplicationPolicy::Scope
     def resolve
-      scope.where(user_id: user.id)
+      scope.where(house_id: user.house_ids)
     end
   end
 end
