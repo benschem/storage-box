@@ -10,11 +10,12 @@ class BoxesController < ApplicationController
 
   def create
     @box = Box.new(box_params)
+    authorize @box
 
     if @box.save
-      redirect_to @box, notice: "Box was successfully created."
+      redirect_to new_item_path, notice: "Box was successfully created."
     else
-      render :new, status: :unprocessable_entity
+      render "items/new", status: :unprocessable_entity
     end
   end
 
@@ -38,6 +39,6 @@ class BoxesController < ApplicationController
   end
 
   def box_params
-    params.require(:box).permit(:name)
+    params.require(:box).permit(:room_id)
   end
 end
