@@ -1,27 +1,27 @@
 TODO:
 
 [ ] Invite User to House feature
-[ ] New Box option in the New Item screen in the box dropdown
-[ ] Deleting houses, rooms or boxes that still have items
-[ ] Deleting user account - what happens to items etc
-[ ] Add tags to Items
-[ ] Tags index
-[ ] Tags search
 [ ] Invite token
-[ ] New box optino on new item form
-[ ] Grep todos
-[ ] Multiple queues - high low default
-[ ] when adding item, should be able to select hosue and then the list of rooms and boxes updates
+[ ] Tags in items search
+[ ] Items new page should be a turbo frame
+[X] Can't delete houses, rooms or boxes that still have items
+[X] Add tags to Items
+[X] Tags index
+[X] grep Room.all in forms - should be scoped to users' houses!
 
 NICE TODO:
 
+[ ] when adding item, should be able to select house and then the list of rooms and boxes updates
+[ ] Grep todos
+[ ] Multiple solidqueue queues - high low default
 [ ] Install libvips on server [https://stackoverflow.com/questions/70849182/could-not-open-library-vips-42-could-not-open-library-libvips-42-dylib]
 [ ] Caching [https://chatgpt.com/c/6809ddd4-bac4-8004-8505-c876cfeb165d]
 [ ] Log user ids [https://chatgpt.com/c/6809ddd4-bac4-8004-8505-c876cfeb165d]
-[ ] Option to add new Box when adding Item
+[ ] Items form should have a better way to add tags and boxes in the form
 [ ] Uncomment code in User model to enforce password strength
 [ ] Check if user passwords are pwned [https://github.com/michaelbanfield/devise-pwned_password] both on signup and login
-[ ] User account delete
+[ ] Option to delete User account
+[ ] Deleting user account - what happens to items etc
 [ ] Export data to csv
 [ ] Policy roles
 [ ] Admin mailer for failed jobs
@@ -31,10 +31,10 @@ NICE TODO:
 
 BUGS:
 
-[ ] Sort feature doesn't work
+[X] Sort feature doesn't work
 [ ] Filter javascript is broken - restrict boxes in that room etc
-[ ] Deleting item leaves space in index
-[ ] Deleting or editing Rooms on House index needs turbo response to stop content missing
+[X] Deleting item leaves space in index
+[X] Deleting or editing Rooms on House index needs turbo response to stop content missing
 
 WISHLIST:
 
