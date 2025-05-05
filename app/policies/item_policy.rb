@@ -21,7 +21,7 @@ class ItemPolicy < ApplicationPolicy
 
   class Scope < ApplicationPolicy::Scope
     def resolve
-      scope.where(house_id: user.house_ids).includes(:box, :room, :house, image_attachment: :blob)
+      scope.where(house_id: user.house_ids)
     end
   end
 end

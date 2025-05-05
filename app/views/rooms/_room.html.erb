@@ -9,7 +9,7 @@
           <%= room.boxes.count %> box<%= 'es' if room.boxes.count != 1 %>
         <% end %>
         <%= render "shared/badge", icon: "items" do %>
-          <%= room.items.count + room.direct_items.count %> item<%= 's' if room.items.count != 1 %>
+          <%= room.items.count %> item<%= 's' if room.items.count != 1 %>
         <% end %>
       </div>
     </div>
@@ -17,7 +17,7 @@
       <%= link_to edit_room_path(room, format: :turbo_stream), data: { turbo_prefetch: false } do %>
         <%= render "shared/icons/pencil", klasses: "stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
       <% end %>
-      <% if room.items.count == 0 && room.direct_items.count == 0 %>
+      <% if room.items.count == 0 %>
         <%= link_to room_path(room), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
           <%= render "shared/icons/trash", klasses: "stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
         <% end %>

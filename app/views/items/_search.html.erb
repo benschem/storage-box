@@ -57,9 +57,12 @@
 
     <%= select_tag :filter_by_box,
       options_for_select(
-        @boxes.map { |box| ["#{box.number} - #{box.room.name.capitalize} - #{box.house.name.capitalize}", box.id] },
+        [
+          ["Items not in a box", "unboxed"],
+          ["Items in a box", "boxed"]
+        ] + @boxes.map { |box| ["Box #{box.number} - #{box.room.name.capitalize} - #{box.house.name.capitalize}", box.id] },
         params[:filter_by_box]),
-      prompt: "All boxes",
+      prompt: "All items",
       data: {
         action: "change->search#updateRoomsAndBoxes change->search#submit",
         search_target: "box"

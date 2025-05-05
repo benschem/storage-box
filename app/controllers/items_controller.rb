@@ -2,16 +2,23 @@ class ItemsController < ApplicationController
   before_action :set_item, only: %i[show edit update destroy]
 
   def index
-    items = policy_scope(Item)
+    items = policy_scope(Item).includes(:box, :room, :house, image_attachment: :blob)
 
-    if params[:filter_by_house].present?
-      items = items.where(house: params[:filter_by_house])
-    end
-    if params[:filter_by_room].present?
-      items = items.where(room: params[:filter_by_room])
-    end
-    if params[:filter_by_box].present?
-      items = items.where(box: params[:filter_by_box])
+    house_id = safe_house_param
+    items = items.where(house: house_id) if house_id
+
+    room_id = safe_room_param
+    items = items.joins(:room).where(rooms: { id: room_id }) if room_id
+
+    if safe_box_param.present?
+      case safe_box_param
+      when :unboxed
+        items = items.where(box_id: nil)
+      when :boxed
+        items = items.where.not(box_id: nil)
+      else
+        items = items.where(box_id: safe_box_param)
+      end
     end
 
     if params[:search].present?
@@ -149,6 +156,34 @@ class ItemsController < ApplicationController
 
   def item_params
     params.require(:item).permit(:name, :notes, :box_id, :room_id, :image, :remove_image, tag_ids: [])
+  end
+
+  def safe_house_param
+    return nil unless params[:filter_by_house].present?
+
+    house_id = params[:filter_by_house].to_i
+    House.exists?(house_id) ? house_id : nil
+  end
+
+  def safe_room_param
+    return nil unless params[:filter_by_room].present?
+
+    room_id = params[:filter_by_room].to_i
+    Room.exists?(room_id) ? room_id : nil
+  end
+
+  def safe_box_param
+    return nil unless params[:filter_by_box].present?
+
+    case params[:filter_by_box]
+    when "unboxed"
+      :unboxed
+    when "boxed"
+      :boxed
+    else
+      box_id = params[:filter_by_box].to_i
+      Box.exists?(box_id) ? box_id : nil
+    end
   end
 
   def safe_sort_param(param)
