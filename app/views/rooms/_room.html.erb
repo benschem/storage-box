@@ -6,7 +6,7 @@
       </p>
       <div class="flex gap-2">
         <%= render "shared/badge", icon: "box" do %>
-          <%= room.boxes.count %> box<%= 'es' if room.boxes.count != 1 %>
+          <%= room.boxes_count %> box<%= 'es' if room.boxes_count != 1 %>
         <% end %>
         <%= render "shared/badge", icon: "items" do %>
           <%= room.items.count %> item<%= 's' if room.items.count != 1 %>

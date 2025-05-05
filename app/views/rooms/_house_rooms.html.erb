@@ -2,7 +2,7 @@
   <summary class="cursor-pointer flex justify-between items-center text-xl text-slate-600 dark:text-slate-400">
     <div class="flex gap-2 items-center">
       <%= render "shared/icons/room", klasses: "ml-2 w-6 h-6"  %>
-      <%= house.rooms.count %> room<%= 's' if house.rooms.count != 1 %>
+      <%= house.rooms_count %> room<%= 's' if house.rooms_count != 1 %>
     </div>
     <%= render "shared/icons/chevron_left", klasses: "group-open:-rotate-90 transition-all ease-linear duration-150"  %>
   </summary>

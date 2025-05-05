@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_25_054019) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_05_050253) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -56,6 +56,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_054019) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "items_count", default: 0, null: false
+    t.integer "rooms_count", default: 0, null: false
   end
 
   create_table "houses_users", id: false, force: :cascade do |t|
@@ -115,6 +117,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_25_054019) do
     t.bigint "house_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "boxes_count", default: 0, null: false
     t.index ["house_id"], name: "index_rooms_on_house_id"
   end
 

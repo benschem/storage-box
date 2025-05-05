@@ -2,7 +2,7 @@ class ItemsController < ApplicationController
   before_action :set_item, only: %i[show edit update destroy]
 
   def index
-    items = policy_scope(Item).includes(:box, :room, :house, image_attachment: :blob)
+    items = policy_scope(Item).includes(:box, :room, image_attachment: :blob)
 
     house_id = safe_house_param
     items = items.where(house: house_id) if house_id
@@ -26,7 +26,8 @@ class ItemsController < ApplicationController
     end
 
     @houses  = policy_scope(House).order(:name)
-    @rooms = policy_scope(Room).includes(:house).order(:house_id).order(:name)
+    @rooms = policy_scope(Room).order(:house_id).order(:name)
+    @rooms_with_houses = policy_scope(Room).includes(:house).order(:house_id).order(:name)
     @boxes = policy_scope(Box).includes(room: :house).order(:house_id).order(:number)
 
     order_by = safe_sort_param(params[:sort_by]) || :created_at

@@ -4,8 +4,8 @@
       turbo_frame: 'items',
       controller: "search",
       search_target: "form",
-      search_all_rooms_value: current_user.rooms.to_json(only: [:id, :name, :house_id]),
-      search_all_boxes_value: current_user.boxes.to_json(only: [:id, :number, :house_id, :room_id])
+      search_all_rooms_value: @rooms.to_json(only: [:id, :name, :house_id]),
+      search_all_boxes_value: @boxes.to_json(only: [:id, :number, :house_id, :room_id])
     },
     role: "search",
     class: "px-2 flex flex-col gap-2 w-full text-slate-900 dark:text-slate-100 placeholder-slate-100 dark:placeholder-slate-100" do %>
@@ -45,7 +45,7 @@
   <div class="mx-4 mt-2  grid grid-cols-2 gap-2 items-center">
     <%= select_tag :filter_by_room,
       options_for_select(
-        @rooms.map { |room| ["#{room.name.capitalize} - #{room.house.name.capitalize}", room.id] },
+        @rooms_with_houses.map { |room| ["#{room.name.capitalize} - #{room.house.name.capitalize}", room.id] },
         params[:filter_by_room]),
       prompt: "All rooms",
       data: {

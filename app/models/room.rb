@@ -1,5 +1,5 @@
 class Room < ApplicationRecord
-  belongs_to :house
+  belongs_to :house, counter_cache: true
   has_many :boxes, dependent: :destroy
   has_many :direct_items, class_name: "Item"
   has_many :box_items, through: :boxes, source: :items

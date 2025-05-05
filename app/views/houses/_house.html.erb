@@ -9,7 +9,7 @@
           <%= link_to edit_house_path(house, format: :turbo_stream), data: { turbo_prefetch: false } do %>
             <%= render "shared/icons/pencil", klasses: "stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
           <% end %>
-          <% if house.items.count == 0 %>
+          <% if house.items_count == 0 %>
             <%= link_to house_path(house), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
               <%= render "shared/icons/trash", klasses: "stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
             <% end %>
@@ -20,7 +20,7 @@
 
     <div class="mb-2 flex gap-2 items-center text-xl text-slate-600 dark:text-slate-400">
       <%= render "shared/icons/items", klasses: "ml-2 w-6 h-6"  %>
-      <%= house.items.count %> item<%= 's' if house.items.count != 1 %>
+      <%= house.items_count %> item<%= 's' if house.items_count != 1 %>
     </div>
     <%= render "rooms/house_rooms", house: house, new_room: new_room %>
     <%= render "users/house_users", house: house, new_invite: new_invite %>

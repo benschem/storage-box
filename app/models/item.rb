@@ -2,7 +2,7 @@ class Item < ApplicationRecord
   include PgSearch::Model
 
   belongs_to :user
-  belongs_to :house
+  belongs_to :house, counter_cache: true
   belongs_to :room, optional: true
   belongs_to :box, optional: true
   has_and_belongs_to_many :tags, optional: true

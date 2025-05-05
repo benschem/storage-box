@@ -1,5 +1,5 @@
 class Box < ApplicationRecord
-  belongs_to :room
+  belongs_to :room, counter_cache: true
   has_many :items
 
   before_validation :set_number, on: :create
