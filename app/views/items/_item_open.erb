@@ -1,6 +1,6 @@
 <%= turbo_frame_tag dom_id(item) do %>
   <div
-    class="relative flex flex-col gap-4 bg-slate-50 dark:bg-slate-900 border-1 border-teal-500 p-4 rounded-xl shadow-md dark:shadow-md/90 cursor-pointer hover:shadow-lg dark:hover:shadow-lg/90 hover:-translate-y-1 transition ease-linear duration-150 active:translate-0 active:shadow-sm dark:active:shadow-sm/90 focus:outline-none focus:ring-2 focus:ring-teal-400"
+    class="relative flex flex-col gap-4 bg-slate-50 dark:bg-slate-900 border-teal-500 p-4 rounded-xl shadow-md dark:shadow-md/90 cursor-pointer hover:shadow-lg dark:hover:shadow-lg/90 hover:-translate-y-1 transition ease-linear duration-150 active:translate-0 active:shadow-sm dark:active:shadow-sm/90 focus:outline-none focus:ring-2 focus:ring-teal-400"
     data-controller="turbo-navigator"
     data-turbo-navigator-url-value="<%= item_path(item, closed: true, format: :turbo_stream) %>"
     data-turbo-navigator-frame-value="<%= dom_id(item) %>"
@@ -9,11 +9,11 @@
   >
     <div class="flex flex-col gap-2">
       <div class="flex justify-between">
-        <h3 class="font-semibold text-lg text-slate-900 dark:text-slate-200">
+        <h3 class="font-semibold text-xl text-slate-900 dark:text-slate-200">
           <%= @item.name.capitalize %>
         </h3>
 
-        <%= link_to edit_item_path(@item, format: :turbo_stream), data: { turbo_frame: dom_id(item), turbo_prefetch: false } do %>
+        <%= link_to edit_item_path(@item, format: :turbo_stream), data: { turbo_frame: dom_id(item), turbo_prefetch: false }, class: "focus:outline-none focus:ring-2 focus:ring-teal-400" do %>
           <%= render "shared/icons/pencil", klasses: "stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
         <% end %>
 
@@ -54,7 +54,7 @@
     <% end %>
 
     <% if @item.image.attached? %>
-        <%= image_tag @item.image, alt: "Picture of #{item.name}", class: "max-w-[100%] max-h-[300px] object-contain rounded-xl mt-2 text-slate-400 dark:text-slate-400" %>
+        <%= image_tag @item.image, alt: "Picture of #{item.name}", class: "rounded-xl mt-2 text-slate-400 dark:text-slate-400", style: "height: 300px; object-fit: cover; object-position: center" %>
     <% end %>
   </div>
 <% end %>

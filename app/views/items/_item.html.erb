@@ -13,7 +13,7 @@
 
         <div class="flex gap-1 items-center flex-wrap">
           <%= render "shared/icons/room", klasses: "w-4 h-4" %>
-          <%= item.box&.room&.name&.capitalize || @item&.room&.name&.capitalize %>
+          <%= item.box&.room&.name&.capitalize || item&.room&.name&.capitalize %>
         </div>
 
         <% if item.box.present? %>

@@ -8,6 +8,8 @@ class Item < ApplicationRecord
   has_and_belongs_to_many :tags, optional: true
 
   has_one_attached :image
+  attr_accessor :remove_image
+  after_save :purge_image, if: -> { remove_image == "1" }
 
   validates :name, presence: true
   validates :notes, length: { maximum: 255 }, allow_blank: true
@@ -58,5 +60,9 @@ class Item < ApplicationRecord
     elsif box_id.present? && room_id.present?
       errors.add(:base, "Item can be in a box only or a room only, not both")
     end
+  end
+
+  def purge_image
+    image.purge
   end
 end

@@ -1,0 +1,142 @@
+<%= simple_form_for(@item, html: { class: "" }) do |f| %>
+  <div class="flex justify-between mb-4">
+    <h3 class="font-semibold text-xl text-slate-900 dark:text-slate-200">
+      Edit item
+    </h3>
+
+    <%= link_to items_path, class: "max-w-min focus:outline-none focus:ring-2 focus:ring-teal-400" do %>
+      <%= render "shared/icons/close", klasses: "w-6 h-6 stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
+    <% end %>
+  </div>
+
+  <% if @item.errors.any? %>
+    <%= render "shared/form_errors", resource: @item %>
+  <% end %>
+
+  <div data-controller="item-location" class='flex flex-col gap-2'>
+    <%= f.input :name,
+      required: false,
+      label: "Name:",
+      label_html: { class: "font-bold text-slate-950 dark:text-slate-100" },
+      placeholder: "Item name",
+      error_html: { class: "text-red-400 text-sm mt-1" },
+      input_html: {
+        class: "mt-2 w-full rounded-md bg-slate-200 dark:bg-slate-800 text-lg text-slate-950 dark:text-slate-100 placeholder:text-slate-500 placeholder:dark:text-slate-500 p-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+      }
+    %>
+
+
+      <%= simple_fields_for :option do |o| %>
+        <%= o.input :options, collection: [[true, 'Yes'], [false, 'No']], as: :radio_buttons,
+          checked: @item.room.blank?,
+          wrapper_html: { class: "py-2 flex gap-2 min-w-max items-center"},
+          value_method: :first,
+          label_method: :last,
+          label: "In a box?",
+          required: false,
+          label_html: { class: "font-bold text-slate-950 dark:text-slate-100" },
+          input_html: {
+            data: { action: "change->item-location#toggle", item_location_target: "radioButton" },
+            class: "text-slate-950 dark:text-slate-100 me-1 cursor-pointer"
+          },
+          item_wrapper_class: "text-slate-950 dark:text-slate-100"
+        %>
+      <% end %>
+
+    <div data-item-location-target="boxSelectWrapper" class="<%= @item.room.blank? ? "text-slate-900 dark:text-slate-100" : "hidden" %> grow transition-all ease-in-out duration-300">
+      <%= f.input :box_id, as: :select,
+        wrapper: :inline_label,
+        collection: boxes.map { |box| ["#{box.number} - #{box.house.name.capitalize}", box.id] },
+        include_blank: "-",
+        label: "Box:",
+        label_html: { class: "font-bold text-slate-950 dark:text-slate-100" },
+        error_html: { class: "text-red-400 text-sm mt-1" },
+        input_html: {
+          data: { item_location_target: "boxSelectInput" },
+          class: "#{@item.room.blank? ? "" : "hidden"} w-full text-slate-900 dark:text-slate-100 bg-slate-200 dark:bg-slate-800 border-1 border-slate-200 dark:border-slate-800 cursor-pointer w-full rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+        }
+      %>
+    </div>
+
+    <div data-item-location-target="roomSelectWrapper" class="<%= @item.room.present? ? "text-slate-900 dark:text-slate-100" : "hidden" %> grow transition-all ease-in-out duration-300">
+      <%= f.input :room_id, as: :select,
+        wrapper: :inline_label,
+        collection: rooms.map { |room| ["#{room.name.capitalize} - #{room.house.name.capitalize}", room.id] },
+        include_blank: "-",
+        label: "Room:",
+        disabled: true,
+        label_html: { class: "font-bold text-slate-950 dark:text-slate-100" },
+        error_html: { class: "text-red-400 text-sm mt-1" },
+        input_html: {
+          data: { item_location_target: "roomSelectInput" },
+          class: "#{@item.room.present? ? "" : "hidden"} w-full text-slate-900 dark:text-slate-100 bg-slate-200 dark:bg-slate-800 border-1 border-slate-200 dark:border-slate-800 cursor-pointer w-full rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+        }
+      %>
+    </div>
+
+    <%= f.input :notes,
+      as: :text,
+      label: "Notes:",
+      label_html: { class: "font-bold text-slate-950 dark:text-slate-100" },
+      error_html: { class: "text-red-400 text-sm mt-1" },
+      input_html: {
+        rows: 4,
+        class: "mt-2 w-full rounded-md bg-slate-200 dark:bg-slate-800 text-slate-950 dark:text-slate-100 p-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+      }
+    %>
+
+    <%= f.association :tags,
+      label: "Tags:",
+      label_html: { class: "font-bold text-slate-950 dark:text-slate-100 mb-1" },
+      error_html: { class: "text-red-400 text-sm mt-1" },
+      input_html: {
+        rows: 4,
+        class: "mt-2 w-full rounded-md bg-slate-200 dark:bg-slate-800 text-slate-950 dark:text-slate-100 p-2 focus:outline-none focus:ring-2 focus:ring-teal-400 cursor-pointer"
+      }
+    %>
+
+    <% if f.object.image.attached? %>
+      <div class="flex gap-2 items-center">
+
+        <div class="text-slate-900 dark:text-slate-100">
+          <% if f.object.image.variable? %>
+            <%= image_tag f.object.image.variant(resize_to_limit: [100, 100]), class: "mt-1 rounded-xl w-[100px] h-[100px] min-w-[100px] max-h-[100px]" %>
+          <% else %>
+            <%= link_to f.object.image.filename.to_s, url_for(f.object.image), class: "underline text-teal-600 hover:text-teal-700" %>
+          <% end %>
+        </div>
+
+        <div class="self-center">
+          <%= f.check_box :remove_image %>
+          <%= f.label :remove_image, "Remove image", class: "ml-2 text-red-600 dark:text-red-400" %>
+
+          <%= f.input :image,
+            as: :file,
+            label: "Replace image:",
+            label_html: { class: "font-bold text-slate-950 dark:text-slate-100 mb-1" },
+            placeholder_html: { class: "ml-4" },
+            error_html: { class: "text-red-400 text-sm mt-1" },
+            input_html: {
+              direct_upload: true,
+              class: "mt-2 border-0 w-full bg-slate-200 file:text-slate-100 file:bg-teal-500 hover:file:bg-teal-600 dark:file:bg-teal-600 file:px-4 file:py-2 file:rounded file:cursor-pointer hover:file:cursor-pointer hover:cursor-pointer dark:bg-slate-800 dark:text-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+            }
+          %>
+        </div>
+      </div>
+    <% else %>
+      <%= f.input :image,
+        as: :file,
+        label: "Add image:",
+        label_html: { class: "font-bold text-slate-950 dark:text-slate-100 mb-1" },
+        placeholder_html: { class: "ml-4" },
+        error_html: { class: "text-red-400 text-sm mt-1" },
+        input_html: {
+          direct_upload: true,
+          class: "mt-2 border-0 w-full bg-slate-200 file:text-slate-100 file:bg-teal-500 hover:file:bg-teal-600 dark:file:bg-teal-600 file:px-4 file:py-2 file:rounded file:cursor-pointer hover:file:cursor-pointer hover:cursor-pointer dark:bg-slate-800 dark:text-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+        }
+      %>
+    <% end %>
+    <div class="flex justify-end">
+      <%= f.button :submit, "Save", class: "mt-2 max-w-max cursor-pointer bg-teal-500 hover:bg-teal-600 text-slate-100 px-4 py-2 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400" %>
+    </div>
+<% end %>

@@ -18,6 +18,10 @@ class ItemsController < ApplicationController
       items = items.search(params[:search])
     end
 
+    @houses  = policy_scope(House).order(:name)
+    @rooms = policy_scope(Room).includes(:house).order(:house_id).order(:name)
+    @boxes = policy_scope(Box).includes(room: :house).order(:house_id).order(:number)
+
     order_by = safe_sort_param(params[:sort_by]) || :created_at
     direction = safe_direction_param(params[:sort_direction]) || :desc
     items = items.order(order_by => direction)
@@ -43,23 +47,17 @@ class ItemsController < ApplicationController
   def new
     @item = Item.new
     authorize @item
-  end
 
-  def edit
-    respond_to do |format|
-      format.html
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          dom_id(@item),
-          partial: "items/edit",
-          locals: { item: @item }
-        )
-      end
-    end
+    @boxes = policy_scope(Box).includes(room: :house).order(:house_id).order(:number)
+    @rooms = policy_scope(Room).includes(:house).order(:house_id).order(:name)
+
+    @tag = Tag.new
+    @box = Box.new
   end
 
   def create
     @item = Item.new(item_params)
+    @item.house = @item.room&.house
     @item.user = current_user
     authorize @item
 
@@ -75,7 +73,29 @@ class ItemsController < ApplicationController
         # end
       end
     else
+      @boxes = policy_scope(Box).includes(room: :house).order(:house_id).order(:number)
+      @rooms = policy_scope(Room).includes(:house).order(:house_id).order(:name)
+
+      @tag = Tag.new
+      @box = Box.new
+
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def edit
+    @boxes = policy_scope(Box).includes(room: :house).order(:house_id).order(:number)
+    @rooms = policy_scope(Room).includes(:house).order(:house_id).order(:name)
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          dom_id(@item),
+          partial: "items/edit",
+          locals: { item: @item, boxes: @boxes, rooms: @rooms }
+        )
+      end
     end
   end
 
@@ -112,7 +132,6 @@ class ItemsController < ApplicationController
   end
 
   def destroy
-    authorize @item
     frame_id = dom_id(@item)
     @item.destroy!
 
@@ -129,7 +148,7 @@ class ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:name, :notes, :house_id, :box_id, :room_id, :image, tag_ids: [])
+    params.require(:item).permit(:name, :notes, :box_id, :room_id, :image, :remove_image, tag_ids: [])
   end
 
   def safe_sort_param(param)

@@ -31,7 +31,7 @@
   <div class="mx-4 flex gap-2 items-center">
     <%= select_tag :filter_by_house,
       options_for_select(
-        current_user.houses.order(:name).map { |house| [house.name.capitalize, house.id] },
+        @houses.map { |house| [house.name.capitalize, house.id] },
         params[:filter_by_house]),
       prompt: "All houses",
       data: {
@@ -42,22 +42,22 @@
     %>
   </div>
 
-  <div class="mx-4 mt-2  flex gap-2 items-center">
+  <div class="mx-4 mt-2  grid grid-cols-2 gap-2 items-center">
     <%= select_tag :filter_by_room,
       options_for_select(
-        current_user.rooms.order(:name).map { |room| [room.name.capitalize, room.id] },
+        @rooms.map { |room| ["#{room.name.capitalize} - #{room.house.name.capitalize}", room.id] },
         params[:filter_by_room]),
       prompt: "All rooms",
       data: {
         action: "change->search#updateRoomsAndBoxes change->search#submit",
         search_target: "room"
       },
-      class: "flex-grow rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+      class: "rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
     %>
 
     <%= select_tag :filter_by_box,
       options_for_select(
-        current_user.boxes.order(:number).map { |box| [box.number, box.id] },
+        @boxes.map { |box| ["#{box.number} - #{box.room.name.capitalize} - #{box.house.name.capitalize}", box.id] },
         params[:filter_by_box]),
       prompt: "All boxes",
       data: {
