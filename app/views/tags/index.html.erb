@@ -1,14 +1,12 @@
-<div class="pt-8 px-6 pb-4">
-  <h1 class="text-4xl font-bold">
-    Tags
-  </h1>
-</div>
+<h1 class="mt-8 mx-6 mb-4 text-4xl font-bold">
+  Tags
+</h1>
 
-<div class="px-6 pb-4">
+<div class="mx-2 mb-4">
   <%= render "tags/form", tag: @tag %>
 </div>
 
-<ul class="p-2 bg-slate-100 dark:bg-slate-900">
+<ul class="px-2 py-4 bg-slate-100 dark:bg-slate-900">
   <%= turbo_frame_tag "tags_list", class: "flex flex-wrap gap-2" do %>
     <% unless @tags.blank? %>
       <% @tags.each do |tag| %>

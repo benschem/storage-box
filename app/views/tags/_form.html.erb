@@ -1,5 +1,5 @@
 <%= turbo_frame_tag "title_#{dom_id(tag)}" do %>
-  <%= simple_form_for(tag, html: { data: { turbo_frame: "title_#{dom_id(tag)}" }, class: "rounded-xl"  }) do |f| %>
+  <%= simple_form_for(tag, html: { data: { turbo_frame: "title_#{dom_id(tag)}" }, class: "p-2 rounded-xl bg-slate-100 dark:bg-slate-900 shadow-sm dark:shadow-sm/70 border-1 border-slate-200 dark:border-slate-800"  }) do |f| %>
 
     <% if tag.errors.any? %>
       <%= render "shared/form_errors", resource: tag %>

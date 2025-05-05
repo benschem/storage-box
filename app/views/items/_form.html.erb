@@ -1,11 +1,12 @@
 <%= simple_form_for(@item, html: { class: "" }) do |f| %>
   <div class="flex justify-between mb-4">
-    <h3 class="font-semibold text-xl text-slate-900 dark:text-slate-200">
-      Edit item
-    </h3>
-
-    <%= link_to items_path, class: "max-w-min focus:outline-none focus:ring-2 focus:ring-teal-400" do %>
-      <%= render "shared/icons/close", klasses: "w-6 h-6 stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
+    <% if controller.action_name == "edit" %>
+      <h3 class="font-semibold text-xl text-slate-900 dark:text-slate-200">
+        Edit item
+      </h3>
+      <%= link_to items_path, class: "max-w-min focus:outline-none focus:ring-2 focus:ring-teal-400" do %>
+        <%= render "shared/icons/close", klasses: "w-6 h-6 stroke-teal-500 dark:stroke-teal-500 hover:stroke-teal-400" %>
+      <% end %>
     <% end %>
   </div>
 

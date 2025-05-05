@@ -1,4 +1,4 @@
-<%= simple_form_for(box, class: "rounded-xl") do |f| %>
+<%= simple_form_for(box, html: { class: "p-2 rounded-xl bg-slate-100 dark:bg-slate-900 shadow-sm dark:shadow-sm/70 border-1 border-slate-200 dark:border-slate-800" }) do |f| %>
   <% if box.errors.any? %>
     <%= render "shared/form_errors", resource: box %>
   <% end %>

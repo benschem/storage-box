@@ -21,6 +21,9 @@ class ItemsController < ApplicationController
       end
     end
 
+    tag_id = safe_tag_param
+    items = items.joins(:tags).where(tags: { id: tag_id }).distinct if tag_id
+
     if params[:search].present?
       items = items.search(params[:search])
     end
@@ -29,6 +32,7 @@ class ItemsController < ApplicationController
     @rooms = policy_scope(Room).order(:house_id).order(:name)
     @rooms_with_houses = policy_scope(Room).includes(:house).order(:house_id).order(:name)
     @boxes = policy_scope(Box).includes(room: :house).order(:house_id).order(:number)
+    @tags = policy_scope(Tag).order(:name)
 
     order_by = safe_sort_param(params[:sort_by]) || :created_at
     direction = safe_direction_param(params[:sort_direction]) || :desc
@@ -171,6 +175,13 @@ class ItemsController < ApplicationController
 
     room_id = params[:filter_by_room].to_i
     Room.exists?(room_id) ? room_id : nil
+  end
+
+  def safe_tag_param
+    return nil unless params[:filter_by_tag].present?
+
+    tag_id = params[:filter_by_tag].to_i
+    Tag.exists?(tag_id) ? tag_id : nil
   end
 
   def safe_box_param

@@ -1,23 +1,16 @@
-<div class="pt-8 px-6 pb-4">
-  <h1 class="text-4xl font-bold">Add Item</h1>
-</div>
+<h1 class="mt-8 mx-6 text-4xl font-bold">Add Item</h1>
 
 <div class="mx-2 my-6 p-4 pb-4 bg-slate-50 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90">
   <%= render "items/form", item: @item, boxes: @boxes, rooms: @rooms %>
 </div>
 
-<div class="pt-8 px-6">
-  <h2 class="text-2xl font-bold">Add Box</h2>
-</div>
 
-<div class="p-4 m-2 bg-slate-50 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90">
+<h2 class="mt-8 px-6 text-2xl font-bold">Add Box</h2>
+<div class="m-2">
   <%= render "boxes/form", box: @box, houses: @houses, rooms: @rooms %>
 </div>
 
-<div class="pt-8 px-6">
-  <h2 class="text-2xl font-bold">Add Tag</h2>
-</div>
-
-<div class="p-4 m-2 bg-slate-50 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90">
+<h2 class="mt-8 px-6 text-2xl font-bold">Add Tag</h2>
+<div class="m-2 mb-8">
   <%= render "tags/form", tag: @tag %>
 </div>
