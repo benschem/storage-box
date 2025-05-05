@@ -1,46 +1,48 @@
 <% klasses ||= nil %>
 
-<div data-sidebar-target="sidebar" class="z-1 pt-28 px-4 bg-violet-400 dark:bg-violet-800 text-slate-950 dark:text-slate-200 shadow-md dark:shadow-md/70 transition-all duration-150 ease-linear transition-discrete opacity-0 <%= klasses if klasses.present? %>">
+<div data-sidebar-target="sidebar" class="z-1 pt-28 bg-violet-400 dark:bg-violet-800 text-slate-950 dark:text-slate-200 shadow-md dark:shadow-md/70 transition-all duration-150 ease-linear transition-discrete opacity-0 <%= klasses if klasses.present? %>">
   <div class="h-full pb-14 flex flex-col justify-center">
 
-    <ul class="flex flex-col gap-10 px-4">
-      <li class="px-6 <%= 'bg-teal-500 py-2 rounded-lg' if controller_name == 'items' %>">
-        <%= link_to items_path, class: "group flex items-center gap-4 text-slate-800 dark:text-slate-200 group-hover:text-slate-700 dark:hover:text-slate-200 #{'text-slate-50' if controller_name == 'items'}" do %>
-          <%= render "shared/icons/items", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400 #{'stroke-slate-50' if controller_name == 'items'}" %>
+    <ul class="flex flex-col gap-4">
+      <li class="w-full px-10 py-4 <%= 'bg-teal-500' if controller_name == 'items' %>">
+        <%= link_to items_path, class: "w-full group flex items-center gap-4 text-slate-800 dark:text-slate-200 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
+          <%= render "shared/icons/items", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
           Items
         <% end %>
       </li>
-      <li class="px-6">
+      <li class="w-full px-10 py-4 <%= 'bg-teal-500' if controller_name == 'houses' %>">
         <%= link_to houses_path, class: "group flex items-center gap-4 text-slate-800 dark:text-slate-200 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
           <%= render "shared/icons/house", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
           Houses
         <% end %>
       </li>
-      <li class="px-6">
+      <li class="w-full px-10 py-4 <%= 'bg-teal-500' if controller_name == 'tags' %>">
         <%= link_to tags_path, class: "group flex items-center gap-4 text-slate-800 dark:text-slate-200 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
           <%= render "shared/icons/tag", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
           Tags
         <% end %>
       </li>
-      <li  class="mt-8 px-6 ">
-        <%= link_to houses_path, class: "group flex items-center gap-4 text-slate-800 dark:text-slate-200 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
-          <%= render "shared/icons/gear", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
-          Settings
-        <% end %>
-      </li>
-      <li class="px-6">
-        <% if user_signed_in? %>
-          <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "group flex items-center gap-4 text-slate-800 dark:text-slate-200 hover:text-slate-700 dark:hover:text-slate-400" do %>
-            <%= render "shared/icons/log_out", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
-            Log out
+      <div class="mt-10">
+        <li  class="w-full px-10 py-4 <%= 'bg-teal-500' if controller_name == 'settings' %> ">
+          <%= link_to houses_path, class: "group flex items-center gap-4 text-slate-800 dark:text-slate-200 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
+            <%= render "shared/icons/gear", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+            Settings
           <% end %>
-        <% else %>
-          <%= link_to new_user_session_path, class: "group flex items-center gap-4 text-slate-800 dark:text-slate-200 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
-            <%= render "shared/icons/log_in", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
-            Log in
+        </li>
+        <li class="w-full px-10 py-4">
+          <% if user_signed_in? %>
+            <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "group flex items-center gap-4 text-slate-800 dark:text-slate-200 hover:text-slate-700 dark:hover:text-slate-400" do %>
+              <%= render "shared/icons/log_out", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+              Log out
+            <% end %>
+          <% else %>
+            <%= link_to new_user_session_path, class: "group flex items-center gap-4 text-slate-800 dark:text-slate-200 group-hover:text-slate-700 dark:hover:text-slate-200" do %>
+              <%= render "shared/icons/log_in", klasses: "w-8 h-8 dark:stroke-slate-50 group-hover:dark:stroke-slate-400" %>
+              Log in
+            <% end %>
           <% end %>
-        <% end %>
-      </li>
+        </li>
+      </div>
     </ul>
   </div>
 </div>
