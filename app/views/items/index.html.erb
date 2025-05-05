@@ -18,7 +18,7 @@
   <ul class="mb-4 p-2">
     <%= turbo_frame_tag :items_list, class: "flex flex-col gap-4" do %>
       <% @items.each do |item| %>
-        <li><%= render partial: "item", locals: { item: item } %></li>
+        <%= render partial: "item", locals: { item: item } %>
       <% end %>
     <% end %>
     <% if @items.blank? %>

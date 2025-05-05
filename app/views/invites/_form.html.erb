@@ -1,13 +1,6 @@
 <%= simple_form_for(invite, url: house_invites_path(house), html: { data: { turbo_frame: "house_#{house.id}" }, class: "p-2  rounded-xl" }) do |f| %>
   <% if invite.errors.any? %>
-    <div class="mx-2 bg-red-600/90 text-slate-100 p-4 rounded-md">
-      <strong>Failed to invite user:</strong>
-      <ul class="list-disc list-inside">
-        <% invite.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
+    <%= render "shared/form_errors", resource: invite %>
   <% end %>
 
   <div class="flex gap-2">

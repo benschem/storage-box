@@ -3,14 +3,7 @@
     <%= f.hidden_field :house_id, value: house.id %>
 
     <% if room.errors.any? %>
-      <div class="mx-2 bg-red-600/90 text-slate-100 p-4 rounded-md">
-        <strong>Room not saved:</strong>
-        <ul class="list-disc list-inside">
-          <% room.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-        </ul>
-      </div>
+      <%= render "shared/form_errors", resource: room%>
     <% end %>
 
     <div class="flex gap-2">

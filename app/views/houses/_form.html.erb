@@ -2,14 +2,7 @@
   <%= simple_form_for(house, html: { data: { turbo_frame: "title_#{dom_id(house)}" }, class: "rounded-xl"  }) do |f| %>
 
     <% if house.errors.any? %>
-      <div class="mx-2 bg-red-600/90 text-slate-100 p-4 rounded-md">
-        <strong>House not saved:</strong>
-        <ul class="list-disc list-inside">
-          <% house.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-        </ul>
-      </div>
+      <%= render "shared/form_errors", resource: house %>
     <% end %>
 
     <div class="flex gap-2">

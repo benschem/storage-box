@@ -1,5 +1,5 @@
 <%= turbo_frame_tag dom_id(item) do %>
-  <div
+  <li
     class="relative flex flex-col gap-4 bg-slate-50 dark:bg-slate-900 border-teal-500 p-4 rounded-xl shadow-md dark:shadow-md/90 cursor-pointer hover:shadow-lg dark:hover:shadow-lg/90 hover:-translate-y-1 transition ease-linear duration-150 active:translate-0 active:shadow-sm dark:active:shadow-sm/90 focus:outline-none focus:ring-2 focus:ring-teal-400"
     data-controller="turbo-navigator"
     data-turbo-navigator-url-value="<%= item_path(item, closed: true, format: :turbo_stream) %>"
@@ -56,5 +56,5 @@
     <% if @item.image.attached? %>
         <%= image_tag @item.image, alt: "Picture of #{item.name}", class: "rounded-xl mt-2 text-slate-400 dark:text-slate-400", style: "height: 300px; object-fit: cover; object-position: center" %>
     <% end %>
-  </div>
+  </li>
 <% end %>

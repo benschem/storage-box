@@ -1,32 +1,34 @@
 <%= turbo_frame_tag dom_id(item) do %>
-  <%= link_to item_path(item, format: :turbo_stream), data: { turbo_frame: dom_id(item), turbo_prefetch: false }, class: "bg-slate-50 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90 p-4 flex gap-2 items-center justify-between hover:shadow-lg dark:hover:shadow-lg/90 hover:-translate-y-1 transition ease-linear duration-150 active:translate-0 active:shadow-sm dark:active:shadow-sm/90 focus:outline-none focus:ring-2 focus:ring-teal-400" do %>
-    <div class="flex flex-col gap-2 ">
-      <h3 class="text-md lg:text-xl font-semibold col-span-2 text-slate-900 dark:text-slate-100">
-        <%= item.name.capitalize %>
-      </h3>
+  <li>
+    <%= link_to item_path(item, format: :turbo_stream), data: { turbo_frame: dom_id(item), turbo_prefetch: false }, class: "bg-slate-50 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90 p-4 flex gap-2 items-center justify-between hover:shadow-lg dark:hover:shadow-lg/90 hover:-translate-y-1 transition ease-linear duration-150 active:translate-0 active:shadow-sm dark:active:shadow-sm/90 focus:outline-none focus:ring-2 focus:ring-teal-400" do %>
+      <div class="flex flex-col gap-2 ">
+        <h3 class="text-md lg:text-xl font-semibold col-span-2 text-slate-900 dark:text-slate-100">
+          <%= item.name.capitalize %>
+        </h3>
 
-      <div class="flex items-center flex-wrap gap-2 text-sm lg:text-lg text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
-        <div class="flex gap-1 items-center flex-wrap">
-          <%= render "shared/icons/house", klasses: "w-4 h-4" %>
-          <%= item.box&.room&.house&.name || item&.room&.house&.name %>
-        </div>
-
-        <div class="flex gap-1 items-center flex-wrap">
-          <%= render "shared/icons/room", klasses: "w-4 h-4" %>
-          <%= item.box&.room&.name&.capitalize || item&.room&.name&.capitalize %>
-        </div>
-
-        <% if item.box.present? %>
+        <div class="flex items-center flex-wrap gap-2 text-sm lg:text-lg text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
           <div class="flex gap-1 items-center flex-wrap">
-            <%= render "shared/icons/box", klasses: "w-4 h-4" %>
-            Box <%= item.box.number %>
+            <%= render "shared/icons/house", klasses: "w-4 h-4" %>
+            <%= item.box&.room&.house&.name || item&.room&.house&.name %>
           </div>
-        <% end %>
-      </div>
-    </div>
 
-    <% if item.image.attached? && item.image.variable? %>
-        <%= image_tag item.image.variant(resize_to_limit: [100, 100]), alt: "Picture of #{item.name}", class: "w-[70px] h-[70px] object-cover rounded-xl text-slate-950 dark:text-slate-100" %>
+          <div class="flex gap-1 items-center flex-wrap">
+            <%= render "shared/icons/room", klasses: "w-4 h-4" %>
+            <%= item.box&.room&.name&.capitalize || item&.room&.name&.capitalize %>
+          </div>
+
+          <% if item.box.present? %>
+            <div class="flex gap-1 items-center flex-wrap">
+              <%= render "shared/icons/box", klasses: "w-4 h-4" %>
+              Box <%= item.box.number %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <% if item.image.attached? && item.image.variable? %>
+          <%= image_tag item.image.variant(resize_to_limit: [100, 100]), alt: "Picture of #{item.name}", class: "w-[70px] h-[70px] object-cover rounded-xl text-slate-950 dark:text-slate-100" %>
+      <% end %>
     <% end %>
-  <% end %>
+  </li>
 <% end %>

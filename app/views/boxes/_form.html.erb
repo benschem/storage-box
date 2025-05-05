@@ -1,32 +1,16 @@
-<%= simple_form_for(box, class: "rounded-xl"  }) do |f| %>
-
+<%= simple_form_for(box, class: "rounded-xl") do |f| %>
   <% if box.errors.any? %>
-    <div class="mx-2 bg-red-600/90 text-slate-100 p-4 rounded-md">
-      <strong>Box not saved:</strong>
-      <ul class="list-disc list-inside">
-        <% box.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
+    <%= render "shared/form_errors", resource: box %>
   <% end %>
-
   <div class="flex gap-2">
-    <%= f.input :name,
-      label: "Box name",
-      label_html: { class: "sr-only" },
-      placeholder: "Box name",
-      wrapper_html: { class: "grow" },
+    <%= f.input :room_id, as: :select,
+      label: false,
+      include_blank: "Room name",
+      collection: rooms.map { |room| ["#{room.name.capitalize} - #{room.house.name.capitalize}", room.id] },
       error_html: { class: "text-red-400 text-sm mt-1" },
-      input_html: {
-        class: "grow w-full rounded-md bg-slate-300 dark:bg-slate-800 text-lg text-slate-950 dark:text-slate-100 placeholder:text-slate-500 placeholder:dark:text-slate-500 p-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
-      }
+      wrapper_html: { class: "grow" },
+      input_html: { class: "w-full rounded-md p-3 bg-slate-200 dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-400 text-slate-900 dark:text-slate-50" }
     %>
-
-    <% if box.id == nil %>
-      <%= f.button :submit, "Add box", class: "cursor-pointer bg-teal-500 hover:bg-teal-600 text-slate-100 px-4 py-2 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400" %>
-    <% else %>
-      <%= f.button :submit, "Save", class: "cursor-pointer bg-teal-500 hover:bg-teal-600 text-slate-100 px-4 py-2 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400" %>
-    <% end %>
+    <%= f.button :submit, "Add box", class: "cursor-pointer bg-teal-500 hover:bg-teal-600 text-slate-100 px-4 py-2 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400" %>
   </div>
 <% end %>
