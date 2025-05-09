@@ -12,8 +12,8 @@ class Invite < ApplicationRecord
   validates :invitee_email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true
 
   before_create :generate_token
-  before_create :set_expiry
-  after_create :try_to_set_invitee
+  after_create_commit :set_expiry
+  after_create_commit :try_to_set_invitee
 
   after_create_commit :invite_invitee
   after_update_commit :notify_inviter, if: -> { status == "accepted" }

@@ -2,8 +2,8 @@ TODO:
 
 [ ] Invite User to House feature
 [ ] Invite token
-[ ] Tags in items search
 [ ] Items new page should be a turbo frame
+[X] Tags in items search
 [X] Can't delete houses, rooms or boxes that still have items
 [X] Add tags to Items
 [X] Tags index
@@ -27,12 +27,12 @@ NICE TODO:
 [ ] Admin mailer for failed jobs
 [ ] Stimulus controller to clear new house form after one gets submitted
 [ ] Mission control for jobs
-[ ] Check for N+1 queries
+[ ] Filter javascript is broken - restrict boxes in that room etc
+[X] Check for N+1 queries
 
 BUGS:
 
 [X] Sort feature doesn't work
-[ ] Filter javascript is broken - restrict boxes in that room etc
 [X] Deleting item leaves space in index
 [X] Deleting or editing Rooms on House index needs turbo response to stop content missing
 
