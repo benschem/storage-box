@@ -2,8 +2,10 @@ class HousesController < ApplicationController
   before_action :set_house, only: %i[ edit update destroy ]
 
   def index
-    @houses = policy_scope(House).includes({rooms: :boxes}, :users, :items)
+    @houses = policy_scope(House).includes(:rooms, :users)
     @house = House.new
+
+    @invites = current_user.received_invites.pending
   end
 
   def create

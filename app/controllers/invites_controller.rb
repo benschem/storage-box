@@ -10,14 +10,15 @@ class InvitesController < ApplicationController
     if existing_invite
       redirect_to houses_path, alert: "That user has already been invited."
     elsif @invite.save
-      # TODO
+      flash.now[:alert] = "Invitation sent!"
     else
-      # TODO
+      flash.now[:alert] = "Something went wrong! Invitation not sent."
     end
   end
 
   def update
     @invite = Invite.find(params[:id])
+    authorize @invite
 
     unless valid_invite?
       redirect_to root_path, alert: "This invite cannot be updated."
@@ -26,10 +27,9 @@ class InvitesController < ApplicationController
 
     case params[:status]
     when 'accepted'
-      @invite.accepted!
-      @invite.house.users << @invite.invitee unless @invite.house.users.include?(@invite.invitee)
+      @invite.accept_and_join_house!
     when 'declined'
-      @invite.declined!
+      @invite.decline_invite!
     else
       @invite.errors.add(:status, "An invite can only be accepted or declined")
     end
@@ -37,12 +37,14 @@ class InvitesController < ApplicationController
     if @invite.errors.any?
       render :edit, status: :unprocessable_entity
     else
-      redirect_to house_path(@invite.house), notice: "Invite updated."
+      notice = "Invite updated."
+      if @invite.accepted?
+        notice = "Accepted invitation to join #{@invite.house.name.capitalize}"
+      elsif @invite.declined?
+        notice = "Declined invitation to join #{@invite.house.name.capitalize}"
+      end
+      redirect_to house_path(@invite.house), notice: notice
     end
-  end
-
-  def accept
-    # TODO
   end
 
   private

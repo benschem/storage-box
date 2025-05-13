@@ -3,6 +3,7 @@ class House < ApplicationRecord
   has_many :rooms, dependent: :restrict_with_error
   has_many :boxes, through: :rooms
   has_many :items
+  has_many :invites, dependent: :destroy
 
   validates :name, presence: true
 end

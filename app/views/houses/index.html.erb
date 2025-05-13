@@ -2,6 +2,15 @@
   Houses
 </h1>
 
+<%= turbo_stream_from "user_#{current_user.id}_invites" %>
+  <div id="notifications" class="mx-2 mb-4">
+    <% if @invites.present? %>
+      <% @invites.each do |invite| %>
+        <%= render "invites/invite", invite: invite %>
+      <% end %>
+    <% end %>
+  </div>
+
 <div class="mx-2 mb-4">
   <%= render "houses/form", house: @house %>
 </div>
