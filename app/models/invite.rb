@@ -12,8 +12,8 @@ class Invite < ApplicationRecord
   validates :invitee_email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true
 
   before_create :generate_token
+  after_create :try_to_set_invitee
   after_create_commit :set_expiry
-  after_create_commit :try_to_set_invitee
 
   after_create_commit :invite_invitee
   after_update_commit :notify_inviter, if: -> { status == "accepted" }
@@ -31,7 +31,8 @@ class Invite < ApplicationRecord
 
   def try_to_set_invitee
     if self.invitee.nil? && self.invitee_email.present?
-      self.invitee = User.find_by(email: self.invitee_email)
+      invitee_user = User.find_by(email: self.invitee_email)
+      self.invitee = invitee_user if invitee_user.exists?
     end
   end
 

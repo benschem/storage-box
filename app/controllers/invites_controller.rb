@@ -19,10 +19,7 @@ class InvitesController < ApplicationController
   def update
     @invite = Invite.find(params[:id])
 
-    unless @invite.pending? &&
-           !@invite.expired? &&
-           @invite.invitee.present? &&
-           @invite.invitee.email == @invite.invitee_email
+    unless valid_invite?
       redirect_to root_path, alert: "This invite cannot be updated."
       return
     end
@@ -52,5 +49,12 @@ class InvitesController < ApplicationController
 
   def invite_params
     params.require(:invite).permit(:invitee_email, :status)
+  end
+
+  def valid_invite?
+    @invite.pending? &&
+    !@invite.expired? &&
+    @invite.invitee.present? &&
+    @invite.invitee.email == @invite.invitee_email
   end
 end
