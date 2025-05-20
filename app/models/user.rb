@@ -9,7 +9,6 @@ class User < ApplicationRecord
   has_many :rooms, through: :houses
   has_many :boxes, through: :rooms
   has_many :tags
-
   has_many :sent_invites, class_name: 'Invite', foreign_key: 'inviter_id'
   has_many :received_invites, class_name: 'Invite', foreign_key: 'invitee_id'
 

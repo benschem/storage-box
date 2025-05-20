@@ -10,13 +10,9 @@ class HousePolicy < ApplicationPolicy
   def destroy?
     user.houses.include?(record)
   end
-
   class Scope < ApplicationPolicy::Scope
     def resolve
-      scope
-        .joins(:users)
-        .where(users: { id: user.id })
-        .distinct
+      scope.where(id: user.houses.select(:id))
     end
   end
 end

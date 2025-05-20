@@ -12,42 +12,72 @@ class Invite < ApplicationRecord
   validates :invitee_email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true
 
   before_create :generate_token
-  before_create :set_expiry
-  after_create :try_to_set_invitee
+  before_create :try_to_set_invitee
+  before_create :set_expiry_timestamp
 
-  after_create_commit :invite_invitee
-  after_update_commit :notify_inviter, if: -> { status == "accepted" }
+  after_create_commit :schedule_expiry_job
+  after_create_commit :notify_invitee
+
+  def accept_and_join_house!
+    transaction do
+      update!(status: :accepted)
+      house.users << invitee unless house.users.include?(invitee)
+      notify_inviter_of_acceptance
+    end
+  end
+
+  def decline_invite!
+    update!(status: :declined)
+  end
 
   private
+
+  def notify_invitee
+    if User.exists?(email: invitee_email)
+      notify_invitee
+    else
+      queue_invite_email
+    end
+  end
 
   def generate_token
     self.token ||= SecureRandom.urlsafe_base64(24)
   end
 
-  def set_expiry
+  def set_expiry_timestamp
     self.expires_on = 2.days.from_now
+  end
+
+  def schedule_expiry_job
     MarkInviteAsExpiredJob.set(wait_until: self.expires_on + 1.minute).perform_later(self)
   end
 
   def try_to_set_invitee
     if self.invitee.nil? && self.invitee_email.present?
-      self.invitee = User.find_by(email: self.invitee_email)
+      invitee_user = User.find_by(email: self.invitee_email)
+      self.invitee = invitee_user if invitee_user
     end
   end
 
-  def invite_invitee
-    user_exists =  User.find_by(email: invitee_email).present?
+  def notify_invitee
+      broadcast_append_to "user_#{invitee.id}_invites",
+                          partial: "invites/invite",
+                          target: "notifications",
+                          locals: { invite: self }
 
-    if user_exists
-      NotifyUserOfNewHouseInvite.perform_later(self)
-    else
-      # Send email asking to signup
-      # InviteMailer.with(invite: self).invite_email.deliver_later
-      # User gets notified upon account creation via callback in User model
-    end
+
   end
 
-  def notify_inviter
-    NotifyUserOfAcceptedHouseInviteJob.perform_later(self)
+  def queue_invite_email
+    # Send email asking to signup
+    # InviteMailer.with(invite: self).invite_email.deliver_later
+    # User gets notified upon account creation via callback in User model
+  end
+
+  def notify_inviter_of_acceptance
+    broadcast_append_to "user_#{inviter.id}_invites",
+                        partial: "invites/invite_accepted",
+                        target: "notifications",
+                        locals: { invite: self }
   end
 end

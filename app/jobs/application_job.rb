@@ -8,9 +8,6 @@ class ApplicationJob < ActiveJob::Base
   # Most jobs are safe to ignore if the underlying records are no longer available
   discard_on ActiveJob::DeserializationError
 
-  # Default timeout to avoid jobs potentially hanging indefinitely
-  self.timeout = 5.minutes
-
   # Log when a job starts and finishes
   before_perform do |job|
     Rails.logger.info("Starting job #{job.class.name} with arguments: #{job.arguments}")
@@ -23,6 +20,11 @@ class ApplicationJob < ActiveJob::Base
   # Handle job failures
   rescue_from StandardError do |exception|
     Rails.logger.error("Job failed: #{exception.message}")
+    Rails.logger.error(exception.backtrace.join("\n")) if Rails.env.development?
+
+    # Re-raise in non-prod so bugs are not silently ignored
+    raise exception unless Rails.env.production?
+
     # TODO: AdminMailer.job_failed(exception).deliver_later
   end
 end
