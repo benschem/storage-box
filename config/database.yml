@@ -31,6 +31,12 @@ test:
   <<: *default
   database: storage_box_test
 
+staging:
+  <<: *default
+  database: storage_box_production
+  username: storage_box
+  password: <%= ENV['STORAGE_BOX_DATABASE_PASSWORD'] %>
+
 production:
   <<: *default
   database: storage_box_production

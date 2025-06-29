@@ -44,7 +44,7 @@ gem "simple_form", "~> 5.3"
 # Devise for authentication [https://github.com/heartcombo/devise]
 gem "devise", "~> 4.9"
 
-group :development, :test do
+group :development, :staging, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
 
@@ -53,6 +53,9 @@ group :development, :test do
 
   # generate realistic fake data [https://github.com/faker-ruby/faker]
   gem "faker", "~> 3.5"
+
+  # Don't send real emails outside of production [https://github.com/ryanb/letter_opener]
+  gem "letter_opener", "~> 1.10"
 end
 
 group :development do
