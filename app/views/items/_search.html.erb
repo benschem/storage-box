@@ -25,10 +25,10 @@
         class: "w-full pl-12 pr-4 py-2 rounded-xl border bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 text-lg focus:outline-none focus:ring-2 focus:ring-teal-500" %>
   </div>
 
-  <label for="filter" class="mx-4 mt-2 font-medium whitespace-nowrap max-h-min">
+  <label for="filter" class="mx-2 mt-2 font-medium whitespace-nowrap max-h-min">
     Filter by:
   </label>
-  <div class="mx-4 grid grid-cols-2 gap-2 items-center">
+  <div class="grid grid-cols-2 gap-2 items-center">
     <%= select_tag :filter_by_house,
       options_for_select(
         @houses.map { |house| [house.name.capitalize, house.id] },
@@ -53,7 +53,7 @@
     %>
   </div>
 
-  <div class="mx-4 mt-2  grid grid-cols-2 gap-2 items-center">
+  <div class="mt-2  grid grid-cols-2 gap-2 items-center">
     <%= select_tag :filter_by_box,
       options_for_select(
         [
@@ -81,7 +81,7 @@
     %>
   </div>
 
-  <div class="mx-4 mt-2 flex gap-2 items-center">
+  <div class="mt-2 flex gap-2 items-center">
     <label for="sort" class="font-medium whitespace-nowrap max-h-min">
       Sort by:
     </label>

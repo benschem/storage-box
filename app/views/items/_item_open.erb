@@ -1,6 +1,6 @@
 <%= turbo_frame_tag dom_id(item) do %>
   <li
-    class="relative flex flex-col gap-4 bg-slate-50 dark:bg-slate-900 border-teal-500 p-4 rounded-xl shadow-md dark:shadow-md/90 cursor-pointer hover:shadow-lg dark:hover:shadow-lg/90 hover:-translate-y-1 transition ease-linear duration-150 active:translate-0 active:shadow-sm dark:active:shadow-sm/90 focus:outline-none focus:ring-2 focus:ring-teal-400"
+    class="relative flex flex-col gap-4 bg-slate-50 dark:bg-slate-900 border-teal-500 p-4 rounded-xl shadow-md dark:shadow-md/90 cursor-pointer hover:shadow-lg dark:hover:shadow-lg/90 hover:-translate-y-1 transition ease-linear duration-150 active:translate-0 active:shadow-sm dark:active:shadow-sm/90 focus:outline-none"
     data-controller="turbo-navigator"
     data-turbo-navigator-url-value="<%= item_path(item, closed: true, format: :turbo_stream) %>"
     data-turbo-navigator-frame-value="<%= dom_id(item) %>"
@@ -19,20 +19,20 @@
 
       </div>
 
-      <div class="text-md flex gap-4 text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
+      <div class="text-md flex gap-1 text-sm lg:text-lg text-slate-500 stroke-slate-500 dark:text-slate-400 dark:stroke-slate-400">
         <div class="flex gap-1 items-center flex-wrap">
-          <%= render "shared/icons/house", klasses: "w-4 h-4" %>
+          <%= render "shared/icons/map_pin", klasses: "w-4 h-4" %>
           <%= @item.box&.room&.house&.name || @item&.room&.house&.name %>
         </div>
 
         <div class="flex gap-1 items-center flex-wrap">
-          <%= render "shared/icons/room", klasses: "w-4 h-4" %>
+          <%= render "shared/icons/arrow_long_right", klasses: "w-4 h-4" %>
           <%= @item.box&.room&.name&.capitalize || @item&.room&.name&.capitalize %>
         </div>
 
         <% if @item.box.present? %>
           <div class="flex gap-1 items-center flex-wrap">
-            <%= render "shared/icons/box", klasses: "w-4 h-4" %>
+            <%= render "shared/icons/arrow_long_right", klasses: "w-4 h-4" %>
             Box <%= @item.box.number %>
           </div>
         <% end %>
