@@ -2,7 +2,7 @@ class ItemsController < ApplicationController
   before_action :set_item, only: %i[show edit update destroy]
 
   def index
-    items = policy_scope(Item).includes(:box, :room, image_attachment: :blob)
+    items = policy_scope(Item).includes(:box, image_attachment: :blob)
 
     house_id = safe_house_param
     items = items.where(house: house_id) if house_id
@@ -44,7 +44,7 @@ class ItemsController < ApplicationController
 
   def show
     respond_to do |format|
-      format.html
+      format.html { render :index }
       format.turbo_stream do
         partial = params[:closed] == "true" ? "items/item" : "items/item_open"
         render turbo_stream: turbo_stream.replace(
