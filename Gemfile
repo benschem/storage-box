@@ -44,6 +44,7 @@ gem "simple_form", "~> 5.3"
 # Devise for authentication [https://github.com/heartcombo/devise]
 gem "devise", "~> 4.9"
 
+# Every environment except production
 group :development, :staging, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
@@ -51,11 +52,19 @@ group :development, :staging, :test do
   # Load environment variables from .env into ENV in development [https://github.com/bkeepers/dotenv]
   gem "dotenv-rails", "~> 3.1"
 
-  # generate realistic fake data [https://github.com/faker-ruby/faker]
-  gem "faker", "~> 3.5"
-
   # Don't send real emails outside of production [https://github.com/ryanb/letter_opener]
   gem "letter_opener", "~> 1.10"
+end
+
+group :development, :test do
+  # Needed for generators in dev
+  gem 'rspec-rails', '~> 7.0.0'
+
+  # Useful for manual factory testing in console
+  gem 'factory_bot_rails'
+
+  # Generate realistic fake data [https://github.com/faker-ruby/faker]
+  gem "faker", "~> 3.5"
 end
 
 group :development do
@@ -76,6 +85,9 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Simple one-liner tests for common Rails functionality [https://github.com/thoughtbot/shoulda-matchers]
+  gem 'shoulda-matchers', '~> 6.0'
 end
 
 # Silence warning: ostruct.rb was loaded from the standard library, but will no longer be part of the default gems starting from Ruby 3.5.0.
