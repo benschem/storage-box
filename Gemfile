@@ -57,7 +57,7 @@ group :development, :staging, :test do
 end
 
 group :development, :test do
-  # Needed for generators in dev
+  # Rspec is a drop-in alternative to Rails default testing framework, Minitest
   gem 'rspec-rails', '~> 7.0.0'
 
   # Useful for manual factory testing in console
