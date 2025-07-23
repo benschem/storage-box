@@ -1,25 +1,16 @@
 class Box < ApplicationRecord
+  belongs_to :house
   belongs_to :room, counter_cache: true
   has_many :items
 
   before_validation :set_number, on: :create
-
   validates :number, presence: true, numericality: { only_integer: true }
-  validate :unique_number_within_house
-
-  def house
-    self.room.house
-  end
+  validates :number, uniqueness: { scope: :house_id }
 
   private
 
   def set_number
-    self.number ||= self&.house&.boxes.maximum(:number).to_i + 1
-  end
-
-  def unique_number_within_house
-    if room && room.house.boxes.where(number: number).exists?
-      errors.add(:number, "must be unique within the house")
-    end
+    highest_number_in_house = house&.boxes&.maximum(:number) || 0
+    self.number ||= highest_number_in_house + 1
   end
 end

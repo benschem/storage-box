@@ -36,7 +36,7 @@ house2 = House.create(name: "Mum and dad's place")
 user.houses << house2
 puts "House created: #{house2.name}"
 
-puts "Creating Room..."
+puts "Creating Rooms..."
 room = Room.create(name: 'Garage', house: house)
 puts "Room created: #{room.name}"
 5.times do
@@ -52,7 +52,8 @@ end
 
 puts "Creating Boxes..."
 15.times do
-  box = Box.create(room: house.rooms.sample)
+  room = house.rooms.sample
+  box = Box.create(room: room, house: room.house)
   puts "Box created: #{box.number}"
 end
 
