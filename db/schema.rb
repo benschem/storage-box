@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_05_050253) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_24_114148) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -48,6 +48,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_05_050253) do
     t.bigint "room_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "house_id", null: false
+    t.index ["house_id"], name: "index_boxes_on_house_id"
     t.index ["number", "room_id"], name: "index_boxes_on_number_and_room_id", unique: true
     t.index ["room_id"], name: "index_boxes_on_room_id"
   end
@@ -87,7 +89,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_05_050253) do
     t.string "name"
     t.string "notes"
     t.bigint "box_id"
-    t.bigint "room_id"
+    t.bigint "room_id", null: false
     t.bigint "house_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
@@ -265,6 +267,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_05_050253) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "boxes", "houses"
   add_foreign_key "boxes", "rooms"
   add_foreign_key "invites", "houses"
   add_foreign_key "invites", "users", column: "invitee_id"

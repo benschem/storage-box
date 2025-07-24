@@ -3,7 +3,7 @@ class Item < ApplicationRecord
 
   belongs_to :user
   belongs_to :house, counter_cache: true
-  belongs_to :room, optional: true
+  belongs_to :room
   belongs_to :box, optional: true
   has_and_belongs_to_many :tags, optional: true
 
@@ -13,7 +13,8 @@ class Item < ApplicationRecord
 
   validates :name, presence: true
   validates :notes, length: { maximum: 255 }, allow_blank: true
-  validate :box_or_room_present
+  validate :box_is_in_same_house_as_item
+  validate :room_is_in_same_house_as_item
 
   scope :search, ->(query) {
     return none if query.blank?
@@ -33,32 +34,40 @@ class Item < ApplicationRecord
   }
 
   pg_search_scope :search_by_text,
-  against: [
-    [:name, 'A'],           # Highest weight
-    [:notes, 'C']     # Lower weight
-  ],
-  associated_against: {
-    tags: [:name]           # Default weight is B for associated
-  },
-  using: {
-    tsearch: {
-      prefix: true,         # Allows partial word matching
-      dictionary: 'english',
-      tsvector_column: nil, # We're generating the vector on the fly
-      normalization: 2,     # Accounts for word frequency
-      any_word: true
-    },
-    trigram: {}
-  },
-  ranked_by: ":tsearch + (0.5 * :trigram)"
+                  against: [
+                    [:name, 'A'], # Highest weight
+                    [:notes, 'C'] # Lower weight
+                  ],
+                  associated_against: {
+                    tags: [:name] # Default weight is B for associated
+                  },
+                  using: {
+                    tsearch: {
+                      prefix: true, # Allows partial word matching
+                      dictionary: 'english',
+                      tsvector_column: nil, # We're generating the vector on the fly
+                      normalization: 2, # Accounts for word frequency
+                      any_word: true
+                    },
+                    trigram: {}
+                  },
+                  ranked_by: ":tsearch + (0.5 * :trigram)"
 
   private
 
-  def box_or_room_present
-    if box_id.blank? && room_id.blank?
-      errors.add(:base, "Item must be in either a box or a room")
-    elsif box_id.present? && room_id.present?
-      errors.add(:base, "Item can be in a box only or a room only, not both")
+  def box_is_in_same_house_as_item
+    return unless box
+
+    if box.house != house
+      errors.add(:box, "must be in the same house as the item")
+    end
+  end
+
+  def room_is_in_same_house_as_item
+    return unless room
+
+    if room.house != house
+      errors.add(:room, "must be in the same house as the item")
     end
   end
 
