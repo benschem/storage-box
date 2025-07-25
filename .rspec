@@ -1,1 +1,1 @@
---require spec_helper --format progress --order random:123456
+--require spec_helper --format progress
