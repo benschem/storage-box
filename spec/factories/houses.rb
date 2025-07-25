@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :house do
-    name { 'My house' }
+    sequence(:name) { |n| "house_#{n}" }
   end
 end
