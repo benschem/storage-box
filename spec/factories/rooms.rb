@@ -2,6 +2,6 @@ FactoryBot.define do
   factory :room do
     association :house
 
-    name { 'Garage' }
+    sequence(:name) { |n| "room_#{n}" }
   end
 end
