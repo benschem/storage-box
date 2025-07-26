@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe House, type: :model do
+  subject {
+    described_class.new(
+      name: 'My house',
+    )
+  }
+
   describe 'associations' do
     it { should have_and_belong_to_many(:users) }
     it { should have_many(:rooms).dependent(:restrict_with_error) }
