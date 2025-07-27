@@ -1,21 +1,21 @@
 require 'rails_helper'
 
 RSpec.describe Box, type: :model do
-  let(:house) { create(:house) }
-  let(:room) { create(:room, house: house) }
-
-  subject {
+  subject do
     described_class.new(
       number: 1,
       room: room,
       house: house
     )
-  }
+  end
+
+  let(:house) { create(:house) }
+  let(:room) { create(:room, house: house) }
 
   describe 'associations' do
-    it { should belong_to(:house) }
-    it { should belong_to(:room) }
-    it { should have_many(:items) }
+    it { is_expected.to belong_to(:house) }
+    it { is_expected.to belong_to(:room) }
+    it { is_expected.to have_many(:items) }
   end
 
   let!(:box_1) { create(:box, room: room, house: house) }
@@ -23,25 +23,20 @@ RSpec.describe Box, type: :model do
   let!(:box_3) { create(:box, room: room, house: house) }
 
   it 'increments room.boxes_count when created' do
-    expect {
+    expect do
       create(:box, room: room, house: house)
-    }.to change { room.reload.boxes_count }.by(1)
+    end.to change { room.reload.boxes_count }.by(1)
   end
 
   it 'decrements room.boxes_count when deleted' do
-    expect {
+    expect do
       box_1.destroy!
-    }.to change { room.reload.boxes_count }.by(-1)
+    end.to change { room.reload.boxes_count }.by(-1)
   end
 
   it 'is numbered sequentially within a house' do
     box_numbers = house.boxes.pluck(:number)
-    expect(box_numbers).to match_array([1, 2, 3])
-  end
-
-  it 'has a unique number within a house' do
-    box_numbers = house.boxes.pluck(:number)
-    expect(box_numbers).to match_array([1, 2, 3])
+    expect(box_numbers).to contain_exactly(1, 2, 3)
   end
 
   it 'cannot have a duplicate number within a house' do
@@ -58,13 +53,13 @@ RSpec.describe Box, type: :model do
 
     let!(:new_box) { create(:box, room: room, house: house) }
 
-    it "is assigned the next highest number in the house (reuses deleted number)" do
+    it 'is assigned the next highest number in the house (reuses deleted number)' do
       expect(new_box.number).to eq(deleted_box_number)
     end
 
     it 'still has a unique number per house' do
       box_numbers = house.boxes.pluck(:number)
-      expect(box_numbers).to match_array([1, 2, 3])
+      expect(box_numbers).to contain_exactly(1, 2, 3)
     end
   end
 
@@ -83,7 +78,7 @@ RSpec.describe Box, type: :model do
 
     it 'still has a unique number per house' do
       box_numbers = house.boxes.pluck(:number)
-      expect(box_numbers).to match_array([1, 3, 4])
+      expect(box_numbers).to contain_exactly(1, 3, 4)
     end
   end
 
@@ -104,7 +99,7 @@ RSpec.describe Box, type: :model do
 
     it 'still has a unique number per house' do
       box_numbers = house_2.boxes.pluck(:number)
-      expect(box_numbers).to match_array([1, 2, 3])
+      expect(box_numbers).to contain_exactly(1, 2, 3)
     end
   end
 end
