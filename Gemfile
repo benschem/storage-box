@@ -65,6 +65,30 @@ group :development, :test do
 
   # Generate realistic fake data [https://github.com/faker-ruby/faker]
   gem "faker", "~> 3.5"
+
+  # Pretty print your Ruby objects with style -- in full color and with proper indentation [https://github.com/awesome-print/awesome_print]
+  gem 'awesome_print'
+
+  # A Ruby static code analyzer and formatter, based on the community Ruby style guide [https://github.com/rubocop/rubocop]
+  gem 'rubocop', '~> 1.78'
+
+  # rubocop-capybara [https://rubygems.org/gems/rubocop-capybara]
+  gem 'rubocop-capybara', '~> 2.22'
+
+  # rubocop-factory_bot [https://rubygems.org/gems/rubocop-factory_bot]
+  gem 'rubocop-factory_bot', '~> 2.27'
+
+  # rubocop-rails [https://rubygems.org/gems/rubocop-rails]
+  gem 'rubocop-rails', '~> 2.32'
+
+  # rubocop-rspec [https://rubygems.org/gems/rubocop-rspec]
+  gem 'rubocop-rspec', '~> 3.6'
+
+  # rubocop-rspec_rails [https://rubygems.org/gems/rubocop-rspec_rails]
+  gem 'rubocop-rspec_rails', '~> 2.31'
+
+  # rubocop-performance [https://github.com/rubocop/rubocop-performance]
+  gem 'rubocop-performance', '~> 1.25'
 end
 
 group :development do

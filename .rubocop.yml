@@ -1,0 +1,25 @@
+plugins:
+  - rubocop-performance
+  - rubocop-capybara
+  - rubocop-factory_bot
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-rspec_rails
+
+AllCops:
+  TargetRubyVersion: 3.3.5
+  NewCops: enable
+  Exclude:
+    - ".yarn/*"
+    - "bin/*"
+    - "db/schema.rb"
+    - "node_modules/**/*"
+    - "tmp/**/*"
+    - "log/**/*"
+    - "storage/**/*"
+    - "vendor/**/*"
+    - "coverage/**/*"
+    - "**/*.min.js"
+    - "**/*.map"
+    - "public/**/*"
+    - "spec/fixtures/**/*"
