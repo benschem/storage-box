@@ -40,3 +40,7 @@ WISHLIST:
 
 [ ] Slugs based on name for urls for house and rooms
 [ ]
+
+REFACTORING:
+[ ] `decline_invite!` could just use the enum `declined!`
+[ ] Tags do them properly - check scope, make the query object, also you probably broke them in the actual app
