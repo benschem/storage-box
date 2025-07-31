@@ -1,16 +1,20 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe Tag, type: :model do
-  let(:house) { create(:house) }
-
-  subject {
+RSpec.describe Tag do
+  subject do
     described_class.new(
       name: 'tools',
       house: house
     )
-  }
+  end
 
-  it { should belong_to(:house) }
-  it { should have_and_belong_to_many(:items) }
-  it { should validate_uniqueness_of(:name).scoped_to(:house_id) }
+  let(:house) { create(:house) }
+
+  describe 'associations' do
+    it { is_expected.to belong_to(:house) }
+    it { is_expected.to have_and_belong_to_many(:items) }
+    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:house_id) }
+  end
 end
