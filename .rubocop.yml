@@ -23,3 +23,6 @@ AllCops:
     - "**/*.map"
     - "public/**/*"
     - "spec/fixtures/**/*"
+
+RSpecRails/InferredSpecType:
+  Enabled: false
