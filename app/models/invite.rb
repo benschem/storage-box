@@ -15,8 +15,15 @@
 #
 # An Invitation expires.
 # An Invitation ensures that only the user invited can accept.
+# If Invite is still pending and it expires it should be deleted
+# TODO: If invite is declined it should not be deleted and prevent future invites from user?
+# TODO: Consider blocking?
 #
 class Invite < ApplicationRecord
+  include InviteNotifier
+
+  DAYS_VALID = 3.days
+
   belongs_to :house
 
   belongs_to :inviter,
@@ -30,65 +37,36 @@ class Invite < ApplicationRecord
 
   enum :status, { pending: 'pending', accepted: 'accepted', declined: 'declined', expired: 'expired' }
 
-  before_validation { downcase_strip_invitee_email }
+  before_validation { format_invitee_email }
   validates :invitee_email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true
 
-  before_create :set_expiry_timestamp
+  before_create :set_expiry_time
   before_create :generate_url_token
-  before_create :set_invitee
+  before_create :assign_invitee_if_email_registered
 
-  after_create_commit :notify_invitee
-  after_create_commit :schedule_expiry
+  after_create_commit :schedule_expiration
 
   private
 
-  def downcase_strip_invitee_email
+  def format_invitee_email
     self.invitee_email = invitee_email.downcase.strip if invitee_email.present?
+  end
+
+  def set_expiry_time
+    self.expires_on = DAYS_VALID.from_now
   end
 
   def generate_url_token
     self.token ||= SecureRandom.urlsafe_base64(24)
   end
 
-  def set_invitee
-    return false if invitee.present? || invitee_email.blank?
+  def assign_invitee_if_email_registered
+    return if invitee_email.blank? || invitee.present?
 
     self.invitee = User.find_by(email: invitee_email)
   end
 
-  def set_expiry_timestamp
-    self.expires_on = 2.days.from_now
-  end
-
-  def notify_invitee
-    if invitee
-      notify_in_app
-    else
-      queue_invite_email
-    end
-  end
-
-  def schedule_expiry
+  def schedule_expiration
     MarkInviteAsExpiredJob.set(wait_until: expires_on + 1.minute).perform_later(self)
-  end
-
-  def notify_in_app
-    broadcast_append_to "user_#{invitee.id}_invites",
-                        partial: 'invites/invite',
-                        target: 'notifications',
-                        locals: { invite: self }
-  end
-
-  def queue_invite_email
-    # Send email asking to signup
-    # InviteMailer.with(invite: self).invite_email.deliver_later
-    # User gets notified upon account creation via callback in User model
-  end
-
-  def notify_inviter_of_acceptance
-    broadcast_append_to "user_#{inviter.id}_invites",
-                        partial: 'invites/invite_accepted',
-                        target: 'notifications',
-                        locals: { invite: self }
   end
 end

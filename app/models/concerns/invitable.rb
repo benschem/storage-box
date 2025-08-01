@@ -20,18 +20,20 @@ module Invitable
     after_create_commit :check_for_invites
   end
 
-  def accept_invite(invite)
+  def accept_invite(invite:)
+    # TODO: Think about using custom errors here
     raise StandardError, 'User was not invited' unless invited?(invite)
     raise StandardError, 'User is already a member of the house' if member_of_house?(invite.house)
+    raise StandardError, 'Invite is expired' if invite.expired?
 
     transaction do
       invite.update!(status: :accepted)
       invite.house.users << self
-      # notify_inviter_of_acceptance
+      invite.notify_of_acceptance_in_app(user: invite.inviter) # TODO: Do we need to do this? Views can use #status
     end
   end
 
-  def decline(invite)
+  def decline_invite(invite:)
     invite.update!(status: :declined)
   end
 
@@ -43,7 +45,6 @@ module Invitable
 
     invites.each do |invite|
       invite.update!(invitee: self)
-      # NotifyUserOfNewHouseInvite.perform_later(invite)
     end
   end
 
