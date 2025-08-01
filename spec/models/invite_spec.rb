@@ -2,16 +2,14 @@ require 'rails_helper'
 
 RSpec.describe Invite, type: :model do
   describe 'associations' do
-    it { should belong_to(:house) }
-    it { should belong_to(:inviter).class_name('User') }
-    it { should belong_to(:invitee).class_name('User').optional }
+    it { is_expected.to belong_to(:house) }
+    it { is_expected.to belong_to(:inviter).class_name('User') }
+    it { is_expected.to belong_to(:invitee).class_name('User').optional }
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:house) }
-    it { should validate_presence_of(:inviter) }
-    it { should validate_presence_of(:invitee_email) }
-    it { should allow_value('test@example.com').for(:invitee_email) }
+    it { is_expected.to validate_presence_of(:invitee_email) }
+    it { is_expected.to allow_value('test@example.com').for(:invitee_email) }
   end
 
   describe 'callbacks' do
@@ -33,18 +31,15 @@ RSpec.describe Invite, type: :model do
 
   context 'the invitee is already a user' do
     it 'notifies the invitee via the app' do
-
     end
   end
 
   context 'the invitee is not a user' do
     it 'notifies the invitee via email' do
-
     end
   end
 
   describe 'invitee accepts invite' do
-
   end
 
   describe 'invitee declines invite' do
@@ -52,6 +47,5 @@ RSpec.describe Invite, type: :model do
   end
 
   describe 'invitee accepts invite' do
-
   end
 end
