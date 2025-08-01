@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Tag do
+RSpec.describe Tag, type: :model do
   subject do
     described_class.new(
       name: 'tools',
