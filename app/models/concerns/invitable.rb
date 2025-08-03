@@ -20,11 +20,8 @@ module Invitable
     after_create_commit :check_for_invites
   end
 
-  def accept_invite(invite:)
-    # TODO: Think about using custom errors here
-    raise StandardError, 'User was not invited' unless invited?(invite)
-    raise StandardError, 'User is already a member of the house' if member_of_house?(invite.house)
-    raise StandardError, 'Invite is expired' if invite.expired?
+  def accept_invite!(invite:)
+    raise_if_errors(invite)
 
     transaction do
       invite.update!(status: :accepted)
@@ -33,7 +30,9 @@ module Invitable
     end
   end
 
-  def decline_invite(invite:)
+  def decline_invite!(invite:)
+    raise_if_errors(invite)
+
     invite.update!(status: :declined)
   end
 
@@ -53,6 +52,15 @@ module Invitable
   end
 
   def member_of_house?(house)
-    house.users.includes(invitee)
+    house.users.include?(self)
+  end
+
+  def raise_if_errors(invite)
+    raise StandardError, 'User was not invited' unless invited?(invite)
+    raise StandardError, 'User is already a member of the house' if member_of_house?(invite.house)
+    raise StandardError, 'Invite is expired' if invite.overdue?
+    raise StandardError, 'Invite is expired' if invite.expired?
+    raise StandardError, 'Invite has already been accepted' if invite.accepted?
+    raise StandardError, 'Invite has already been declined' if invite.declined?
   end
 end

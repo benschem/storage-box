@@ -3,6 +3,23 @@
 require 'rails_helper'
 
 RSpec.describe Invite, type: :model do
+  subject do
+    described_class.new(
+      house: house,
+      inviter: sender,
+      invitee: nil,
+      invitee_email: 'homer@simpson.com'
+    )
+  end
+
+  let(:house) { create(:house) }
+  let(:sender) { create(:user) }
+  let(:invite) { subject }
+
+  before do
+    house.users << sender
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:house) }
     it { is_expected.to belong_to(:inviter).class_name('User') }
@@ -12,58 +29,56 @@ RSpec.describe Invite, type: :model do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:invitee_email) }
     it { is_expected.to allow_value('test@example.com').for(:invitee_email) }
-  end
+    it { is_expected.not_to allow_value('test').for(:invitee_email) }
 
-  describe 'callbacks' do
-    it 'downcases and strips the invitee email before validation' do
-      invite = create(:invite, invitee_email: '  TEST@Example.COM  ')
-      expect(invite.invitee_email).to eq('test@example.com')
+    it 'is expected to validate that inviter belongs to house' do
+      invite = build(:invite, :without_adding_inviter_to_house, inviter: sender, house: house)
+
+      expect(invite).not_to be_valid
     end
 
-    it 'generates a token before creation' do
-      invite = create(:invite, token: nil)
-      expect(invite.token).to be_present
+    it 'is expected to have a unique token'
+  end
+
+  it 'downcases and strips :invitee_email before validation' do
+    invite = create(:invite, invitee_email: '  TEST@Example.COM  ')
+    expect(invite.invitee_email).to eq('test@example.com')
+  end
+
+  it 'sets :expires_on timestamp to 3 days later before creation' do
+    invite = create(:invite, expires_on: nil)
+    expect(invite.expires_on).to be_within(1.minute).of(3.days.from_now)
+  end
+
+  it 'generates a :token before creation' do
+    invite = create(:invite, token: nil)
+    expect(invite.token).to be_present
+  end
+
+  context 'when invitee_email matches a user' do
+    let(:app_user) { create(:user) }
+    let(:invite) { create(:invite, invitee: nil, invitee_email: app_user.email) }
+
+    it 'assigns that user to invitee before creation' do
+      expect(invite.invitee).to eq(app_user)
+    end
+  end
+
+  context 'when invitee_email does not match a user' do
+    let(:invite) { create(:invite, invitee: nil, invitee_email: 'not.a.user@example.com') }
+
+    it 'does not assign any user to invitee before creation' do
+      expect(invite.invitee).to be_nil
+    end
+  end
+
+  describe 'when created it is sent to the invitee' do
+    context 'when already a user of the app' do
+      it 'notifies in-app'
     end
 
-    it 'sets an expiry timestamp' do
-      invite = create(:invite, expires_on: nil)
-      expect(invite.expires_on).to be_within(1.minute).of(3.days.from_now)
+    context 'when not a user of the app' do
+      it 'is sent via email'
     end
-  end
-
-  context 'when the invitee is already a user of the app' do
-    it 'notifies the invitee via the app' do
-    end
-  end
-
-  context 'when the invitee is not a user of the app' do
-    it 'notifies the invitee via email' do
-    end
-  end
-
-  describe 'when invitee accepts invite' do
-  end
-
-  describe 'when invitee declines invite' do
-    # expect(invite.decline)
-  end
-
-  describe 'when invitee accepts invite' do
   end
 end
-
-# Represents an Invitation
-# - from a User (the inviter)
-# - inviting another User (the invitee)
-# - to join a House they belong to.
-#
-# The invitee may or may not already be a User of the app.
-# - if they are, they get pushed their invitation in-app.
-# - if they are not, they get emailed their invitiation.
-#
-# The invitee may accept or decline the application
-# - if they accept, the inviter is notified.
-# - if they decline, the inviter is not notified.
-#
-# An Invitation expires.
-# An Invitation ensures that only the user invited can accept.

@@ -1,24 +1,9 @@
 # frozen_string_literal: true
 
-# Represents an Invitation
-# - from a User (the inviter)
-# - inviting another User (the invitee)
-# - to join a House they belong to.
+# Represents an Invitation from a User (the inviter) inviting another User (the invitee) to join a House they belong to.
 #
-# The invitee may or may not already be a User of the app.
-# - if they are, they get pushed their invitation in-app.
-# - if they are not, they get emailed their invitiation.
-#
-# The invitee may accept or decline the application
-# - if they accept, the inviter is notified.
-# - if they decline, the inviter is not notified.
-#
-# An Invitation expires.
-# An Invitation ensures that only the user invited can accept.
-# If Invite is still pending and it expires it should be deleted
 # TODO: If invite is declined it should not be deleted and prevent future invites from user?
 # TODO: Consider blocking?
-#
 class Invite < ApplicationRecord
   include InviteNotifier
 
@@ -37,14 +22,20 @@ class Invite < ApplicationRecord
 
   enum :status, { pending: 'pending', accepted: 'accepted', declined: 'declined', expired: 'expired' }
 
+  before_validation :set_expiry_time
+  before_validation :generate_url_token
   before_validation { format_invitee_email }
-  validates :invitee_email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true
 
-  before_create :set_expiry_time
-  before_create :generate_url_token
+  validates :invitee_email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true
+  validate :inviter_must_belong_to_house
+
   before_create :assign_invitee_if_email_registered
 
   after_create_commit :schedule_expiration
+
+  def overdue?
+    expires_on.past? && update(status: 'expired')
+  end
 
   private
 
@@ -53,11 +44,18 @@ class Invite < ApplicationRecord
   end
 
   def set_expiry_time
-    self.expires_on = DAYS_VALID.from_now
+    self.expires_on ||= DAYS_VALID.from_now
   end
 
   def generate_url_token
     self.token ||= SecureRandom.urlsafe_base64(24)
+  end
+
+  def inviter_must_belong_to_house
+    return if house.blank? || inviter.blank?
+    return if house.users.exists?(id: inviter_id)
+
+    errors.add(:inviter, 'must be a member of the house')
   end
 
   def assign_invitee_if_email_registered
