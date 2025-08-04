@@ -22,8 +22,8 @@ class Invite < ApplicationRecord
 
   enum :status, { pending: 'pending', accepted: 'accepted', declined: 'declined', expired: 'expired' }
 
-  before_validation :set_expiry_time
-  before_validation :generate_url_token
+  before_validation :set_expiry_time, on: :create
+  before_validation :set_token, on: :create
   before_validation { format_invitee_email }
 
   validates :invitee_email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true
@@ -47,8 +47,14 @@ class Invite < ApplicationRecord
     self.expires_on ||= DAYS_VALID.from_now
   end
 
-  def generate_url_token
-    self.token ||= SecureRandom.urlsafe_base64(24)
+  def set_token
+    self.token ||= generate_unique_token
+  end
+
+  def generate_unique_token
+    token = SecureRandom.urlsafe_base64(24)
+    token = SecureRandom.urlsafe_base64(24) while Invite.exists?(token: token)
+    token
   end
 
   def inviter_must_belong_to_house

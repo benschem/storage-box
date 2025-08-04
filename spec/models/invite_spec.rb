@@ -36,8 +36,6 @@ RSpec.describe Invite, type: :model do
 
       expect(invite).not_to be_valid
     end
-
-    it 'is expected to have a unique token'
   end
 
   it 'downcases and strips :invitee_email before validation' do
@@ -50,9 +48,25 @@ RSpec.describe Invite, type: :model do
     expect(invite.expires_on).to be_within(1.minute).of(3.days.from_now)
   end
 
-  it 'generates a :token before creation' do
+  it 'sets :token before creation' do
     invite = create(:invite, token: nil)
     expect(invite.token).to be_present
+  end
+
+  it 'has a unique :token' do
+    existing_token = 'a' * 32
+    create(:invite, token: existing_token)
+
+    allow(SecureRandom).to receive(:urlsafe_base64).and_return(existing_token, 'b' * 32)
+
+    invite = create(:invite)
+    expect(invite.token).to eq('b' * 32)
+  end
+
+  it 'has a url safe :token' do
+    invite = create(:invite)
+    # URL-safe base64 includes only [-_A-Za-z0-9], no padding (=) or special chars.
+    expect(invite.token).to match(/\A[\w\-]+\z/)
   end
 
   context 'when invitee_email matches a user' do
@@ -72,13 +86,17 @@ RSpec.describe Invite, type: :model do
     end
   end
 
-  describe 'when created it is sent to the invitee' do
+  describe 'notifies the invitee' do
     context 'when already a user of the app' do
-      it 'notifies in-app'
+      it 'notifies in-app' do
+        pending 'notifications being implemented'
+      end
     end
 
     context 'when not a user of the app' do
-      it 'is sent via email'
+      it 'sent via email' do
+        pending 'emails being setup'
+      end
     end
   end
 end
