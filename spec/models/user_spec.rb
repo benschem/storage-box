@@ -47,7 +47,7 @@ RSpec.describe User, type: :model do
     let(:inviter) { create(:user) }
     let(:invitee) { create(:user) }
 
-    context 'when user is the invitee and the invite is not already accepted, declined or expired' do
+    context 'when user is the invitee and the invite is pending' do
       let(:invite) do
         create(
           :invite,
@@ -71,7 +71,9 @@ RSpec.describe User, type: :model do
         expect(invite.status).to eq('accepted')
       end
 
-      it 'inviter is notified'
+      it 'inviter is notified' do
+        pending 'notifications being implemented'
+      end
     end
 
     context 'when user is not the invitee' do
@@ -240,7 +242,7 @@ RSpec.describe User, type: :model do
   end
 
   describe '#decline_invite!' do
-    context 'when the user is invited and the invite is not already accepted, declined or expired' do
+    context 'when the user is invited and the invite is pending' do
       let(:invite) do
         create(
           :invite,
@@ -255,7 +257,7 @@ RSpec.describe User, type: :model do
         user.decline_invite!(invite: invite)
       end
 
-      it 'does not join the house on the invite' do
+      it 'user does not join the house on the invite' do
         expect(invite.house.users).not_to include(user)
       end
 
@@ -263,7 +265,9 @@ RSpec.describe User, type: :model do
         expect(invite.status).to eq('declined')
       end
 
-      it 'inviter is not notified'
+      it 'inviter is not notified' do
+        pending 'notifications being implemented'
+      end
     end
 
     context 'when user was not invited' do
@@ -414,6 +418,53 @@ RSpec.describe User, type: :model do
         user.accept_invite!(invite: invite)
       rescue StandardError
         expect(invite.status).to eq('expired')
+      end
+    end
+  end
+
+  describe '#give_items_away' do
+    let!(:another_user) { create(:user) }
+    let!(:items) { create_list(:item, 3, user:) }
+
+    before do
+      user.give_items_away(items: items, user: another_user)
+    end
+
+    context 'when user owns all the items' do
+      it 'transfers all the items' do
+        new_owners = items.map(&:reload).pluck(:user_id)
+        expect(new_owners.uniq.count).to eq(1)
+      end
+
+      it 'items no longer belong to the original user' do
+        new_owners = items.map(&:reload).pluck(:user_id)
+        expect(new_owners).not_to include(user.id)
+      end
+
+      it 'items now belong to the new user' do
+        new_owners = items.map(&:reload).pluck(:user_id)
+        expect(new_owners.uniq).to eq([another_user.id])
+      end
+    end
+
+    context 'when there are items that do not belong to user' do
+      let!(:unrelated_user) { create(:user) }
+      let!(:unowned_items) { create_list(:item, 3, user: unrelated_user) }
+
+      before do
+        user.give_items_away(
+          items: items + unowned_items, user: another_user
+        )
+      end
+
+      it 'transfers items that user does own' do
+        new_owners = items.map(&:reload).pluck(:user_id)
+        expect(new_owners.uniq).to eq([another_user.id])
+      end
+
+      it 'does not transfer items that belong to another user' do
+        new_owners = unowned_items.map(&:reload).pluck(:user_id)
+        expect(new_owners.uniq).to eq([unrelated_user.id])
       end
     end
   end

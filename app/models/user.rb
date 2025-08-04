@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# Represents a user of the application.
-# A user is someone who is looking to catalogue their personal belongings.
+# Represents a user of the application, someone who is looking to catalogue their personal belongings.
 class User < ApplicationRecord
   include ValidatePassword
   include Invitable
@@ -20,4 +19,10 @@ class User < ApplicationRecord
   has_many :items, dependent: :restrict_with_error
 
   validates :name, presence: true
+
+  def give_items_away(items:, user:)
+    # This is only for when users are about to delete their account, so it's ok to skip validations.
+    own_item_ids = self.items.where(id: items.map(&:id)).pluck(:id)
+    Item.where(id: own_item_ids).update_all(user_id: user.id) # rubocop:disable Rails/SkipsModelValidations
+  end
 end
