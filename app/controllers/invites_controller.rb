@@ -1,62 +1,80 @@
-class InvitesController < ApplicationController
-  def create
-    @invite = Invite.new(invite_params)
-    @invite.house = House.find(params[:house_id])
-    @invite.inviter = current_user
-    authorize @invite
+# frozen_string_literal: true
 
-    existing_invite = Invite.find_by(house: @house, invitee_email: @invite.invitee_email, status: "pending")
+# Send, accept or decline an invite
+class InvitesController < ApplicationController
+  before_action :build_invite, only: [:create]
+  before_action :set_invite, only: [:update]
+
+  def create
+    existing_invite = Invite.find_by(house: @invite.house, recipient_email: @invite.recipient_email, status: 'pending')
 
     if existing_invite
-      redirect_to houses_path, alert: "That user has already been invited."
+      flash.now[:alert] = 'That user has already been invited.'
+      render :new
     elsif @invite.save
-      flash.now[:alert] = "Invitation sent!"
+      redirect_to houses_path, notice: 'Invitation sent!'
     else
-      flash.now[:alert] = "Something went wrong! Invitation not sent."
+      flash.now[:alert] = 'Something went wrong! Invitation not sent.'
+      render :new
     end
   end
 
   def update
-    @invite = Invite.find(params[:id])
-    authorize @invite
-
-    unless valid_invite?
-      redirect_to root_path, alert: "This invite cannot be updated."
-      return
-    end
-
-    case params[:status]
-    when 'accepted'
-      @invite.accept_and_join_house!
-    when 'declined'
-      @invite.decline_invite!
-    else
-      @invite.errors.add(:status, "An invite can only be accepted or declined")
-    end
+    accept_or_decline_invite
 
     if @invite.errors.any?
       render :edit, status: :unprocessable_entity
     else
-      notice = "Invite updated."
-      if @invite.accepted?
-        notice = "Accepted invitation to join #{@invite.house.name.capitalize}"
-      elsif @invite.declined?
-        notice = "Declined invitation to join #{@invite.house.name.capitalize}"
-      end
+      notice = set_notice
       redirect_to house_path(@invite.house), notice: notice
     end
   end
 
   private
 
+  def build_invite
+    @invite = Invite.new(invite_params)
+    @invite.house = House.find(params[:house_id])
+    @invite.sender = current_user
+    authorize @invite
+  end
+
+  def set_invite
+    @invite = Invite.find(params[:id])
+    authorize @invite
+
+    return if valid_invite?
+
+    redirect_to root_path, alert: 'This invite cannot be updated.'
+  end
+
+  def accept_or_decline_invite
+    case params[:status]
+    when 'accepted'
+      current_user.accept_invite(@invite)
+    when 'declined'
+      current_user.decline_invite(@invite)
+    else
+      @invite.errors.add(:status, 'An invite can only be accepted or declined')
+    end
+  end
+
+  def set_notice
+    if @invite.accepted?
+      "Accepted invitation to join #{@invite.house.name.capitalize}"
+    elsif @invite.declined?
+      "Declined invitation to join #{@invite.house.name.capitalize}"
+    end
+  end
+
   def invite_params
-    params.require(:invite).permit(:invitee_email, :status)
+    params.require(:invite).permit(:recipient_email, :status)
   end
 
   def valid_invite?
     @invite.pending? &&
-    !@invite.expired? &&
-    @invite.invitee.present? &&
-    @invite.invitee.email == @invite.invitee_email
+      !@invite.expired? &&
+      @invite.recipient.present? &&
+      @invite.recipient.email == @invite.recipient_email
   end
 end

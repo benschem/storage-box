@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Represents an Invitation from a User (the inviter) inviting another User (the invitee) to join a House they belong to.
+# Invitation from a User (the sender) inviting another User (the recipient) to join a House they belong to.
 #
 # TODO: If invite is declined it should not be deleted and prevent future invites from user?
 # TODO: Consider blocking?
@@ -11,11 +11,11 @@ class Invite < ApplicationRecord
 
   belongs_to :house
 
-  belongs_to :inviter,
+  belongs_to :sender,
              class_name: 'User',
              inverse_of: :sent_invites
 
-  belongs_to :invitee,
+  belongs_to :recipient,
              class_name: 'User',
              optional: true,
              inverse_of: :received_invites
@@ -24,12 +24,12 @@ class Invite < ApplicationRecord
 
   before_validation :set_expiry_time, on: :create
   before_validation :set_token, on: :create
-  before_validation { format_invitee_email }
+  before_validation { format_recipient_email }
 
-  validates :invitee_email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true
-  validate :inviter_must_belong_to_house
+  validates :recipient_email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true
+  validate :sender_must_belong_to_house
 
-  before_create :assign_invitee_if_email_registered
+  before_create :assign_recipient_if_email_registered
 
   after_create_commit :schedule_expiration
 
@@ -39,8 +39,8 @@ class Invite < ApplicationRecord
 
   private
 
-  def format_invitee_email
-    self.invitee_email = invitee_email.downcase.strip if invitee_email.present?
+  def format_recipient_email
+    self.recipient_email = recipient_email.downcase.strip if recipient_email.present?
   end
 
   def set_expiry_time
@@ -57,17 +57,17 @@ class Invite < ApplicationRecord
     token
   end
 
-  def inviter_must_belong_to_house
-    return if house.blank? || inviter.blank?
-    return if house.users.exists?(id: inviter_id)
+  def sender_must_belong_to_house
+    return if house.blank? || sender.blank?
+    return if house.users.exists?(id: sender_id)
 
-    errors.add(:inviter, 'must be a member of the house')
+    errors.add(:sender, 'must be a member of the house')
   end
 
-  def assign_invitee_if_email_registered
-    return if invitee_email.blank? || invitee.present?
+  def assign_recipient_if_email_registered
+    return if recipient_email.blank? || recipient.present?
 
-    self.invitee = User.find_by(email: invitee_email)
+    self.recipient = User.find_by(email: recipient_email)
   end
 
   def schedule_expiration

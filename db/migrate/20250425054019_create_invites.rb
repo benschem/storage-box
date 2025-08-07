@@ -2,9 +2,9 @@ class CreateInvites < ActiveRecord::Migration[7.1]
   def change
     create_table :invites do |t|
       t.references :house, null: false, foreign_key: true
-      t.references :inviter, null: false, foreign_key: { to_table: :users }
-      t.references :invitee, null: true, foreign_key: { to_table: :users }
-      t.string :invitee_email
+      t.references :sender, null: false, foreign_key: { to_table: :users }
+      t.references :recipient, null: true, foreign_key: { to_table: :users }
+      t.string :recipient_email
       t.datetime :expires_on
       t.string :status, default: 'pending'
       t.string :token

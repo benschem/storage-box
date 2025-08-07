@@ -4,18 +4,20 @@
 module Invitable
   extend ActiveSupport::Concern
 
+  class InviteError < StandardError; end
+
   included do
     has_many :sent_invites,
              class_name: 'Invite',
-             foreign_key: 'inviter_id',
+             foreign_key: 'sender_id',
              dependent: :destroy,
-             inverse_of: :inviter
+             inverse_of: :sender
 
     has_many :received_invites,
              class_name: 'Invite',
-             foreign_key: 'invitee_id',
+             foreign_key: 'recipient_id',
              dependent: :destroy,
-             inverse_of: :invitee
+             inverse_of: :recipient
 
     after_create_commit :check_for_invites
   end
@@ -26,7 +28,7 @@ module Invitable
     transaction do
       invite.update!(status: :accepted)
       invite.house.users << self
-      invite.notify_of_acceptance_in_app(user: invite.inviter) # TODO: Do we need to do this? Views can use #status
+      invite.notify_of_acceptance_in_app(user: invite.sender) # TODO: Do we need to do this? Views can use #status
     end
   end
 
@@ -39,16 +41,16 @@ module Invitable
   private
 
   def check_for_invites
-    invites = Invite.where(invitee_email: email)
+    invites = Invite.where(recipient_email: email)
     return if invites.blank?
 
     invites.each do |invite|
-      invite.update!(invitee: self)
+      invite.update!(recipient: self)
     end
   end
 
   def invited?(invite)
-    self == invite.invitee && email == invite.invitee_email
+    self == invite.recipient && email == invite.recipient_email
   end
 
   def member_of_house?(house)
@@ -56,11 +58,11 @@ module Invitable
   end
 
   def raise_if_errors(invite)
-    raise StandardError, 'User was not invited' unless invited?(invite)
-    raise StandardError, 'User is already a member of the house' if member_of_house?(invite.house)
-    raise StandardError, 'Invite is expired' if invite.overdue?
-    raise StandardError, 'Invite is expired' if invite.expired?
-    raise StandardError, 'Invite has already been accepted' if invite.accepted?
-    raise StandardError, 'Invite has already been declined' if invite.declined?
+    raise InviteError, 'User was not invited' unless invited?(invite)
+    raise InviteError, 'User is already a member of the house' if member_of_house?(invite.house)
+    raise InviteError, 'Invite is expired' if invite.overdue?
+    raise InviteError, 'Invite is expired' if invite.expired?
+    raise InviteError, 'Invite has already been accepted' if invite.accepted?
+    raise InviteError, 'Invite has already been declined' if invite.declined?
   end
 end

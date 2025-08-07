@@ -1,6 +1,6 @@
 <div class="p-4 bg-slate-100 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90"">
   <p class="mb-4 font-semibold text-lg text-slate-900 dark:text-slate-200">
-    <%= invite.invitee.name %> has accepted your invitation to join <%= invite.house.name.capitalize %>
+    <%= invite.recipient.name %> has accepted your invitation to join <%= invite.house.name.capitalize %>
   </p>
   <div class="flex gap-2">
     <%= button_to 'Close', "#"  %>

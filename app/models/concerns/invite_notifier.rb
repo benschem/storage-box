@@ -5,7 +5,7 @@ module InviteNotifier
   extend ActiveSupport::Concern
 
   included do
-    after_create_commit :notify_invitee_of_invite
+    after_create_commit :notify_recipient_of_invite
   end
 
   def notify_of_acceptance_in_app(user:)
@@ -17,11 +17,11 @@ module InviteNotifier
 
   private
 
-  def notify_invitee_of_invite
-    if invitee
-      notify_of_invite_in_app(user: invitee)
+  def notify_recipient_of_invite
+    if recipient
+      notify_of_invite_in_app(user: recipient)
     else
-      notify_of_invite_via_email(email: invitee_email)
+      notify_of_invite_via_email(email: recipient_email)
     end
   end
 

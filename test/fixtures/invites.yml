@@ -1,15 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  inviter: one
-  invitee: one
+  sender: one
+  recipient: one
   house: one
   expires_on: 2025-04-25 15:40:19
   accepted: false
 
 two:
-  inviter: two
-  invitee: two
+  sender: two
+  recipient: two
   house: two
   expires_on: 2025-04-25 15:40:19
   accepted: false

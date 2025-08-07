@@ -1,6 +1,6 @@
 <div class="p-4 bg-slate-100 dark:bg-slate-900 rounded-xl shadow-md dark:shadow-md/90"">
   <p class="mb-4 font-semibold text-lg text-slate-900 dark:text-slate-200">
-    <%= invite.inviter.name %> has invited you to join <%= invite.house.name.capitalize %>
+    <%= invite.sender.name %> has invited you to join <%= invite.house.name.capitalize %>
   </p>
   <div class="flex gap-2">
     <%= button_to 'Accept', invite_path(invite, status: "accepted"), method: "patch", class: "cursor-pointer bg-teal-500 hover:bg-teal-600 text-slate-100 px-4 py-2 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400"  %>

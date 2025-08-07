@@ -71,17 +71,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_26_094947) do
 
   create_table "invites", force: :cascade do |t|
     t.bigint "house_id", null: false
-    t.bigint "inviter_id", null: false
-    t.bigint "invitee_id"
-    t.string "invitee_email"
+    t.bigint "sender_id", null: false
+    t.bigint "recipient_id"
+    t.string "recipient_email"
     t.datetime "expires_on"
     t.string "status", default: "pending"
     t.string "token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["house_id"], name: "index_invites_on_house_id"
-    t.index ["invitee_id"], name: "index_invites_on_invitee_id"
-    t.index ["inviter_id"], name: "index_invites_on_inviter_id"
+    t.index ["recipient_id"], name: "index_invites_on_recipient_id"
+    t.index ["sender_id"], name: "index_invites_on_sender_id"
     t.index ["token"], name: "index_invites_on_token", unique: true
   end
 
@@ -270,8 +270,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_26_094947) do
   add_foreign_key "boxes", "houses"
   add_foreign_key "boxes", "rooms"
   add_foreign_key "invites", "houses"
-  add_foreign_key "invites", "users", column: "invitee_id"
-  add_foreign_key "invites", "users", column: "inviter_id"
+  add_foreign_key "invites", "users", column: "recipient_id"
+  add_foreign_key "invites", "users", column: "sender_id"
   add_foreign_key "items", "boxes"
   add_foreign_key "items", "houses"
   add_foreign_key "items", "rooms"

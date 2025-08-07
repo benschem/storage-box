@@ -22,14 +22,14 @@ RSpec.describe User, type: :model do
     it do
       expect(user).to have_many(:sent_invites)
         .class_name('Invite')
-        .with_foreign_key('inviter_id')
+        .with_foreign_key('sender_id')
         .dependent(:destroy)
     end
 
     it do
       expect(user).to have_many(:received_invites)
         .class_name('Invite')
-        .with_foreign_key('invitee_id')
+        .with_foreign_key('recipient_id')
         .dependent(:destroy)
     end
   end
@@ -44,45 +44,45 @@ RSpec.describe User, type: :model do
   end
 
   describe '#accept_invite!' do
-    let(:inviter) { create(:user) }
-    let(:invitee) { create(:user) }
+    let(:sender) { create(:user) }
+    let(:recipient) { create(:user) }
 
-    context 'when user is the invitee and the invite is pending' do
+    context 'when user is the recipient and the invite is pending' do
       let(:invite) do
         create(
           :invite,
-          inviter: inviter,
-          invitee: invitee,
-          invitee_email: invitee.email,
+          sender: sender,
+          recipient: recipient,
+          recipient_email: recipient.email,
           status: :pending,
           expires_on: 3.days.from_now
         )
       end
 
       before do
-        invitee.accept_invite!(invite: invite)
+        recipient.accept_invite!(invite: invite)
       end
 
       it 'user joins the house on the invite' do
-        expect(invite.house.users).to include(invitee)
+        expect(invite.house.users).to include(recipient)
       end
 
       it 'invite is marked as accepted' do
         expect(invite.status).to eq('accepted')
       end
 
-      it 'inviter is notified' do
+      it 'sender is notified' do
         pending 'notifications being implemented'
       end
     end
 
-    context 'when user is not the invitee' do
+    context 'when user is not the recipient' do
       let(:invite) do
         create(
           :invite,
-          inviter: inviter,
-          invitee: invitee,
-          invitee_email: invitee.email,
+          sender: sender,
+          recipient: recipient,
+          recipient_email: recipient.email,
           status: :pending,
           expires_on: 3.days.from_now
         )
@@ -102,13 +102,13 @@ RSpec.describe User, type: :model do
         expect(invite.house.users).not_to include(some_other_user)
       end
 
-      it 'user does not cause invitee to join the house on invite' do
+      it 'user does not cause recipient to join the house on invite' do
         some_other_user.accept_invite!(invite: invite)
       rescue StandardError
-        expect(invite.house.users).not_to include(invitee)
+        expect(invite.house.users).not_to include(recipient)
       end
 
-      it 'user does not accept invite on behalf of invitee' do
+      it 'user does not accept invite on behalf of recipient' do
         some_other_user.accept_invite!(invite: invite)
       rescue StandardError
         expect(invite.status).to eq('pending')
@@ -119,9 +119,9 @@ RSpec.describe User, type: :model do
       let(:invite) do
         create(
           :invite,
-          inviter: inviter,
-          invitee: invitee,
-          invitee_email: invitee.email,
+          sender: sender,
+          recipient: recipient,
+          recipient_email: recipient.email,
           status: :accepted,
           expires_on: 3.days.from_now
         )
@@ -129,18 +129,18 @@ RSpec.describe User, type: :model do
 
       it 'raises an error' do
         expect do
-          invitee.accept_invite!(invite: invite)
+          recipient.accept_invite!(invite: invite)
         end.to raise_error(StandardError, 'Invite has already been accepted')
       end
 
       it 'user does not join the house on the invite' do
-        invitee.accept_invite!(invite: invite)
+        recipient.accept_invite!(invite: invite)
       rescue StandardError
-        expect(invite.house.users).not_to include(invitee)
+        expect(invite.house.users).not_to include(recipient)
       end
 
       it 'invite status does not change' do
-        invitee.accept_invite!(invite: invite)
+        recipient.accept_invite!(invite: invite)
       rescue StandardError
         expect(invite.status).to eq('accepted')
       end
@@ -150,9 +150,9 @@ RSpec.describe User, type: :model do
       let(:invite) do
         create(
           :invite,
-          inviter: inviter,
-          invitee: invitee,
-          invitee_email: invitee.email,
+          sender: sender,
+          recipient: recipient,
+          recipient_email: recipient.email,
           status: :declined,
           expires_on: 3.days.from_now
         )
@@ -160,18 +160,18 @@ RSpec.describe User, type: :model do
 
       it 'raises an error' do
         expect do
-          invitee.accept_invite!(invite: invite)
+          recipient.accept_invite!(invite: invite)
         end.to raise_error(StandardError, 'Invite has already been declined')
       end
 
       it 'user does not join the house on the invite' do
-        invitee.accept_invite!(invite: invite)
+        recipient.accept_invite!(invite: invite)
       rescue StandardError
-        expect(invite.house.users).not_to include(invitee)
+        expect(invite.house.users).not_to include(recipient)
       end
 
       it 'invite status does not change' do
-        invitee.accept_invite!(invite: invite)
+        recipient.accept_invite!(invite: invite)
       rescue StandardError
         expect(invite.status).to eq('declined')
       end
@@ -181,9 +181,9 @@ RSpec.describe User, type: :model do
       let(:invite) do
         create(
           :invite,
-          inviter: inviter,
-          invitee: invitee,
-          invitee_email: invitee.email,
+          sender: sender,
+          recipient: recipient,
+          recipient_email: recipient.email,
           status: :expired,
           expires_on: 3.days.from_now
         )
@@ -192,18 +192,18 @@ RSpec.describe User, type: :model do
       it 'raises an error' do
         expect do
           # binding.break
-          invitee.accept_invite!(invite: invite)
+          recipient.accept_invite!(invite: invite)
         end.to raise_error(StandardError, 'Invite is expired')
       end
 
       it 'user does not join the house on the invite' do
-        invitee.accept_invite!(invite: invite)
+        recipient.accept_invite!(invite: invite)
       rescue StandardError
-        expect(invite.house.users).not_to include(invitee)
+        expect(invite.house.users).not_to include(recipient)
       end
 
       it 'invite status does not change' do
-        invitee.accept_invite!(invite: invite)
+        recipient.accept_invite!(invite: invite)
       rescue StandardError
         expect(invite.status).to eq('expired')
       end
@@ -213,9 +213,9 @@ RSpec.describe User, type: :model do
       let(:invite) do
         build(
           :invite,
-          inviter: inviter,
-          invitee: invitee,
-          invitee_email: invitee.email,
+          sender: sender,
+          recipient: recipient,
+          recipient_email: recipient.email,
           status: :pending,
           expires_on: 3.days.ago
         )
@@ -223,18 +223,18 @@ RSpec.describe User, type: :model do
 
       it 'raises an error' do
         expect do
-          invitee.accept_invite!(invite: invite)
+          recipient.accept_invite!(invite: invite)
         end.to raise_error(StandardError, 'Invite is expired')
       end
 
       it 'user does not join the house on the invite' do
-        invitee.accept_invite!(invite: invite)
+        recipient.accept_invite!(invite: invite)
       rescue StandardError
-        expect(invite.house.users).not_to include(invitee)
+        expect(invite.house.users).not_to include(recipient)
       end
 
       it 'invite status does not change' do
-        invitee.accept_invite!(invite: invite)
+        recipient.accept_invite!(invite: invite)
       rescue StandardError
         expect(invite.status).to eq('expired')
       end
@@ -246,8 +246,8 @@ RSpec.describe User, type: :model do
       let(:invite) do
         create(
           :invite,
-          invitee: user,
-          invitee_email: user.email,
+          recipient: user,
+          recipient_email: user.email,
           status: :pending,
           expires_on: 3.days.from_now
         )
@@ -265,7 +265,7 @@ RSpec.describe User, type: :model do
         expect(invite.status).to eq('declined')
       end
 
-      it 'inviter is not notified' do
+      it 'sender is not notified' do
         pending 'notifications being implemented'
       end
     end
@@ -275,8 +275,8 @@ RSpec.describe User, type: :model do
       let(:invite) do
         create(
           :invite,
-          invitee: user,
-          invitee_email: user.email,
+          recipient: user,
+          recipient_email: user.email,
           status: :pending,
           expires_on: 3.days.from_now
         )
@@ -305,8 +305,8 @@ RSpec.describe User, type: :model do
       let(:invite) do
         create(
           :invite,
-          invitee: user,
-          invitee_email: user.email,
+          recipient: user,
+          recipient_email: user.email,
           status: :accepted,
           expires_on: 3.days.from_now
         )
@@ -335,8 +335,8 @@ RSpec.describe User, type: :model do
       let(:invite) do
         create(
           :invite,
-          invitee: user,
-          invitee_email: user.email,
+          recipient: user,
+          recipient_email: user.email,
           status: :declined,
           expires_on: 3.days.from_now
         )
@@ -365,8 +365,8 @@ RSpec.describe User, type: :model do
       let(:invite) do
         create(
           :invite,
-          invitee: user,
-          invitee_email: user.email,
+          recipient: user,
+          recipient_email: user.email,
           status: :expired,
           expires_on: 3.days.from_now
         )
@@ -395,8 +395,8 @@ RSpec.describe User, type: :model do
       let(:invite) do
         build(
           :invite,
-          invitee: user,
-          invitee_email: user.email,
+          recipient: user,
+          recipient_email: user.email,
           status: :pending,
           expires_on: 3.days.ago
         )
