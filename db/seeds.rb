@@ -6,22 +6,27 @@
 #
 puts "Destroying Items..."
 Item.destroy_all
+
 puts "Destroying Boxes..."
 Box.destroy_all
+
 puts "Destroying Rooms..."
 Room.destroy_all
+
 puts "Destroying Houses..."
 House.destroy_all
+
 puts "Destroying tags..."
 Tag.destroy_all
+
 puts "Destroying users..."
 User.destroy_all
 
 puts "Creating users..."
 user = User.create!(
   email: 'benschembri@gmail.com',
-  password: 'password',
-  password_confirmation: 'password',
+  password: 'strongPassword~123',
+  password_confirmation: 'strongPassword~123',
   name: 'Ben',
 )
 puts "User created: #{user.email}"
