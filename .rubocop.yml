@@ -13,6 +13,8 @@ AllCops:
     - ".yarn/*"
     - "bin/*"
     - "db/schema.rb"
+    - "db/seeds.rb"
+    - "db/migrate/*"
     - "node_modules/**/*"
     - "tmp/**/*"
     - "log/**/*"
