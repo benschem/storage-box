@@ -112,6 +112,9 @@ group :test do
 
   # Simple one-liner tests for common Rails functionality [https://github.com/thoughtbot/shoulda-matchers]
   gem 'shoulda-matchers', '~> 6.0'
+
+  # A set of RSpec matchers for testing Pundit authorisation policies. [https://github.com/pundit-community/pundit-matchers]
+  gem 'pundit-matchers', '~> 4.0'
 end
 
 # Silence warning: ostruct.rb was loaded from the standard library, but will no longer be part of the default gems starting from Ruby 3.5.0.

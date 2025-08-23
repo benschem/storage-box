@@ -18,12 +18,12 @@ RSpec.describe Item, type: :model do
     }
 
   describe 'associations' do
-    it { should belong_to(:user) }
-    it { should belong_to(:house) }
-    it { should belong_to(:room) }
-    it { should belong_to(:box).optional(true) }
-    it { should have_and_belong_to_many(:tags) }
-    it { should have_one_attached(:image) }
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:house) }
+    it { is_expected.to belong_to(:room) }
+    it { is_expected.to belong_to(:box).optional(true) }
+    it { is_expected.to have_many(:tags).through(:taggings) }
+    it { is_expected.to have_one_attached(:image) }
   end
 
   describe 'validations' do

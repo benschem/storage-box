@@ -1,9 +1,11 @@
-class Tag < ApplicationRecord
-  belongs_to :house
-  has_and_belongs_to_many :items
+# frozen_string_literal: true
 
-  validates :name, presence: true
-  validates :name, uniqueness: { scope: :house_id }
+# A label on an item
+class Tag < ApplicationRecord
+  has_many :taggings, dependent: :destroy
+  has_many :items, through: :taggings
+
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
 end
 
 # Should this kinda thing go in a filtering concern and not on the tag model?
