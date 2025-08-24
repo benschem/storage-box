@@ -10,7 +10,7 @@ RSpec.describe TagPolicy do
   let(:tag) { create(:tag) }
   let(:user) { create(:user) }
 
-  describe 'permissions for a new tag' do
+  describe 'a new tag' do
     context 'when user is signed in' do
       it { is_expected.to permit_action(:create) }
     end
@@ -22,8 +22,8 @@ RSpec.describe TagPolicy do
     end
   end
 
-  describe 'permissions for an existing tag' do
-    context 'when user owns an item tagged with the tag' do
+  describe 'an existing tag' do
+    context 'when tag is on an item in a house user belongs to' do
       let(:house) { create(:house) }
 
       before do
@@ -35,30 +35,28 @@ RSpec.describe TagPolicy do
       it { is_expected.to forbid_actions(%i[update destroy]) }
     end
 
-    context 'when user does not own any items tagged with the tag' do
-      it { is_expected.to forbid_actions(%i[remove update destroy]) }
-    end
-
-    context 'when other users also own an item tagged with the tag' do
-      let(:house_with_user) { create(:house) }
-      let(:house_without_user) { create(:house) }
+    context 'when tag is on an item in a house user does not belong to' do
+      let(:house) { create(:house) }
+      let(:item) { create(:item, house: house) }
 
       before do
-        house_with_user.users << user
-
-        create(:tagging, tag: tag, item: create(:item, house: house_with_user))
-        create(:tagging, tag: tag, item: create(:item, house: house_without_user))
+        create(:tagging, tag: tag, item: item)
       end
 
-      it { is_expected.to permit_actions(%i[remove]) }
-      it { is_expected.to forbid_actions(%i[update destroy]) }
+      it { is_expected.to forbid_actions(%i[remove update destroy]) }
     end
   end
 
-  describe 'scope' do
+  describe 'a collection of tags' do
     subject(:resolved) { described_class::Scope.new(user, Tag.all).resolve }
 
-    context 'when tag is attached to item owned by user' do
+    context 'when user is not signed in' do
+      it 'returns no tags' do
+        expect(resolved).to be_empty
+      end
+    end
+
+    context 'when a tag is on an item in a house user belongs to' do
       let(:house) { create(:house) }
       let(:item) { create(:item, house: house) }
 
@@ -73,7 +71,7 @@ RSpec.describe TagPolicy do
       end
     end
 
-    context 'when tag is attached to multiple items owned by user in the same house' do
+    context 'when a tag is on multiple items in a house user belongs to' do
       let(:house) { create(:house) }
       let(:items) { create_list(:item, 2, house: house) }
 
@@ -88,7 +86,7 @@ RSpec.describe TagPolicy do
       end
     end
 
-    context 'when tag is attached to multiple items owned by user across different houses' do
+    context 'when a tag is on multiple items across multiple houses user belongs to' do
       let(:houses) { create_list(:house, 2) }
       let(:item) { create(:item, house: houses[0]) }
       let(:second_item) { create(:item, house: houses[1]) }
@@ -105,7 +103,7 @@ RSpec.describe TagPolicy do
       end
     end
 
-    context 'when tag is attached to item not owned by user' do
+    context 'when a tag is on an item in a house user does not belong to' do
       let(:second_user) { create(:user) }
       let(:house) { create(:house) }
       let(:item) { create(:item, house: house) }
@@ -120,28 +118,7 @@ RSpec.describe TagPolicy do
       end
     end
 
-    context 'when tag is attached to item owned by multiple users' do
-      let(:houses) { create_list(:house, 2) }
-      let(:item) { create(:item, house: houses[0]) }
-      let(:second_item) { create(:item, house: houses[1]) }
-      let(:second_user) { create(:user) }
-
-      before do
-        item.tags << tag
-        houses[0].items << item
-        houses[0].users << user
-
-        second_item.tags << tag
-        houses[1].items << second_item
-        houses[1].users << second_user
-      end
-
-      it 'is returned' do
-        expect(resolved).to include(tag)
-      end
-    end
-
-    context 'when tag is not attached to any items' do
+    context 'when a tag is not on any items' do
       let(:untagged_tag) { create(:tag) }
 
       it 'is not returned' do

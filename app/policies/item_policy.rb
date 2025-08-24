@@ -1,24 +1,21 @@
 class ItemPolicy < ApplicationPolicy
   def show?
     user.houses.include?(record.house)
-    # TODO: && user.permissions.include?(:show) need to implement something
   end
 
   def create?
     user.present?
-    # TODO: && user.permissions.include?(:create) need to implement something
   end
 
   def update?
     user.houses.include?(record.house)
-    # TODO: && user.permissions.include?(:update) need to implement something
   end
 
   def destroy?
     user.houses.include?(record.house)
-    # TODO: && user.permissions.include?(:destroy) need to implement something
   end
 
+  # Users can see items in houses they belong to
   class Scope < ApplicationPolicy::Scope
     def resolve
       scope.where(house_id: user.house_ids)
