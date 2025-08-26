@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :item do
-    name { Faker::Commerce.product_name }
+    name { Faker::Commerce.unique.product_name }
     notes { "#{Faker::Commerce.color} #{Faker::Commerce.material} #{Faker::Commerce.brand} from #{Faker::Commerce.vendor}" }
 
     house
