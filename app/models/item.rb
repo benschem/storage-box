@@ -23,6 +23,17 @@ class Item < ApplicationRecord
   validate :box_is_in_same_house_as_item
   validate :room_is_in_same_house_as_item
 
+  def self.with_any_of_these_tags(tags_or_tag_ids)
+    joins(:tags).where(tags: { id: normalise_tag_ids(tags_or_tag_ids) }).distinct
+  end
+
+  def self.with_all_of_these_tags(tags_or_tag_ids)
+    joins(:tags)
+      .where(tags: { id: normalise_tag_ids(tags_or_tag_ids) })
+      .group(:id)
+      .having('COUNT(DISTINCT tags.id) = ?', tags_or_tag_ids.size)
+  end
+
   private
 
   def box_is_in_same_house_as_item
@@ -40,5 +51,16 @@ class Item < ApplicationRecord
 
   def purge_image
     image.purge
+  end
+
+  private_class_method def self.normalise_tag_ids(tags_or_tag_ids)
+    Array(tags_or_tag_ids).map do |t|
+      case t
+      when Tag then t.id
+      when Integer then t
+      else
+        raise ArgumentError, "Expected Tag objects or integer IDs, got #{t.inspect}"
+      end
+    end
   end
 end

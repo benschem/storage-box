@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Item, type: :model do
-  subject do
+  subject(:item) do
     described_class.new(
       name: 'Screwdriver',
       notes: 'flathead',
@@ -30,14 +32,14 @@ RSpec.describe Item, type: :model do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_length_of(:notes).is_at_most(255) }
 
+    # TODO: Think about a trait for the house factory - different_house?
     context "when in a box that's in a different house to the item" do
-      let!(:house) { create(:house) }
       let!(:different_house) { create(:house) }
       let!(:box_in_different_house) { create(:box, house: different_house) }
       let!(:item) { build(:item, box: box_in_different_house, house: house) }
 
       it 'is invalid' do
-        expect(item).to be_invalid
+        expect(item).not_to be_valid
       end
     end
 
@@ -51,15 +53,14 @@ RSpec.describe Item, type: :model do
       end
     end
 
+    # TODO: Think about a trait for the house factory - different_house?
     context "when in a room that's in a different house to the item" do
-      let!(:house) { create(:house) }
-      let!(:room) { create(:room, house: house) }
       let!(:different_house) { create(:house) }
       let!(:room_in_different_house) { create(:room, house: different_house) }
       let!(:item) { build(:item, room: room_in_different_house, house: house) }
 
       it 'is invalid' do
-        expect(item).to be_invalid
+        expect(item).not_to be_valid
       end
     end
 
@@ -74,48 +75,103 @@ RSpec.describe Item, type: :model do
     end
   end
 
-  describe '.search' do
-    let!(:item) do
-      create(
-        :item,
-        name: 'Screwdriver',
-        notes: 'flathead',
-        box: box,
-        room: room,
-        house: house
-      )
+  describe 'class methods' do
+    describe '.with_any_of_these_tags' do
+      subject(:scope) { described_class.with_any_of_these_tags([tags.first, tags.second]) }
+
+      let(:items) { create_list(:item, 2) }
+      let(:tags) { create_list(:tag, 2) }
+
+      before do
+        items.first.tags << tags.first
+        items.first.tags << tags.second
+        items.second.tags << tags.second
+      end
+
+      it 'returns items tagged with any one of the given tags' do
+        expect(scope).to include(items.first, items.second)
+      end
+
+      it 'returns items tagged with all of the given tags' do
+        expect(scope).to include(items.first)
+      end
+
+      it 'does not return items tagged with tags that do not match any of the given tags' do
+        # expect(scope).not_to include(items.fourth)
+        pending 'a better factory setup or a fourth item here'
+      end
+
+      it 'does not return items without any tags' do
+        expect(scope).not_to include(items.third)
+      end
     end
-    let!(:tag) { create(:tag, name: 'tool') }
 
-    before { item.tags << tag }
+    describe '.with_all_of_these_tags' do
+      subject(:scope) { described_class.with_all_of_these_tags([tags.first, tags.second]) }
 
-    it 'returns items matching name' do
-      expect(Item.search('screw')).to include(item)
+      let(:items) { create_list(:item, 2) }
+      let(:tags) { create_list(:tag, 2) }
+
+      before do
+        items.first.tags << tags.first
+        items.first.tags << tags.second
+        items.second.tags << tags.second
+      end
+
+      it 'returns items tagged with all of the given tags' do
+        expect(scope).to include(items.first)
+      end
+
+      it 'does not return items tagged with only one of the given tags' do
+        expect(scope).not_to include(items.second)
+      end
+
+      it 'does not return items tagged with tags that do not match any of the given tags' do
+        # expect(scope).not_to include(item.fourth)
+        pending 'a better factory setup or a fourth item here'
+      end
+
+      it 'does not return items without any tags' do
+        expect(scope).not_to include(items.third)
+      end
     end
 
-    it 'returns items matching notes' do
-      expect(Item.search('flat')).to include(item)
-    end
+    describe '.search' do
+      let!(:tag) { create(:tag, name: 'tool') }
 
-    it 'returns items matching tag name' do
-      expect(Item.search('tool')).to include(item)
-    end
+      before do
+        item.save!
+        item.tags << tag
+      end
 
-    it 'returns nothing for blank input' do
-      expect(Item.search(nil)).to be_empty
+      it 'returns items matching name' do
+        expect(described_class.search('screw')).to include(item)
+      end
+
+      it 'returns items matching notes' do
+        expect(described_class.search('flat')).to include(item)
+      end
+
+      it 'returns items matching tag name' do
+        expect(described_class.search('tool')).to include(item)
+      end
+
+      it 'returns nothing for blank input' do
+        expect(described_class.search(nil)).to be_empty
+      end
     end
   end
 
-  context 'has an image' do
+  context 'with an image' do
     before do
-      subject.image.attach(io: File.open(Rails.root.join('spec/fixtures/screwdriver.jpg')), filename: 'image.jpg')
+      item.image.attach(io: Rails.root.join('spec/fixtures/screwdriver.jpg').open, filename: 'image.jpg')
     end
 
     it 'purges image on save if asked' do
-      subject.remove_image = '1'
-      subject.save!
+      item.remove_image = '1'
+      item.save!
 
-      expect(subject.image).not_to be_attached
+      expect(item.image).not_to be_attached
     end
   end
 end
