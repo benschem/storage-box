@@ -54,14 +54,16 @@ class Item < ApplicationRecord
   end
 
   private_class_method def self.resolve_tag_ids(tags)
-    Array(tags).filter_map do |t|
-      case t
-      when Tag then t.id
-      when Integer then t
-      when String then Tag.where(name: t).pick(:id)
+    ids_by_name = Tag.where(name: tags.grep(String)).pluck(:name, :id).to_h
+
+    Array(tags).filter_map do |tag|
+      case tag
+      when Tag then tag.id
+      when Integer then tag
+      when String then ids_by_name[tag]
       else
-        raise ArgumentError, "Expected Tag objects, tag ID integers, or tag name strings, but got: #{t.inspect}"
+        raise ArgumentError, "Expected Tag objects, tag ID integers, or tag name strings, but got: #{tag.inspect}"
       end
-    end.compact.uniq
+    end.uniq
   end
 end
