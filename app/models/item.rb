@@ -23,15 +23,15 @@ class Item < ApplicationRecord
   validate :box_is_in_same_house_as_item
   validate :room_is_in_same_house_as_item
 
-  def self.with_any_of_these_tags(tags_or_tag_ids)
-    joins(:tags).where(tags: { id: normalise_tag_ids(tags_or_tag_ids) }).distinct
+  def self.with_any_of_these_tags(tags)
+    joins(:tags).where(tags: { id: resolve_tag_ids(tags) }).distinct
   end
 
-  def self.with_all_of_these_tags(tags_or_tag_ids)
+  def self.with_all_of_these_tags(tags)
     joins(:tags)
-      .where(tags: { id: normalise_tag_ids(tags_or_tag_ids) })
+      .where(tags: { id: resolve_tag_ids(tags) })
       .group(:id)
-      .having('COUNT(DISTINCT tags.id) = ?', tags_or_tag_ids.size)
+      .having('COUNT(DISTINCT tags.id) = ?', tags.size)
   end
 
   private
@@ -53,14 +53,15 @@ class Item < ApplicationRecord
     image.purge
   end
 
-  private_class_method def self.normalise_tag_ids(tags_or_tag_ids)
-    Array(tags_or_tag_ids).map do |t|
+  private_class_method def self.resolve_tag_ids(tags)
+    Array(tags).filter_map do |t|
       case t
       when Tag then t.id
       when Integer then t
+      when String then Tag.where(name: t).pick(:id)
       else
-        raise ArgumentError, "Expected Tag objects or integer IDs, got #{t.inspect}"
+        raise ArgumentError, "Expected Tag objects, tag ID integers, or tag name strings, but got: #{t.inspect}"
       end
-    end
+    end.compact.uniq
   end
 end

@@ -32,8 +32,7 @@ RSpec.describe Item, type: :model do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_length_of(:notes).is_at_most(255) }
 
-    # TODO: Think about a trait for the house factory - different_house?
-    context "when in a box that's in a different house to the item" do
+    context "when in a box that's in a different house to the item" do # rubocop:disable RSpec/MultipleMemoizedHelpers
       let!(:different_house) { create(:house) }
       let!(:box_in_different_house) { create(:box, house: different_house) }
       let!(:item) { build(:item, box: box_in_different_house, house: house) }
@@ -53,8 +52,7 @@ RSpec.describe Item, type: :model do
       end
     end
 
-    # TODO: Think about a trait for the house factory - different_house?
-    context "when in a room that's in a different house to the item" do
+    context "when in a room that's in a different house to the item" do # rubocop:disable RSpec/MultipleMemoizedHelpers
       let!(:different_house) { create(:house) }
       let!(:room_in_different_house) { create(:room, house: different_house) }
       let!(:item) { build(:item, room: room_in_different_house, house: house) }
@@ -75,89 +73,146 @@ RSpec.describe Item, type: :model do
     end
   end
 
-  describe 'class methods' do
-    describe '.with_any_of_these_tags' do
+  describe 'tag scopes' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    let(:tags) { create_list(:tag, 3) }
+    let(:item_with_first_tag) { create(:item, tags: [tags.first]) }
+    let(:item_with_first_and_second_tags) { create(:item, tags: [tags.first, tags.second]) }
+    let(:item_with_third_tag) { create(:item, tags: [tags.third]) }
+    let(:item_with_no_tags) { create(:item, tags: []) }
+
+    describe '.with_any_of_these_tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers
       subject(:scope) { described_class.with_any_of_these_tags([tags.first, tags.second]) }
 
-      let(:items) { create_list(:item, 2) }
-      let(:tags) { create_list(:tag, 2) }
-
-      before do
-        items.first.tags << tags.first
-        items.first.tags << tags.second
-        items.second.tags << tags.second
-      end
-
       it 'returns items tagged with any one of the given tags' do
-        expect(scope).to include(items.first, items.second)
-      end
-
-      it 'returns items tagged with all of the given tags' do
-        expect(scope).to include(items.first)
+        expect(scope).to include(item_with_first_tag, item_with_first_and_second_tags)
       end
 
       it 'does not return items tagged with tags that do not match any of the given tags' do
-        # expect(scope).not_to include(items.fourth)
-        pending 'a better factory setup or a fourth item here'
+        expect(scope).not_to include(item_with_third_tag)
       end
 
       it 'does not return items without any tags' do
-        expect(scope).not_to include(items.third)
+        expect(scope).not_to include(item_with_no_tags)
+      end
+
+      it 'accepts tag objects' do
+        expect(described_class.with_any_of_these_tags([tags.first])).to include(item_with_first_tag)
+      end
+
+      it 'accepts tag id integers' do
+        expect(described_class.with_any_of_these_tags([tags.first.id])).to include(item_with_first_tag)
+      end
+
+      it 'accepts tag name strings' do
+        expect(described_class.with_any_of_these_tags([tags.first.name])).to include(item_with_first_tag)
       end
     end
 
-    describe '.with_all_of_these_tags' do
+    describe '.with_all_of_these_tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers
       subject(:scope) { described_class.with_all_of_these_tags([tags.first, tags.second]) }
 
-      let(:items) { create_list(:item, 2) }
-      let(:tags) { create_list(:tag, 2) }
-
-      before do
-        items.first.tags << tags.first
-        items.first.tags << tags.second
-        items.second.tags << tags.second
-      end
-
       it 'returns items tagged with all of the given tags' do
-        expect(scope).to include(items.first)
+        expect(scope).to include(item_with_first_and_second_tags)
       end
 
       it 'does not return items tagged with only one of the given tags' do
-        expect(scope).not_to include(items.second)
+        expect(scope).not_to include(item_with_first_tag)
       end
 
       it 'does not return items tagged with tags that do not match any of the given tags' do
-        # expect(scope).not_to include(item.fourth)
-        pending 'a better factory setup or a fourth item here'
+        expect(scope).not_to include(item_with_third_tag)
       end
 
       it 'does not return items without any tags' do
-        expect(scope).not_to include(items.third)
+        expect(scope).not_to include(item_with_no_tags)
+      end
+
+      it 'accepts tag objects' do
+        expect(described_class.with_any_of_these_tags([tags.first])).to include(item_with_first_tag)
+      end
+
+      it 'accepts tag id integers' do
+        expect(described_class.with_any_of_these_tags([tags.first.id])).to include(item_with_first_tag)
+      end
+
+      it 'accepts tag name strings' do
+        expect(described_class.with_any_of_these_tags([tags.first.name])).to include(item_with_first_tag)
+      end
+    end
+  end
+
+  describe '.search' do
+    subject(:item) do
+      create(:item,
+             name: 'Screwdriver',
+             notes: 'flathead',
+             user: user,
+             house: house,
+             room: room,
+             box: box,
+             tags: [tag])
+    end
+
+    let!(:tag) { create(:tag, name: 'tool') }
+
+    it 'returns items where input matches item name exactly' do
+      expect(described_class.search('Screwdriver')).to include(item)
+    end
+
+    it 'returns items where input matches item name case insensitively' do
+      aggregate_failures do
+        expect(described_class.search('screwdriver')).to include(item)
+        expect(described_class.search('SCREWDRIVER')).to include(item)
+        expect(described_class.search('ScReWdRiVeR')).to include(item)
       end
     end
 
-    describe '.search' do
-      let!(:tag) { create(:tag, name: 'tool') }
+    it 'returns items where input matches the first part of item name' do
+      expect(described_class.search('Screw')).to include(item)
+    end
 
-      before do
-        item.save!
-        item.tags << tag
+    it 'does not return items where input does not match item name' do
+      expect(described_class.search('Hammer')).not_to include(item)
+    end
+
+    it 'returns items where input matches item notes exactly' do
+      expect(described_class.search('flathead')).to include(item)
+    end
+
+    it 'returns items where input matches item notes case insensitively' do
+      aggregate_failures do
+        expect(described_class.search('Flathead')).to include(item)
+        expect(described_class.search('FLATHEAD')).to include(item)
+        expect(described_class.search('FlAtHeAd')).to include(item)
       end
+    end
 
-      it 'returns items matching name' do
-        expect(described_class.search('screw')).to include(item)
+    it 'returns items where input matches the first part of item notes' do
+      expect(described_class.search('flat')).to include(item)
+    end
+
+    it 'does not return items where input does not match item notes' do
+      expect(described_class.search('phillips')).not_to include(item)
+    end
+
+    it 'returns tagged items where the tag name matches input exactly' do
+      expect(described_class.search('tool')).to include(item)
+    end
+
+    it 'returns tagged items where the tag name matches input case insensitively' do
+      aggregate_failures do
+        expect(described_class.search('Tool')).to include(item)
+        expect(described_class.search('TOOL')).to include(item)
+        expect(described_class.search('ToOl')).to include(item)
       end
+    end
 
-      it 'returns items matching notes' do
-        expect(described_class.search('flat')).to include(item)
-      end
-
-      it 'returns items matching tag name' do
-        expect(described_class.search('tool')).to include(item)
-      end
-
-      it 'returns nothing for blank input' do
+    it 'returns no items if the input is blank' do # rubocop:disable RSpec/ExampleLength
+      aggregate_failures do
         expect(described_class.search(nil)).to be_empty
+        expect(described_class.search([])).to be_empty
+        expect(described_class.search('')).to be_empty
+        expect(described_class.search({})).to be_empty
       end
     end
   end
