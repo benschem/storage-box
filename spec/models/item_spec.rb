@@ -73,75 +73,9 @@ RSpec.describe Item, type: :model do
     end
   end
 
-  describe 'tag scopes' do # rubocop:disable RSpec/MultipleMemoizedHelpers
-    let(:tags) { create_list(:tag, 3) }
-    let(:item_with_first_tag) { create(:item, tags: [tags.first]) }
-    let(:item_with_first_and_second_tags) { create(:item, tags: [tags.first, tags.second]) }
-    let(:item_with_third_tag) { create(:item, tags: [tags.third]) }
-    let(:item_with_no_tags) { create(:item, tags: []) }
+  it_behaves_like 'tag_filterable'
 
-    describe '.with_any_of_these_tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers
-      subject(:scope) { described_class.with_any_of_these_tags([tags.first, tags.second]) }
-
-      it 'returns items tagged with any one of the given tags' do
-        expect(scope).to include(item_with_first_tag, item_with_first_and_second_tags)
-      end
-
-      it 'does not return items tagged with tags that do not match any of the given tags' do
-        expect(scope).not_to include(item_with_third_tag)
-      end
-
-      it 'does not return items without any tags' do
-        expect(scope).not_to include(item_with_no_tags)
-      end
-
-      it 'accepts tag objects' do
-        expect(described_class.with_any_of_these_tags([tags.first])).to include(item_with_first_tag)
-      end
-
-      it 'accepts tag id integers' do
-        expect(described_class.with_any_of_these_tags([tags.first.id])).to include(item_with_first_tag)
-      end
-
-      it 'accepts tag name strings' do
-        expect(described_class.with_any_of_these_tags([tags.first.name])).to include(item_with_first_tag)
-      end
-    end
-
-    describe '.with_all_of_these_tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers
-      subject(:scope) { described_class.with_all_of_these_tags([tags.first, tags.second]) }
-
-      it 'returns items tagged with all of the given tags' do
-        expect(scope).to include(item_with_first_and_second_tags)
-      end
-
-      it 'does not return items tagged with only one of the given tags' do
-        expect(scope).not_to include(item_with_first_tag)
-      end
-
-      it 'does not return items tagged with tags that do not match any of the given tags' do
-        expect(scope).not_to include(item_with_third_tag)
-      end
-
-      it 'does not return items without any tags' do
-        expect(scope).not_to include(item_with_no_tags)
-      end
-
-      it 'accepts tag objects' do
-        expect(described_class.with_any_of_these_tags([tags.first])).to include(item_with_first_tag)
-      end
-
-      it 'accepts tag id integers' do
-        expect(described_class.with_any_of_these_tags([tags.first.id])).to include(item_with_first_tag)
-      end
-
-      it 'accepts tag name strings' do
-        expect(described_class.with_any_of_these_tags([tags.first.name])).to include(item_with_first_tag)
-      end
-    end
-  end
-
-  describe '.search' do
+  describe '.search' do # rubocop:disable RSpec/MultipleMemoizedHelpers
     subject(:item) do
       create(:item,
              name: 'Screwdriver',
@@ -153,7 +87,12 @@ RSpec.describe Item, type: :model do
              tags: [tag])
     end
 
+    let!(:other_items) { create_list(:item, 3) }
     let!(:tag) { create(:tag, name: 'tool') }
+
+    it 'returns each item only once' do
+      expect(described_class.search('s')).to eq(described_class.search('s').distinct)
+    end
 
     it 'returns items where input matches item name exactly' do
       expect(described_class.search('Screwdriver')).to include(item)
@@ -172,7 +111,10 @@ RSpec.describe Item, type: :model do
     end
 
     it 'does not return items where input does not match item name' do
-      expect(described_class.search('Hammer')).not_to include(item)
+      aggregate_failures do
+        expect(described_class.search('Screwdriver')).not_to include(other_items)
+        expect(described_class.search('Hammer')).not_to include(item)
+      end
     end
 
     it 'returns items where input matches item notes exactly' do
