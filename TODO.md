@@ -73,7 +73,8 @@ maybe need an owner column on db? -->
 
 ## Refactoring
 
-[ ] Extract filter and sorting concerns to `app/queries/items/filters.rb` Items::Filters
+[X] Extract filter concern to `app/queries/filter.rb` use with Filter.call
+[X] Move `TagFilterable` tests to `spec/concerns` and add `spec/support/shared_examples/tag_filterable_examples.rb`
 [ ] Invite - use token to generate acceptance link
 [ ] Multiple solidqueue queues - high low default
 [ ] `decline_invite!` could just use the enum `declined!`
