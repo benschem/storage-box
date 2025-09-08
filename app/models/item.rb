@@ -23,6 +23,15 @@ class Item < ApplicationRecord
   validates :notes, length: { maximum: 255 }, allow_blank: true
   validate :box_is_in_same_house_as_item
   validate :room_is_in_same_house_as_item
+  scope :with_any_of_these_tags, lambda { |tags|
+    joins(:tags).where(tags: { id: tags }).distinct
+  }
+  scope :with_all_of_these_tags, lambda { |tags|
+    joins(:tags)
+      .where(tags: { id: tags })
+      .group(:id)
+      .having('COUNT(DISTINCT tags.id) = ?', Array(tags).size)
+  }
 
   private
 

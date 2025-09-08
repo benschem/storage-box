@@ -73,7 +73,109 @@ RSpec.describe Item, type: :model do
     end
   end
 
-  it_behaves_like 'tag_filterable'
+  describe 'scopes' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    let!(:tags) { create_list(:tag, 3) }
+    let!(:item_with_first_tag) { create(:item, tags: [tags.first]) }
+    let!(:item_with_first_and_second_tags) { create(:item, tags: [tags.first, tags.second]) }
+    let!(:item_with_third_tag) { create(:item, tags: [tags.third]) }
+    let!(:item_with_no_tags) { create(:item, tags: []) }
+
+    describe '.with_any_of_these_tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+      subject(:returned_relation) { described_class.with_any_of_these_tags(argument) }
+
+      let(:argument) { [tags.first, tags.second] }
+
+      context 'when given multiple tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers,RSpec/NestedGroups
+        let(:argument) { [tags.first.id, tags.second.id] }
+
+        it 'returns items tagged with any one of the given tags' do
+          expect(returned_relation).to contain_exactly(item_with_first_tag, item_with_first_and_second_tags)
+        end
+
+        it 'returns an ActiveRecord::Relation' do
+          expect(returned_relation).to be_a(ActiveRecord::Relation)
+        end
+
+        it 'does not return duplicate items' do
+          expect(returned_relation).to eq(returned_relation.uniq)
+        end
+
+        it 'does not return items with no tags' do
+          expect(returned_relation).not_to include(item_with_no_tags)
+        end
+      end
+
+      context 'when given a single tag' do # rubocop:disable RSpec/MultipleMemoizedHelpers,RSpec/NestedGroups
+        let(:argument) { tags.third.id }
+
+        it 'returns items tagged with the tag' do
+          expect(returned_relation).to contain_exactly(item_with_third_tag)
+        end
+
+        it 'returns an ActiveRecord::Relation' do
+          expect(returned_relation).to be_a(ActiveRecord::Relation)
+        end
+
+        it 'does not return duplicate items' do
+          expect(returned_relation).to eq(returned_relation.uniq)
+        end
+
+        it 'does not return items with no tags' do
+          expect(returned_relation).not_to include(item_with_no_tags)
+        end
+      end
+    end
+
+    describe '.with_all_of_these_tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+      subject(:returned_relation) { described_class.with_all_of_these_tags(argument) }
+
+      let(:argument) { [tags.first.id, tags.second.id] }
+
+      context 'when given multiple tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers,RSpec/NestedGroups
+        let(:argument) { [tags.first.id, tags.second.id] }
+
+        it 'returns items tagged with all of the tags' do
+          expect(returned_relation).to contain_exactly(item_with_first_and_second_tags)
+        end
+
+        it 'does not return items tagged with only one of the tags' do
+          expect(returned_relation).not_to include(item_with_first_tag)
+        end
+
+        it 'returns an ActiveRecord::Relation' do
+          expect(returned_relation).to be_a(ActiveRecord::Relation)
+        end
+
+        it 'does not return duplicate items' do
+          expect(returned_relation).to eq(returned_relation.uniq)
+        end
+
+        it 'does not return items with no tags' do
+          expect(returned_relation).not_to include(item_with_no_tags)
+        end
+      end
+
+      context 'when given a single tag' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+        let(:argument) { tags.third.id }
+
+        it 'returns items tagged with the tag' do
+          expect(returned_relation).to contain_exactly(item_with_third_tag)
+        end
+
+        it 'returns an ActiveRecord::Relation' do
+          expect(returned_relation).to be_a(ActiveRecord::Relation)
+        end
+
+        it 'does not return duplicate items' do
+          expect(returned_relation).to eq(returned_relation.uniq)
+        end
+
+        it 'does not return items with no tags' do
+          expect(returned_relation).not_to include(item_with_no_tags)
+        end
+      end
+    end
+  end
 
   describe '.search' do # rubocop:disable RSpec/MultipleMemoizedHelpers
     subject(:item) do
