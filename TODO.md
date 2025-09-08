@@ -56,8 +56,6 @@
 
 ## New features
 
-## New features
-
 [ ] Assignable owner for items so you can filter by your items or household
 
 <!-- item already belongs to user and house
@@ -78,3 +76,4 @@ maybe need an owner column on db? -->
 [ ] Invite - use token to generate acceptance link
 [ ] Multiple solidqueue queues - high low default
 [ ] `decline_invite!` could just use the enum `declined!`
+[ ] Box model - Uniqueness validation should have a unique index on the database column.
