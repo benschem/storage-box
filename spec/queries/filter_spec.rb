@@ -4,8 +4,6 @@ require 'rails_helper'
 
 module Queries
   RSpec.describe Filter do
-    subject(:filtered_items) { described_class.apply(filters:, to: items_relation) }
-
     let(:filters) { {} }
 
     let!(:house) { create(:house) }
@@ -19,16 +17,20 @@ module Queries
       items.second.update!(room: room)
     end
 
-    it 'returns an ActiveRecord::Relation' do
-      expect(filtered_items).to be_a(ActiveRecord::Relation)
-    end
+    describe '#apply' do
+      subject(:filtered_items) { described_class.apply(filters:, to: items_relation) }
 
-    context 'when given one valid filter' do
-      let(:filters) { { filter_by_house: house.id } }
+      it 'returns an ActiveRecord::Relation' do
+        expect(filtered_items).to be_a(ActiveRecord::Relation)
+      end
 
-      it 'calls the scope mapped to that filter' do
-        expected = items_relation.in_house(house.id)
-        expect(filtered_items).to match_array(expected)
+      context 'when given one valid filter' do
+        let(:filters) { { filter_by_house: house.id } }
+
+        it 'calls the scope mapped to that filter' do
+          expected = items_relation.in_house(house.id)
+          expect(filtered_items).to match_array(expected)
+        end
       end
 
       context 'when given multiple valid filters' do
@@ -60,7 +62,7 @@ module Queries
       context 'when given empty filters' do
         let(:filters) { {} }
 
-        it 'returns the original scope' do
+        it 'returns the original scope unchanged' do
           expect(filtered_items).to match_array(items_relation)
         end
       end

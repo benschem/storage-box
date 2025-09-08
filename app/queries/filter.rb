@@ -27,13 +27,14 @@ class Filter
     filter_by_box: :in_box,
     filter_all_boxed: :boxed,
     filter_all_unboxed: :unboxed,
-    filter_by_any_tag: :with_any_of_these_tags,
-    filter_by_all_tags: :with_all_of_these_tags
+    filter_by_tag: :with_any_of_these_tags
+    # filter_by_all_tags: :with_all_of_these_tags
   }.freeze
 
   def initialize(filters:, to:)
     @filters = filters
     @initial_relation = to
+    @logger = Rails.logger
   end
 
   def self.apply(**)
@@ -41,26 +42,31 @@ class Filter
   end
 
   def apply
-    @filters.reduce(@initial_relation) do |filtered_relation, (filter, value)|
-      scope = SCOPES_BY_FILTER[filter]
+    @filters.reduce(@initial_relation) do |filtered_relation, (filter, values)|
+      next filtered_relation if values.blank?
 
-      apply_scope(scope, value, filtered_relation, filter)
+      scope = lookup_scope(filter)
+
+      next filtered_relation unless scope
+      next filtered_relation unless valid_scope?(scope, filtered_relation)
+
+      filtered_relation.public_send(scope, *Array(values))
     end
   end
 
   private
 
-  def apply_scope(scope, value, filtered_relation, filter)
-    unless scope
-      Rails.logger.debug { "#{@initial_relation.klass} does not respond to #{scope}" }
-      return filtered_relation
-    end
+  attr_reader :logger
 
-    unless filtered_relation.respond_to?(scope)
-      Rails.logger.debug { "#{filter} is not a valid filter" }
-      return filtered_relation
-    end
+  def lookup_scope(filter)
+    scope = SCOPES_BY_FILTER[filter.to_sym]
+    logger.warn { "#{filter} is not a valid filter" } unless scope
+    scope&.to_sym
+  end
 
-    filtered_relation.public_send(scope, *Array(value))
+  def valid_scope?(scope, relation)
+    valid = relation.respond_to?(scope&.to_sym)
+    logger.warn { "#{relation.klass} does not respond to #{scope.inspect}" } unless valid
+    valid
   end
 end
