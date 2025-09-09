@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_24_114148) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_09_112850) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -49,6 +49,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_24_114148) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "house_id", null: false
+    t.index ["house_id", "number"], name: "index_boxes_on_house_id_and_number", unique: true
     t.index ["house_id"], name: "index_boxes_on_house_id"
     t.index ["number", "room_id"], name: "index_boxes_on_number_and_room_id", unique: true
     t.index ["room_id"], name: "index_boxes_on_room_id"
