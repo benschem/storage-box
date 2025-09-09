@@ -49,6 +49,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_13_122741) do
     t.integer "number"
     t.bigint "room_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["house_id", "number"], name: "index_boxes_on_house_id_and_number", unique: true
     t.index ["house_id"], name: "index_boxes_on_house_id"
     t.index ["number", "room_id"], name: "index_boxes_on_number_and_room_id", unique: true
     t.index ["room_id"], name: "index_boxes_on_room_id"
