@@ -62,6 +62,8 @@
 could be you have the option to set owner to one of the users in the house, or it can be a "household" item, belonging to all users
 maybe need an owner column on db? -->
 
+[ ] Memberships join table for user houses
+[ ] Membership roles - see link in user or house to get started
 [ ] Slugs based on name for urls for house and rooms
 [ ] Option to delete User account - use give away items method
 [ ] Option to export data to csv

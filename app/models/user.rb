@@ -10,9 +10,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  # TODO: Replace HABTM with Memberships join table
+  # https://chatgpt.com/share/68c2b7b2-89f0-8004-91a0-c78b652e24da
   has_and_belongs_to_many :houses # optional: true is the default for has_and_belongs_to_many
-  has_many :rooms, through: :houses # TODO: Does it need this?
-  has_many :boxes, through: :rooms # TODO: Does it need this?
 
   # TODO: come back to this and add options for the user
   # to transfer their items to a house or fully delete them.
