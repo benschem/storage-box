@@ -79,3 +79,4 @@ maybe need an owner column on db? -->
 [ ] Multiple solidqueue queues - high low default
 [ ] `decline_invite!` could just use the enum `declined!`
 [ ] Box model - Uniqueness validation should have a unique index on the database column.
+[ ] Create some more factories -> there are too many example helpers in scope tests

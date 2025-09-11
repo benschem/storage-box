@@ -4,7 +4,6 @@
 class Item < ApplicationRecord
   include PgSearch::Model
   include Searchable
-  include TagFilterable
 
   belongs_to :user
   belongs_to :house, counter_cache: true
@@ -23,6 +22,12 @@ class Item < ApplicationRecord
   validates :notes, length: { maximum: 255 }, allow_blank: true
   validate :box_is_in_same_house_as_item
   validate :room_is_in_same_house_as_item
+
+  scope :in_house, ->(house) { where(house_id: house) }
+  scope :in_room, ->(room) { where(room_id: room) }
+  scope :in_box, ->(box) { where(box_id: box) }
+  scope :boxed, -> { where.not(box_id: nil) }
+  scope :unboxed, -> { where(box_id: nil) }
   scope :with_any_of_these_tags, lambda { |tags|
     joins(:tags).where(tags: { id: tags }).distinct
   }

@@ -73,15 +73,194 @@ RSpec.describe Item, type: :model do
     end
   end
 
-  describe 'scopes' do # rubocop:disable RSpec/MultipleMemoizedHelpers
-    let!(:tags) { create_list(:tag, 3) }
-    let!(:item_with_first_tag) { create(:item, tags: [tags.first]) }
-    let!(:item_with_first_and_second_tags) { create(:item, tags: [tags.first, tags.second]) }
-    let!(:item_with_third_tag) { create(:item, tags: [tags.third]) }
-    let!(:item_with_no_tags) { create(:item, tags: []) }
+  describe 'scopes' do
+    describe ':in_house' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+      let(:second_house) { build(:house) }
+      let(:second_item) { build(:item, house: second_house) }
 
-    describe '.with_any_of_these_tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+      before do
+        item.save!
+        second_house.save!
+        second_item.save!
+      end
+
+      context 'when given a single house' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
+        subject(:items) { described_class.in_house(house) }
+
+        it 'returns all of the items in that house' do
+          aggregate_failures do
+            expect(items).to be_a(ActiveRecord::Relation)
+            expect(items).to contain_exactly(item)
+          end
+        end
+
+        it 'does not return items from other houses' do
+          expect(items).not_to include(second_item)
+        end
+      end
+
+      context 'when given a list of houses' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
+        subject(:items) { described_class.in_house([house, second_house]) }
+
+        let!(:third_house) { create(:house) }
+        let!(:third_item) { create(:item, house: third_house) }
+
+        it 'returns all of the items in all of those houses' do
+          aggregate_failures do
+            expect(items).to be_a(ActiveRecord::Relation)
+            expect(items).to contain_exactly(item, second_item)
+          end
+        end
+
+        it 'does not return items from other houses' do
+          expect(items).not_to include(third_item)
+        end
+      end
+    end
+
+    describe ':in_room' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+      let(:second_room) { build(:room) }
+      let(:second_item) { build(:box, room: second_room) }
+
+      before do
+        item.save!
+        second_room.save!
+        second_item.save!
+      end
+
+      context 'when given a single room' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
+        subject(:items) { described_class.in_room(room) }
+
+        it 'returns all of the items in that room' do
+          aggregate_failures do
+            expect(items).to be_a(ActiveRecord::Relation)
+            expect(items).to contain_exactly(item)
+          end
+        end
+
+        it 'does not return items from other rooms' do
+          expect(items).not_to include(second_item)
+        end
+      end
+
+      context 'when given a list of rooms' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
+        subject(:items) { described_class.in_room([room, second_room]) }
+
+        let!(:second_room) { create(:room, house: house) }
+        let!(:second_item) { create(:item, room: second_room, house: house) }
+        let!(:third_room) { create(:room, house: house) }
+        let!(:third_item) { create(:item, room: third_room, house: house) }
+
+        it 'returns all of the items in all of those rooms' do
+          aggregate_failures do
+            expect(items).to be_a(ActiveRecord::Relation)
+            expect(items).to contain_exactly(item, second_item)
+          end
+        end
+
+        it 'does not return items from other rooms' do
+          expect(items).not_to include(third_item)
+        end
+      end
+    end
+
+    describe ':in_box' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+      let(:second_box) { build(:box, number: 2, house: house) }
+      let(:second_item) { build(:item, box: second_box, house: house) }
+      let!(:third_box) { build(:box, number: 3, house: house) }
+      let!(:third_item) { build(:item, box: third_box, house: house) }
+
+      before do
+        item.save!
+        second_box.save!
+        second_item.save!
+        third_box.save!
+        third_item.save!
+      end
+
+      context 'when given a single box' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
+        subject(:items) { described_class.in_box(box) }
+
+        it 'returns all of the items in that box' do
+          aggregate_failures do
+            expect(items).to be_a(ActiveRecord::Relation)
+            expect(items).to contain_exactly(item)
+          end
+        end
+
+        it 'does not return items from other boxes' do
+          expect(items).not_to include(second_item)
+        end
+      end
+
+      context 'when given a list of boxes' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
+        subject(:items) { described_class.in_box([box, second_box]) }
+
+        it 'returns all of the items in all of those boxs' do
+          aggregate_failures do
+            expect(items).to be_a(ActiveRecord::Relation)
+            expect(items).to contain_exactly(item, second_item)
+          end
+        end
+
+        it 'does not return items from other boxes' do
+          expect(items).not_to include(third_item)
+        end
+      end
+    end
+
+    describe ':boxed' do
+      subject(:items) { described_class.boxed }
+
+      let(:second_item) { build(:item, box: nil) }
+
+      before do
+        item.save!
+        second_item.save!
+      end
+
+      it 'returns all of the items that are in a box' do
+        aggregate_failures do
+          expect(items).to be_a(ActiveRecord::Relation)
+          expect(items).to contain_exactly(item)
+        end
+      end
+
+      it 'does not return items that are not in a box' do
+        expect(items).not_to include(second_item)
+      end
+    end
+
+    describe ':unboxed' do
+      subject(:items) { described_class.unboxed }
+
+      let(:second_item) { build(:item, box: nil) }
+
+      before do
+        item.save!
+        second_item.save!
+      end
+
+      it 'returns all of the items that are not in a box' do
+        aggregate_failures do
+          expect(items).to be_a(ActiveRecord::Relation)
+          expect(items).to contain_exactly(second_item)
+        end
+      end
+
+      it 'does not return items that are in a box' do
+        expect(items).not_to include(item)
+      end
+    end
+
+    describe ':with_any_of_these_tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers
       subject(:returned_relation) { described_class.with_any_of_these_tags(argument) }
+
+      let!(:tags) { create_list(:tag, 3) }
+      let!(:item_with_first_tag) { create(:item, tags: [tags.first]) }
+      let!(:item_with_first_and_second_tags) { create(:item, tags: [tags.first, tags.second]) }
+      let!(:item_with_third_tag) { create(:item, tags: [tags.third]) }
+      let!(:item_with_no_tags) { create(:item, tags: []) }
 
       let(:argument) { [tags.first, tags.second] }
 
@@ -126,12 +305,18 @@ RSpec.describe Item, type: :model do
       end
     end
 
-    describe '.with_all_of_these_tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    describe ':with_all_of_these_tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers
       subject(:returned_relation) { described_class.with_all_of_these_tags(argument) }
+
+      let!(:tags) { create_list(:tag, 3) }
+      let!(:item_with_first_tag) { create(:item, tags: [tags.first]) }
+      let!(:item_with_first_and_second_tags) { create(:item, tags: [tags.first, tags.second]) }
+      let!(:item_with_third_tag) { create(:item, tags: [tags.third]) }
+      let!(:item_with_no_tags) { create(:item, tags: []) }
 
       let(:argument) { [tags.first.id, tags.second.id] }
 
-      context 'when given multiple tags' do # rubocop:disable RSpec/MultipleMemoizedHelpers,RSpec/NestedGroups
+      context 'when given multiple tags' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
         let(:argument) { [tags.first.id, tags.second.id] }
 
         it 'returns items tagged with all of the tags' do
@@ -155,7 +340,7 @@ RSpec.describe Item, type: :model do
         end
       end
 
-      context 'when given a single tag' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+      context 'when given a single tag' do
         let(:argument) { tags.third.id }
 
         it 'returns items tagged with the tag' do
