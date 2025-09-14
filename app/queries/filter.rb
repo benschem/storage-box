@@ -1,38 +1,44 @@
 # frozen_string_literal: true
 
-## This Filter class is an abstraction of “apply a bunch of named scopes to a given relation.
+## This Filter class is an abstraction of “apply a bunch of named scopes to a given list of items.
 #
-## Filters can be applied to an ActiveRecord::Relation all at once, like so:
+## Filters can be applied to the items all at once, like so:
 #
 #    @items = Filter.apply(filters: { filter_by_house: 48 }, to: Item.all )
 #
 ## Arguments:
 # - filters: a Hash of filters and their values
-# - to: an ActiveRecord::Relation that the filters will be applied to
+# - to: an ActiveRecord::Relation of Items that the filters will be applied to
 #
 ## How it works:
-# - Filter checks which model the Relation belongs to
-# - for each of the given filters,
-#   - it asks the Relations class for the matching scope
-#   - if the filter matches a scope, and the class has that scope, it calls that scope on the Relation
-#   - and passes the returned Relation to the next iteration of the loop
-#   - or if none match, it passes the unchanged Relation to the next iteration of the loop
+# - for each of the allowed filters,
+#   - it checks if any filter values were given for it
+#     - if so, it looks up the appropriate scope and calls that scope on the items
+#     - it passes the returned items to the next iteration of the loop, to check the next allowed filter
+#   - or if no values were given
+#     - it passes the unchanged items to the next iteration of the loop, to check the next allowed filter
+# - then it sorts the items according to the given params, or falls back to a default
 #
 ## Returns:
 # - a filtered ActiveRecord::Relation.
 class Filter
-  SCOPES_BY_FILTER = {
-    filter_by_house: :in_house,
-    filter_by_room: :in_room,
-    filter_by_box: :in_box,
-    filter_all_boxed: :boxed,
-    filter_all_unboxed: :unboxed,
-    filter_by_tag: :with_any_of_these_tags
-    # filter_by_all_tags: :with_all_of_these_tags
+  class ScopeNotImplemented < StandardError; end
+
+  FILTERS = {
+    house: :in_house,
+    room: :in_room,
+    unboxed: :unboxed,
+    boxed: :boxed,
+    box: :in_box,
+    any_tags: :with_any_of_these_tags,
+    all_tags: :with_all_of_these_tags
   }.freeze
 
+  SORT_COLUMNS = %w[name created_at updated_at].freeze
+  SORT_DIRECTIONS = %w[asc desc].freeze
+
   def initialize(filters:, to:)
-    @filters = filters
+    @filter_params = filters
     @initial_relation = to
     @logger = Rails.logger
   end
@@ -42,31 +48,38 @@ class Filter
   end
 
   def apply
-    @filters.reduce(@initial_relation) do |filtered_relation, (filter, values)|
-      next filtered_relation if values.blank?
+    filtered = apply_filters
 
-      scope = lookup_scope(filter)
+    column, direction = sort_params
 
-      next filtered_relation unless scope
-      next filtered_relation unless valid_scope?(scope, filtered_relation)
-
-      filtered_relation.public_send(scope, *Array(values))
-    end
+    filtered.sorted(column, direction)
   end
 
   private
 
   attr_reader :logger
 
-  def lookup_scope(filter)
-    scope = SCOPES_BY_FILTER[filter.to_sym]
-    logger.warn { "#{filter} is not a valid filter" } unless scope
-    scope&.to_sym
+  def apply_filters
+    FILTERS.reduce(@initial_relation) do |filtered_relation, (filter_name, scope)|
+      values = @filter_params[filter_name.to_sym]
+
+      next filtered_relation if values.blank?
+      raise ScopeNotImplemented "#{filtered_relation.klass} :#{scope}" unless filtered_relation.respond_to?(scope)
+
+      filtered_relation.public_send(scope, *Array(values))
+    end
   end
 
-  def valid_scope?(scope, relation)
-    valid = relation.respond_to?(scope&.to_sym)
-    logger.warn { "#{relation.klass} does not respond to #{scope.inspect}" } unless valid
-    valid
+  def sort_params
+    column = @filter_params[:sort_by]
+    direction = @filter_params[:sort_direction]
+
+    return %i[updated_at desc] unless valid?(column, direction)
+
+    [column, direction]
+  end
+
+  def valid?(column, direction)
+    SORT_COLUMNS.include?(column) && SORT_DIRECTIONS.include?(direction)
   end
 end

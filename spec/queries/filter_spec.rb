@@ -4,10 +4,8 @@ require 'rails_helper'
 
 module Queries
   RSpec.describe Filter do
-    let(:filters) { {} }
-
     let!(:house) { create(:house) }
-    let!(:room) { create(:room, house: house) }
+    let!(:room)  { create(:room, house: house) }
     let!(:items) { create_list(:item, 3) }
     let(:items_relation) { Item.where(id: items.map(&:id)) }
 
@@ -17,53 +15,96 @@ module Queries
       items.second.update!(room: room)
     end
 
+    subject(:filtered_items) { described_class.apply(filters:, to: items_relation) }
+
     describe '#apply' do
-      subject(:filtered_items) { described_class.apply(filters:, to: items_relation) }
-
-      it 'returns an ActiveRecord::Relation' do
-        expect(filtered_items).to be_a(ActiveRecord::Relation)
-      end
-
-      context 'when given one valid filter' do
-        let(:filters) { { filter_by_house: house.id } }
+      context 'with one valid filter' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+        let(:filters) { { house: house.id } }
+        let(:expected) { items_relation.in_house(house.id) }
 
         it 'calls the scope mapped to that filter' do
-          expected = items_relation.in_house(house.id)
           expect(filtered_items).to match_array(expected)
         end
       end
 
-      context 'when given multiple valid filters' do
-        let(:filters) { { filter_by_house: house.id, filter_by_room: room.id } }
+      context 'with multiple valid filters' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+        let(:filters) { { house: house.id, room: room.id } }
+        let(:expected) { items_relation.in_house(house.id).in_room(room.id) }
+
+        let(:applied_scopes) do
+          applied = []
+          described_class::FILTERS.each_value do |scope|
+            allow(items_relation).to receive(scope) do
+              applied << scope
+              items_relation
+            end
+          end
+
+          described_class.apply(filters: described_class::FILTERS, to: items_relation)
+          applied
+        end
 
         it 'calls all of the scopes mapped to those filters' do
-          expected = items_relation.in_house(house.id).in_room(room.id)
           expect(filtered_items).to match_array(expected)
+        end
+
+        it 'applies each filter in the defined order' do
+          expect(applied_scopes).to eq(described_class::FILTERS.values)
         end
       end
 
-      context 'when given both valid and invalid filters' do
-        let(:filters) { { filter_by_house: house.id, unknown: 'nonexistant' } }
+      context 'with both valid and invalid filters' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+        let(:filters) { { house: house.id, unknown: 'nonexistent' } }
+        let(:expected) { items_relation.in_house(house.id) }
 
         it 'ignores unknown filters and applies valid ones' do
-          expected = items_relation.in_house(house.id)
           expect(filtered_items).to match_array(expected)
         end
       end
 
-      context 'when given an invalid filter' do
-        let(:filters) { { unknown: 'nonexistant' } }
+      context 'with only invalid filters' do
+        let(:filters) { { unknown: 'nonexistent' } }
 
         it 'returns the original scope unchanged' do
           expect(filtered_items).to match_array(items_relation)
         end
       end
 
-      context 'when given empty filters' do
+      context 'with no filters' do
         let(:filters) { {} }
 
         it 'returns the original scope unchanged' do
           expect(filtered_items).to match_array(items_relation)
+        end
+      end
+
+      describe 'sorting' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+        let!(:item_a) { create(:item, name: 'A', created_at: 2.days.ago, updated_at: 1.day.ago) }
+        let!(:item_b) { create(:item, name: 'B', created_at: 1.day.ago, updated_at: Time.current) }
+        let(:items_relation) { Item.where(id: [item_a.id, item_b.id]) }
+
+        context 'with valid sort params' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+          let(:filters) { { sort_by: 'name', sort_direction: 'asc' } }
+
+          it 'sorts by the params' do
+            expect(filtered_items).to eq([item_a, item_b])
+          end
+        end
+
+        context 'with no sort params' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+          let(:filters) { {} }
+
+          it 'falls back to sorting by :updated_at :desc' do
+            expect(filtered_items).to eq([item_b, item_a])
+          end
+        end
+
+        context 'with invalid sort params' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+          let(:filters) { { sort_by: 'unknown', sort_direction: 'sideways' } }
+
+          it 'falls back to sorting by :updated_at :desc' do
+            expect(filtered_items).to eq([item_b, item_a])
+          end
         end
       end
     end
