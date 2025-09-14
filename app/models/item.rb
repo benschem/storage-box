@@ -37,7 +37,7 @@ class Item < ApplicationRecord
       .group(:id)
       .having('COUNT(DISTINCT tags.id) = ?', Array(tags).size)
   }
-  scope :sort_by, ->(column, direction) { order(column => direction) }
+  scope :sorted, ->(column, direction) { order(column => direction) }
 
   private
 
