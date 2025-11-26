@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["form", "house", "room", "box"];
+  static targets = ["form", "houses", "rooms", "boxes"];
   static values = {
     allRooms: Array,
     allBoxes: Array,
@@ -21,38 +21,34 @@ export default class extends Controller {
     }, 300);
   }
 
-  // updateRoomsAndBoxes() {
-  //   const houseId = this.houseTarget.value;
+  updateRoomsAndBoxes() {
+    const houseId = this.housesTarget.value;
 
-  //   const rooms = this.allRoomsValue.filter((room) => room.house_id == houseId);
-  //   this.#updateSelect(this.roomTarget, rooms, "All rooms");
+    const rooms = this.allRoomsValue.filter((room) => room.house_id == houseId);
+    this._updateSelect(this.roomsTarget, rooms, "All rooms");
 
-  //   const boxes = this.allBoxesValue.filter((box) => box.house_id == houseId);
-  //   this.#updateSelect(this.boxTarget, boxes, "All boxes");
-  // }
-
-  // updateBoxes() {
-  //   const roomId = this.roomTarget.value;
-  //   const boxes = this.allBoxesValue.filter((box) => box.room_id == roomId);
-  //   this.#updateSelect(this.boxTarget, boxes, "All boxes");
-  // }
-
-  submit() {
-    this.formTarget.requestSubmit();
+    const boxes = this.allBoxesValue.filter((box) => box.house_id == houseId);
+    this._updateSelect(this.boxesTarget, boxes, "All boxes");
   }
 
-  // #updateSelect(select, items, promptText) {
-  //   select.innerHTML = "";
-  //   const prompt = document.createElement("option");
-  //   prompt.value = "";
-  //   prompt.textContent = promptText;
-  //   select.appendChild(prompt);
+  updateBoxes() {
+    const roomId = this.roomsTarget.value;
+    const boxes = this.allBoxesValue.filter((box) => box.room_id == roomId);
+    this._updateSelect(this.boxesTarget, boxes, "All boxes");
+  }
 
-  //   items.forEach((item) => {
-  //     const option = document.createElement("option");
-  //     option.value = item.id;
-  //     option.textContent = item.name || item.number;
-  //     select.appendChild(option);
-  //   });
-  // }
+  _updateSelect(select, items, promptText) {
+    select.innerHTML = "";
+    const prompt = document.createElement("option");
+    prompt.value = "";
+    prompt.textContent = promptText;
+    select.appendChild(prompt);
+
+    items.forEach((item) => {
+      const option = document.createElement("option");
+      option.value = item.id;
+      option.textContent = item.name || item.number;
+      select.appendChild(option);
+    });
+  }
 }

@@ -13,6 +13,12 @@ application.register("flash", FlashController);
 import SearchController from "./search_controller";
 application.register("search", SearchController);
 
+import BoxFilterController from "./box_filter_controller";
+application.register("box-filter", BoxFilterController);
+
+import TagFilterController from "./tag_filter_controller";
+application.register("tag-filter", TagFilterController);
+
 import SidebarController from "./sidebar_controller";
 application.register("sidebar", SidebarController);
 
