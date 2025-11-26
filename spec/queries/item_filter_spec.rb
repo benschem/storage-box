@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 module Queries
-  RSpec.describe Filter do
+  RSpec.describe ItemFilter do
     let!(:house) { create(:house) }
     let!(:room)  { create(:room, house: house) }
     let!(:items) { create_list(:item, 3) }

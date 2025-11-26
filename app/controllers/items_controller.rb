@@ -2,20 +2,18 @@
 
 # Items controller
 class ItemsController < ApplicationController
-  include ItemFilter
-  include ItemSort
-
   before_action :set_items, only: %i[index]
-  before_action :apply_filters, only: %i[index]
-  before_action :load_filter_options, only: %i[index]
-  before_action :apply_sort, only: %i[index]
+  before_action :set_item, only: %i[show edit update destroy]
   before_action :set_partial, only: [:show]
 
-  before_action :set_item, only: %i[show edit update destroy]
-
   def index
-    @items = @items.search(params[:search]) if params[:search].present?
-    @number_of_items = @items.count
+    @filter_options = {
+      houses: policy_scope(House),
+      rooms: policy_scope(Room).includes(:house).order(:house_id, :name),
+      boxes: policy_scope(Box).includes(:room, :house),
+      tags: policy_scope(Tag)
+    }
+
     @pagy, @items = pagy(@items)
   end
 
@@ -131,7 +129,12 @@ class ItemsController < ApplicationController
   end
 
   def set_items
-    @items = policy_scope(Item).includes(:box, image_attachment: :blob)
+    filter_params = params[:filter]&.to_unsafe_h || {}
+    @items = ItemFilter.apply(filters: filter_params,
+                              to: policy_scope(Item))
+                       .includes(:room, :box, image_attachment: :blob)
+    @items = @items.search(params[:search]) if params[:search].present?
+    @number_of_items = @items.count
   end
 
   def set_partial
