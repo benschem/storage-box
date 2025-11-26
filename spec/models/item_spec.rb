@@ -74,7 +74,7 @@ RSpec.describe Item, type: :model do
   end
 
   describe 'scopes' do
-    describe ':in_house' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    describe ':in_houses' do # rubocop:disable RSpec/MultipleMemoizedHelpers
       let(:second_house) { build(:house) }
       let(:second_item) { build(:item, house: second_house) }
 
@@ -85,7 +85,7 @@ RSpec.describe Item, type: :model do
       end
 
       context 'when given a single house' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
-        subject(:items) { described_class.in_house(house) }
+        subject(:items) { described_class.in_houses(house) }
 
         it 'returns all of the items in that house' do
           aggregate_failures do
@@ -100,7 +100,7 @@ RSpec.describe Item, type: :model do
       end
 
       context 'when given a list of houses' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
-        subject(:items) { described_class.in_house([house, second_house]) }
+        subject(:items) { described_class.in_houses([house, second_house]) }
 
         let!(:third_house) { create(:house) }
         let!(:third_item) { create(:item, house: third_house) }
@@ -118,7 +118,7 @@ RSpec.describe Item, type: :model do
       end
     end
 
-    describe ':in_room' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    describe ':in_rooms' do # rubocop:disable RSpec/MultipleMemoizedHelpers
       let(:second_room) { build(:room) }
       let(:second_item) { build(:box, room: second_room) }
 
@@ -129,7 +129,7 @@ RSpec.describe Item, type: :model do
       end
 
       context 'when given a single room' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
-        subject(:items) { described_class.in_room(room) }
+        subject(:items) { described_class.in_rooms(room) }
 
         it 'returns all of the items in that room' do
           aggregate_failures do
@@ -144,7 +144,7 @@ RSpec.describe Item, type: :model do
       end
 
       context 'when given a list of rooms' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
-        subject(:items) { described_class.in_room([room, second_room]) }
+        subject(:items) { described_class.in_rooms([room, second_room]) }
 
         let!(:second_room) { create(:room, house: house) }
         let!(:second_item) { create(:item, room: second_room, house: house) }
@@ -164,7 +164,7 @@ RSpec.describe Item, type: :model do
       end
     end
 
-    describe ':in_box' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    describe ':in_boxes' do # rubocop:disable RSpec/MultipleMemoizedHelpers
       let(:second_box) { build(:box, number: 2, house: house) }
       let(:second_item) { build(:item, box: second_box, house: house) }
       let!(:third_box) { build(:box, number: 3, house: house) }
@@ -179,7 +179,7 @@ RSpec.describe Item, type: :model do
       end
 
       context 'when given a single box' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
-        subject(:items) { described_class.in_box(box) }
+        subject(:items) { described_class.in_boxes(box) }
 
         it 'returns all of the items in that box' do
           aggregate_failures do
@@ -194,7 +194,7 @@ RSpec.describe Item, type: :model do
       end
 
       context 'when given a list of boxes' do # rubocop:disable RSpec/NestedGroups,RSpec/MultipleMemoizedHelpers
-        subject(:items) { described_class.in_box([box, second_box]) }
+        subject(:items) { described_class.in_boxes([box, second_box]) }
 
         it 'returns all of the items in all of those boxs' do
           aggregate_failures do

@@ -23,9 +23,24 @@ class Item < ApplicationRecord
   validate :box_is_in_same_house_as_item
   validate :room_is_in_same_house_as_item
 
-  scope :in_house, ->(house) { where(house_id: house) }
-  scope :in_room, ->(room) { where(room_id: room) }
-  scope :in_box, ->(box) { where(box_id: box) }
+  scope :in_houses, lambda { |houses|
+    return if houses.blank?
+    return all if houses == 'all'
+
+    where(house_id: houses)
+  }
+  scope :in_rooms, lambda { |rooms|
+    return if rooms.blank?
+    return all if rooms == 'all'
+
+    where(room_id: rooms)
+  }
+  scope :in_boxes, lambda { |boxes|
+    return if boxes.blank?
+    return all if boxes == 'all'
+
+    where(box_id: boxes)
+  }
   scope :boxed, -> { where.not(box_id: nil) }
   scope :unboxed, -> { where(box_id: nil) }
   scope :with_any_of_these_tags, lambda { |tags|

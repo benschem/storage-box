@@ -131,8 +131,8 @@ class ItemsController < ApplicationController
   def set_items
     filter_params = params[:filter]&.to_unsafe_h || {}
     @items = ItemFilter.apply(filters: filter_params,
-                              to: policy_scope(Item))
-                       .includes(:room, :box, image_attachment: :blob)
+                              items: policy_scope(Item))
+                       &.includes(:room, :box, image_attachment: :blob)
     @items = @items.search(params[:search]) if params[:search].present?
     @number_of_items = @items.count
   end

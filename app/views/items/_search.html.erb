@@ -4,19 +4,18 @@
       turbo_frame: 'items',
       controller: "search",
       search_target: "form",
-      search_all_rooms_value: @rooms.to_json(only: [:id, :name, :house_id]),
-      search_all_boxes_value: @boxes.to_json(only: [:id, :number, :house_id, :room_id])
+      search_all_rooms_value: @filter_options[:rooms].to_json(only: [:id, :name, :house_id]),
+      search_all_boxes_value: @filter_options[:boxes].to_json(only: [:id, :number, :house_id, :room_id])
     },
     role: "search",
     class: "px-2 flex flex-col gap-2 w-full text-slate-900 dark:text-slate-100 placeholder-slate-100 dark:placeholder-slate-100" do %>
 
-  <label for="search" class="sr-only">Search for item</label>
-
+  <!-- Search bar -->
   <div class="relative flex-grow">
+    <label for="search" class="sr-only">Search for item</label>
     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
       <%= render "shared/icons/magnifying_glass", klasses: "dark:stroke-slate-100" %>
     </div>
-
     <%= text_field_tag :search,
         params[:search],
         id: "search",
@@ -25,80 +24,136 @@
         class: "w-full pl-12 pr-4 py-2 rounded-xl border bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 text-lg focus:outline-none focus:ring-2 focus:ring-teal-500" %>
   </div>
 
+  <!-- Filters -->
   <label for="filter" class="mx-2 mt-2 font-medium whitespace-nowrap max-h-min">
     Filter by:
   </label>
   <div class="grid grid-cols-2 gap-2 items-center">
-    <%= select_tag :filter_by_house,
-      options_for_select(
-        @houses.map { |house| [house.name.capitalize, house.id] },
-        params[:filter_by_house]),
-      prompt: "All houses",
+    <!-- Houses-->
+    <%= select_tag "filter[houses]",
+      options_for_select([
+        ["All", @filter_options[:houses].map(&:id)],
+        *@filter_options[:houses].map { |house| [house.name.capitalize, house.id] },
+      ], params.dig(:filter, :houses)),
+      multiple: true,
       data: {
         action: "change->search#updateRoomsAndBoxes change->search#submit",
-        search_target: "house"
+        search_target: "houses"
       },
       class: "grow rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
     %>
-    <%= select_tag :filter_by_room,
-      options_for_select(
-        @rooms_with_houses.map { |room| ["#{room.name.capitalize} - #{room.house.name.capitalize}", room.id] },
-        params[:filter_by_room]),
-      prompt: "All rooms",
+    <!-- Rooms -->
+    <%= select_tag "filter[rooms]",
+      options_for_select([
+        ["All", @filter_options[:rooms].map { |room| room.id }],
+        *@filter_options[:rooms].map { |room| ["#{room.name.capitalize} - #{room.house.name.capitalize}", room.id] },
+      ],  params.dig(:filter, :rooms)),
+      multiple: true,
       data: {
         action: "change->search#updateRoomsAndBoxes change->search#submit",
-        search_target: "room"
+        search_target: "rooms"
       },
       class: "rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
     %>
   </div>
 
-  <div class="mt-2  grid grid-cols-2 gap-2 items-center">
-    <%= select_tag :filter_by_box,
-      options_for_select(
-        [
-          ["Items not in a box", "unboxed"],
-          ["Items in a box", "boxed"]
-        ] + @boxes.map { |box| ["Box #{box.number} - #{box.room.name.capitalize} - #{box.house.name.capitalize}", box.id] },
-        params[:filter_by_box]),
-      prompt: "All items",
-      data: {
-        action: "change->search#updateRoomsAndBoxes change->search#submit",
-        search_target: "box"
-      },
-      class: "rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
-    %>
-    <%= select_tag :filter_by_tag,
-      options_for_select(
-        @tags.map { |tag| ["#{tag.name.capitalize}", tag.id] },
-        params[:filter_by_tag]),
-      prompt: "All tags",
-      data: {
-        action: "change->search#updateRoomsAndBoxes change->search#submit",
-        search_target: "tag"
-      },
-      class: "rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+  <!-- Box checkboxes -->
+  <div class="mt-2 grid grid-cols-2 gap-2 items-center">
+    <!-- Unboxed checkbox -->
+    <div class="flex items-center gap-2">
+      <%= check_box_tag "filter[unboxed]", "true", params.dig(:filter, :unboxed).present?,
+        id: "filter_unboxed",
+        data: { action: "change->boxFilter#toggleUnboxed change->search#submit",
+                box_filter_target: "unboxed" },
+        class: "rounded border-slate-300 dark:border-slate-700" %>
+      <label for="filter_unboxed" class="font-medium">Items not in a box</label>
+    </div>
+
+    <!-- Boxed checkbox -->
+    <div class="flex items-center gap-2">
+      <%= check_box_tag "filter[boxed]", "true", params.dig(:filter, :boxed).present?,
+        id: "filter_boxed",
+        data: { action: "change->boxFilter#toggleBoxed change->search#submit",
+                box_filter_target: "boxed" },
+        class: "rounded border-slate-300 dark:border-slate-700" %>
+      <label for="filter_boxed" class="font-medium">Items in a box</label>
+    </div>
+  </div>
+
+  <!-- Boxes select -->
+  <div class="mt-2">
+    <%= select_tag "filter[boxes]",
+      options_for_select([
+        ["All", @filter_options[:boxes].map { |box| box.id }],
+        *@filter_options[:boxes].sort.map { |box| ["Box #{box.number} - #{box.room.name.capitalize} - #{box.house.name.capitalize}", box.id] },
+      ], params.dig(:filter, :boxes)),
+      multiple: true,
+      id: "filter_boxes",
+      data: { action: "change->boxFilter#selectBox change->search#submit" ,
+              search_target: "boxes" },
+      class: "w-full rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
     %>
   </div>
 
+  <!-- Tags -->
+  <div class="mt-2">
+    <div class="flex gap-4 items-center mb-2">
+      <!-- Any tags -->
+      <div class="flex items-center gap-2">
+        <%= radio_button_tag "filter[tag_mode]", "any_tags",
+          params.dig(:filter, :tag_mode) == "any_tags",
+          id: "filter_any_tags",
+          data: { action: "change->tagFilter#toggle change->search#submit",
+                  tag_filter_target: "any" } %>
+        <label for="filter_any_tags" class="font-medium">Match any tags</label>
+      </div>
+
+      <!-- All tags -->
+      <div class="flex items-center gap-2">
+        <%= radio_button_tag "filter[tag_mode]", "all_tags",
+          params.dig(:filter, :tag_mode) == "all_tags",
+          id: "filter_all_tags",
+          data: { action: "change->tagFilter#toggle change->search#submit",
+                  tag_filter_target: "all" } %>
+        <label for="filter_all_tags" class="font-medium">Match all tags</label>
+      </div>
+    </div>
+
+    <!-- Tag multiselect -->
+    <%= select_tag "filter[tags]",
+      options_for_select([
+        ["All", @filter_options[:tags].map { |tag| tag.id }],
+        *@filter_options[:tags].map { |tag| [tag.name.capitalize, tag.id] }
+      ], params.dig(:filter, :tags)),
+      multiple: true,
+      id: "filter_tags",
+      data: { action: "change->tagFilter#toggle change->search#submit",
+              tag_filter_target: "tags" },
+      class: "w-full rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+    %>
+  </div>
+
+  <!-- Sort -->
   <div class="mt-2 flex gap-2 items-center">
     <label for="sort" class="font-medium whitespace-nowrap max-h-min">
       Sort by:
     </label>
-    <%= select_tag :sort_by,
+    <%= select_tag "filter[sort_by]",
       options_for_select([
+        ["Date modified", "updated_at"],
         ["Date created", "created_at"],
-        ["Name", "name"],
-        ["Date modified", "updated_at"]
-      ], params[:sort_by]),
+        ["Name", "name"]
+      ], params.dig(:filter, :sort_by)),
       data: { action: "change->search#submit" },
       class: "grow rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
     %>
-    <%= select_tag :sort_direction,
+
+    <!--Sort direction-->
+    <%= select_tag "filter[sort_direction]",
       options_for_select([
         ["↓", "desc"],
         ["↑", "asc"]
-      ], params[:sort_direction]),
+      ], params.dig(:filter, :sort_direction)),
       data: { action: "change->search#submit" },
       class: "rounded-xl p-2 bg-slate-300 dark:bg-slate-800 border-1 border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
     %>

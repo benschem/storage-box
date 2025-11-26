@@ -15,7 +15,7 @@ module Queries
       items.second.update!(room: room)
     end
 
-    subject(:filtered_items) { described_class.apply(filters:, to: items_relation) }
+    subject(:filtered_items) { described_class.apply(filters:, items: items_relation) }
 
     describe '#apply' do
       context 'with one valid filter' do # rubocop:disable RSpec/MultipleMemoizedHelpers
@@ -40,7 +40,7 @@ module Queries
             end
           end
 
-          described_class.apply(filters: described_class::FILTERS, to: items_relation)
+          described_class.apply(filters: described_class::FILTERS, items: items_relation)
           applied
         end
 
