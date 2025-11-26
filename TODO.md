@@ -2,7 +2,7 @@
 
 # TODO:
 
-# UX
+## UX
 
 [ ] A house with no rooms is unintuitive what to do
 [ ] A brand new user probably needs hints for workflow
@@ -10,8 +10,10 @@
 [ ] Items form should have a better way to add tags and boxes in the form
 [ ] Adding an item - choosing which house is done by choosing room - don't like it
 
-# Bugs
+## Bugs
 
+[ ] Item filter doesn't chain scopes
+[ ] Item scopes return nothing when passed nothing - not empty AR relation
 [ ] Stimulus controller to clear new house form after one gets submitted
 [ ] Fix eager loading issues as per Bullet
 [ ] Filter - when a house is selected should not show rooms from other houses in the room select
