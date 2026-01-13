@@ -1,15 +1,15 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-ruby "3.3.5"
+ruby '3.3.5'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '~> 8.1', '>= 8.1.0'
 
 # Use postgresql as the database for Active Record
-gem "pg", "~> 1.5"
+gem 'pg', '~> 1.5'
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", ">= 5.0"
+gem 'puma', '>= 5.0'
 
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
@@ -21,39 +21,39 @@ gem "puma", ">= 5.0"
 # gem "bcrypt", "~> 3.1.7"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ windows jruby ]
+gem 'tzinfo-data', platforms: %i[windows jruby]
 
 # Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", require: false
+gem 'bootsnap', require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 1.2"
+gem 'image_processing', '~> 1.2'
 
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem "turbo-rails"
+gem 'turbo-rails'
 
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem "stimulus-rails"
+gem 'stimulus-rails'
 
 # Vite.js integration in Ruby web apps [https://vite-ruby.netlify.app/]
-gem "vite_rails"
+gem 'vite_rails'
 
 # Rails forms made easy [https://github.com/heartcombo/simple_form]
-gem "simple_form", "~> 5.3"
+gem 'simple_form', '~> 5.3'
 
 # Devise for authentication [https://github.com/heartcombo/devise]
-gem "devise", "~> 4.9"
+gem 'devise', '~> 4.9'
 
 # Every environment except production
 group :development, :staging, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ]
+  gem 'debug', platforms: %i[mri windows]
 
   # Load environment variables from .env into ENV in development [https://github.com/bkeepers/dotenv]
-  gem "dotenv-rails", "~> 3.1"
+  gem 'dotenv-rails', '~> 3.1'
 
   # Don't send real emails outside of production [https://github.com/ryanb/letter_opener]
-  gem "letter_opener", "~> 1.10"
+  gem 'letter_opener', '~> 1.10'
 end
 
 group :development, :test do
@@ -64,7 +64,7 @@ group :development, :test do
   gem 'factory_bot_rails'
 
   # Generate realistic fake data [https://github.com/faker-ruby/faker]
-  gem "faker", "~> 3.5"
+  gem 'faker', '~> 3.5'
 
   # Pretty print your Ruby objects with style -- in full color and with proper indentation [https://github.com/awesome-print/awesome_print]
   gem 'awesome_print'
@@ -93,7 +93,7 @@ end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
-  gem "web-console"
+  gem 'web-console'
 
   # Watches your queries for when you should add eager loading (N+1 queries) [https://github.com/flyerhzm/bullet]
   gem 'bullet'
@@ -107,8 +107,8 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem "capybara"
-  gem "selenium-webdriver"
+  gem 'capybara'
+  gem 'selenium-webdriver'
 
   # Simple one-liner tests for common Rails functionality [https://github.com/thoughtbot/shoulda-matchers]
   gem 'shoulda-matchers', '~> 6.0'
@@ -119,16 +119,16 @@ end
 
 # Silence warning: ostruct.rb was loaded from the standard library, but will no longer be part of the default gems starting from Ruby 3.5.0.
 # This app never uses an open struct anyway, at least not in my code. I just want to get rid of that warning.
-gem "ostruct", "~> 0.6.1"
+gem 'ostruct', '~> 0.6.1'
 
 # Easy Postgresql full text search with ActiveRecord [https://github.com/Casecommons/pg_search]
-gem "pg_search", "~> 2.3"
+gem 'pg_search', '~> 2.3'
 
 # Solid Queue is a DB-based queuing backend for Active Job [https://github.com/rails/solid_queue]
-gem "solid_queue", "~> 1.1"
+gem 'solid_queue', '~> 1.1'
 
 # Pagination [https://github.com/ddnexus/pagy]
-gem "pagy", "~> 9.3"
+gem 'pagy', '~> 9.3'
 
 # Authorization [https://github.com/varvet/pundit]
-gem "pundit", "~> 2.5"
+gem 'pundit', '~> 2.5'
