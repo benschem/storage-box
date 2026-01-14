@@ -42,7 +42,7 @@ gem 'vite_rails'
 gem 'simple_form', '~> 5.3'
 
 # Devise for authentication [https://github.com/heartcombo/devise]
-gem 'devise', '~> 4.9'
+gem 'devise', github: 'heartcombo/devise', branch: 'main'
 
 # Every environment except production
 group :development, :staging, :test do
