@@ -2,20 +2,16 @@
 
 # Items controller
 class ItemsController < ApplicationController
-  include ItemFilter
-  include ItemSort
-
   before_action :set_items, only: %i[index]
-  before_action :apply_filters, only: %i[index]
-  before_action :load_filter_options, only: %i[index]
-  before_action :apply_sort, only: %i[index]
+  before_action :set_tags, only: %i[index]
+  before_action :set_boxes, only: %i[index]
+  before_action :set_rooms, only: %i[index]
+  before_action :set_houses, only: %i[index]
   before_action :set_partial, only: [:show]
 
   before_action :set_item, only: %i[show edit update destroy]
 
   def index
-    @items = @items.search(params[:search]) if params[:search].present?
-    @number_of_items = @items.count
     @pagy, @items = pagy(@items)
   end
 
@@ -83,7 +79,7 @@ class ItemsController < ApplicationController
       @tag = Tag.new
       @box = Box.new
 
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -102,7 +98,7 @@ class ItemsController < ApplicationController
           )
         end
       else
-        format.html { render :edit, status: :unprocessable_entity }
+        format.html { render :edit, status: :unprocessable_content }
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(
             dom_id(@item),
@@ -131,7 +127,25 @@ class ItemsController < ApplicationController
   end
 
   def set_items
-    @items = policy_scope(Item).includes(:box, image_attachment: :blob)
+    all_items = policy_scope(Item)&.includes(:room, :box, image_attachment: :blob)
+    @items = params[:search].present? ? all_items.search(params[:search]) : all_items
+    @number_of_items = @items.count
+  end
+
+  def set_tags
+    @tags = policy_scope(Tag)
+  end
+
+  def set_boxes
+    @boxes = policy_scope(Box)
+  end
+
+  def set_rooms
+    @rooms = policy_scope(Room).includes(:house)
+  end
+
+  def set_houses
+    @houses = policy_scope(House)
   end
 
   def set_partial
@@ -139,6 +153,6 @@ class ItemsController < ApplicationController
   end
 
   def item_params
-    params.require(:item).permit(:name, :notes, :box_id, :room_id, :image, :remove_image, tag_ids: [])
+    params.expect(item: [:name, :notes, :box_id, :room_id, :image, :remove_image, { tag_ids: [] }])
   end
 end
