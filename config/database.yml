@@ -25,20 +25,20 @@ default: &default
 
 development:
   <<: *default
-  database: storage_box_development
+  database: search_your_stuff_development
 
 test:
   <<: *default
-  database: storage_box_test
+  database: search_your_stuff_test
 
 staging:
   <<: *default
-  database: storage_box_production
-  username: storage_box
-  password: <%= ENV['STORAGE_BOX_DATABASE_PASSWORD'] %>
+  database: search_your_stuff_production
+  username: search_your_stuff
+  password: <%= ENV['SEARCH_YOUR_STUFF_DATABASE_PASSWORD'] %>
 
 production:
   <<: *default
-  database: storage_box_production
-  username: storage_box
-  password: <%= ENV['STORAGE_BOX_DATABASE_PASSWORD'] %>
+  database: search_your_stuff_production
+  username: search_your_stuff
+  password: <%= ENV['SEARCH_YOUR_STUFF_DATABASE_PASSWORD'] %>
