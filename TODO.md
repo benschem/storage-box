@@ -82,3 +82,9 @@ maybe need an owner column on db? -->
 [ ] `decline_invite!` could just use the enum `declined!`
 [ ] Box model - Uniqueness validation should have a unique index on the database column.
 [ ] Create some more factories -> there are too many example helpers in scope tests
+
+# 2026 TODO noted:
+[X] Update everything
+[ ] Lint everything
+[ ] In item, include PGSearch thing should go inside the Searchable concern
+[ ]
