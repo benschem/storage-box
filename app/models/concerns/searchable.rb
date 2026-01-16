@@ -4,6 +4,8 @@
 module Searchable
   extend ActiveSupport::Concern
 
+  include PgSearch::Model
+
   included do # rubocop:disable Metrics/BlockLength
     scope :search, lambda { |query|
       return none if query.blank?

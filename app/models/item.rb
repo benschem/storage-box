@@ -2,7 +2,6 @@
 
 # An item in a users' house
 class Item < ApplicationRecord
-  include PgSearch::Model
   include Searchable
 
   belongs_to :user
