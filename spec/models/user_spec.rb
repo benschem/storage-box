@@ -422,12 +422,12 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#give_items_away' do
+  describe '#transfer_items_to_user' do
     let!(:another_user) { create(:user) }
     let!(:items) { create_list(:item, 3, user:) }
 
     before do
-      user.give_items_away(items: items, user: another_user)
+      user.transfer_items_to_user(items: items, user: another_user)
     end
 
     context 'when user owns all the items' do
@@ -452,7 +452,7 @@ RSpec.describe User, type: :model do
       let!(:unowned_items) { create_list(:item, 3, user: unrelated_user) }
 
       before do
-        user.give_items_away(
+        user.transfer_items_to_user(
           items: items + unowned_items, user: another_user
         )
       end
