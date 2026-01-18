@@ -28,3 +28,17 @@ AllCops:
 
 RSpecRails/InferredSpecType:
   Enabled: false
+
+Layout/LineLength:
+  Max: 120 # Default is 80 characters
+
+Metrics/BlockLength:
+  Max: 30 # Default is 25
+
+Style/Documentation:
+  Exclude:
+    - "**/application_*.rb"
+    - "config/application.rb"
+
+RSpec/NestedGroups:
+  Max: 4 # Default is 3
