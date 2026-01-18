@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Base Permissions are deny all
 class ApplicationPolicy
   attr_reader :user, :record
 
@@ -36,6 +37,7 @@ class ApplicationPolicy
     false
   end
 
+  # Base scope
   class Scope
     def initialize(user, scope)
       @user = user
@@ -49,5 +51,11 @@ class ApplicationPolicy
     private
 
     attr_reader :user, :scope
+  end
+
+  private
+
+  def signed_in_user?
+    user.present?
   end
 end

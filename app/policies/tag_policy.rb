@@ -1,17 +1,13 @@
 # frozen_string_literal: true
 
-# A tag reprsents a label attached to items
-# Tags are global - they can be associated with, or removed from, items, but
-# cannot be updated or destroyed. Renaming a tag requires creating a new tag.
+# # Tags are global - one tag attaches to multiple items
 class TagPolicy < ApplicationPolicy
   def create?
-    user.present?
+    signed_in_user?
   end
 
-  def remove?
-    user && in_same_house?
-  end
-
+  # Tags cannot be updated or destroyed.
+  # Renaming a tag requires creating a new tag.
   def update?
     false
   end
@@ -20,16 +16,16 @@ class TagPolicy < ApplicationPolicy
     false
   end
 
-  private
-
-  def in_same_house?
-    record.items.joins(:house).exists?(house_id: user.house_ids)
-  end
-
-  # Users can see tags on items in houses they belong to
+  # Users can only see tags on items in houses they belong to
   class Scope < ApplicationPolicy::Scope
     def resolve
-      Tag.joins(:items).where(items: { house_id: user.house_ids }).distinct
+      return scope.none unless user
+
+      scope
+        .joins(:taggings)
+        .joins(:items)
+        .where(items: { house_id: user.house_ids })
+        .distinct
     end
   end
 end

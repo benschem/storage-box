@@ -34,27 +34,25 @@
 [X] Item
 [X] Room
 [X] Tag
-[ ] Taggings
-[ ] User?
+[X] Taggings
+[X] User
 
 ## Policy Specs
 
-[ ] Box
-[ ] House
-[ ] Invite
+[X] Box
+[X] House
+[X] Invite
 [X] Item
-[ ] Room
+[X] Room
 [X] Tag
-[ ] Taggings
-[ ] User?
+[X] Taggings
+[X] User
 
 ## System Specs
 
 [ ] A user viewing their items
 [ ] A user searching for an item
 [ ] A user adding an item
-
-## New features
 
 ## New features
 
