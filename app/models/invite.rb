@@ -2,8 +2,8 @@
 
 # Invitation from a User (the sender) inviting another User (the recipient) to join a House they belong to.
 #
-# TODO: If invite is declined it should not be deleted and prevent future invites from user?
-# TODO: Consider blocking?
+# TODO: Recurring job to delete expired invites?
+# TODO: Users can block invites?
 class Invite < ApplicationRecord
   include InviteNotifier
 
@@ -27,7 +27,7 @@ class Invite < ApplicationRecord
   before_validation { format_recipient_email }
 
   validates :recipient_email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true
-  validate :sender_must_belong_to_house
+  validate :sender_must_be_member_of_house
 
   before_create :assign_recipient_if_email_registered
 
@@ -57,7 +57,7 @@ class Invite < ApplicationRecord
     token
   end
 
-  def sender_must_belong_to_house
+  def sender_must_be_member_of_house
     return if house.blank? || sender.blank?
     return if house.users.exists?(id: sender_id)
 

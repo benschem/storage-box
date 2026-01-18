@@ -38,6 +38,10 @@ RSpec.describe Invite, type: :model do
     end
   end
 
+  it 'defaults status to pending' do
+    expect(invite.status).to eq('pending')
+  end
+
   it 'downcases and strips :recipient_email before validation' do
     invite = create(:invite, recipient_email: '  TEST@Example.COM  ')
     expect(invite.recipient_email).to eq('test@example.com')
@@ -66,7 +70,7 @@ RSpec.describe Invite, type: :model do
   it 'has a url safe :token' do
     invite = create(:invite)
     # URL-safe base64 includes only [-_A-Za-z0-9], no padding (=) or special chars.
-    expect(invite.token).to match(/\A[\w\-]+\z/)
+    expect(invite.token).to match(/\A[\w-]+\z/)
   end
 
   context 'when recipient_email matches a user' do
