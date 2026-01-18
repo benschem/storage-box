@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 ruby '3.3.5'
@@ -57,6 +59,9 @@ group :development, :staging, :test do
 end
 
 group :development, :test do
+  # Use SimpleCov [https://github.com/simplecov-ruby/simplecov] for code coverage
+  gem 'simplecov', require: false
+
   # Rspec is a drop-in alternative to Rails default testing framework, Minitest
   gem 'rspec-rails', '~> 7.0.0'
 

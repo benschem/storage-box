@@ -36,6 +36,9 @@
 # Ignore RSpec persisting some state between runs in order to support the `--only-failures`
 spec/examples.txt
 
+# Ignore SimplCov files
+/coverage
+
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
