@@ -19,19 +19,18 @@ class Item < ApplicationRecord
 
   validates :name, presence: true
   validates :notes, length: { maximum: 255 }, allow_blank: true
-  validate :box_is_in_same_house_as_item
-  validate :room_is_in_same_house_as_item
+  validate :in_same_house_as_box, if: -> { box.present? }
+  validate :in_same_house_as_room
 
   private
 
-  def box_is_in_same_house_as_item
-    return unless box
-    return if box&.house == house
+  def in_same_house_as_box
+    return if box.house == house
 
     errors.add(:box, 'must be in the same house as the item')
   end
 
-  def room_is_in_same_house_as_item
+  def in_same_house_as_room
     return if room&.house == house
 
     errors.add(:room, 'must be in the same house as the item')
